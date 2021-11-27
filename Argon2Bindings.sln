@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2Bindings", "Argon2Bindings\Argon2Bindings.csproj", "{C8000D19-71FC-4091-9550-5CCD79909CE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2BindingsConsole", "Argon2BindingsConsole\Argon2BindingsConsole.csproj", "{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8000D19-71FC-4091-9550-5CCD79909CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8000D19-71FC-4091-9550-5CCD79909CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8000D19-71FC-4091-9550-5CCD79909CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8000D19-71FC-4091-9550-5CCD79909CE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
