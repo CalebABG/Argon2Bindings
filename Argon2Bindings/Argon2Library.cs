@@ -5,7 +5,13 @@ namespace Argon2Bindings;
 
 public static class Argon2Library
 {
-    private const string DllName = @"libs\libargon2";
+#if WINDOWS
+    private const string DllName = "libargon2.dll";
+#elif MACOS
+    private const string DllName = "libargon2.1.dylib";
+#elif LINUX
+    private const string DllName = "libargon2.so.1";
+#endif
 
     [DllImport(DllName, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
     public static extern Argon2Result argon2i_hash_raw(
