@@ -180,17 +180,15 @@ public static class Argon2Core
     {
         byte[] outBytes = new byte[length];
         Marshal.Copy(ptr, outBytes, 0, length);
+
         return outBytes;
     }
 
     private static IntPtr GetAllocatedByteArrayIntPtr(byte[] array)
     {
-        byte[] retArrayZ = new byte[array.Length];
-        Array.Copy(array, retArrayZ, array.Length);
+        IntPtr ptr = Marshal.AllocHGlobal(array.Length);
+        Marshal.Copy(array, 0, ptr, array.Length);
 
-        IntPtr retPtr = Marshal.AllocHGlobal(retArrayZ.Length);
-        Marshal.Copy(retArrayZ, 0, retPtr, retArrayZ.Length);
-
-        return retPtr;
+        return ptr;
     }
 }
