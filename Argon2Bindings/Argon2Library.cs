@@ -6,14 +6,14 @@ namespace Argon2Bindings;
 public static class Argon2Library
 {
 #if WINDOWS
-    private const string DllName = "libargon2.dll";
+    private const string DllName = @"libs\libargon2.dll";
 #elif MACOS
-    private const string DllName = "libargon2.1.dylib";
+    private const string DllName = @"libs\libargon2.1.dylib";
 #elif LINUX
-    private const string DllName = "libargon2.so.1";
+    private const string DllName = @"libs\libargon2.so.1";
 #endif
 
-    [DllImport(DllName, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2i_hash_raw(
         uint t_cost,
         uint m_cost,
@@ -22,8 +22,7 @@ public static class Argon2Library
         IntPtr salt, uint saltlen,
         IntPtr hash, uint hashlen);
 
-
-    [DllImport(DllName, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2i_hash_encoded(
         uint t_cost,
         uint m_cost,
@@ -34,7 +33,7 @@ public static class Argon2Library
         IntPtr encoded,
         uint encodedlen);
 
-    [DllImport(DllName, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern uint argon2_encodedlen(
         uint t_cost,
         uint m_cost,
