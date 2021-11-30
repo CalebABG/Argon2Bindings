@@ -14,6 +14,16 @@ public static class Argon2Library
 #endif
 
     [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    public static extern Argon2Result argon2i_hash_encoded(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        uint hashlen,
+        IntPtr encoded, uint encodedlen);
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2i_hash_raw(
         uint t_cost,
         uint m_cost,
@@ -23,15 +33,23 @@ public static class Argon2Library
         IntPtr hash, uint hashlen);
 
     [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-    public static extern Argon2Result argon2i_hash_encoded(
+    public static extern Argon2Result argon2_hash(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        uint hashlen,
-        IntPtr encoded,
-        uint encodedlen);
+        IntPtr pwd,
+        uint pwdlen,
+        IntPtr salt,
+        uint saltlen,
+        IntPtr hash, uint hashlen,
+        IntPtr encoded, uint encodedlen,
+        Argon2Type type,
+        Argon2Version version);
+
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    public static extern IntPtr argon2_error_message(
+        Argon2Result error_code
+    );
 
     [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern uint argon2_encodedlen(

@@ -9,6 +9,7 @@ public struct Argon2Context
     public uint DegreeOfParallelism;
     public uint HashLength;
     public Argon2Type Type;
+    public Argon2Version Version;
 
     public Argon2Context()
     {
@@ -17,5 +18,6 @@ public struct Argon2Context
         DegreeOfParallelism = DefaultDegreeOfParallelism;
         HashLength = DefaultHashLength;
         Type = DefaultType;
+        Version = DefaultVersion;
     }
 }

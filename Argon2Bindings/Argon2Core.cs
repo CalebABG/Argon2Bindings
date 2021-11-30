@@ -101,20 +101,25 @@ public static class Argon2Core
         byte[] salt,
         Argon2Context context)
     {
-        uint passwordLength = (uint) password.Length;
-        uint saltLength = (uint) salt.Length;
+        uint passwordLength = Convert.ToUInt32(password.Length);
+        uint saltLength = Convert.ToUInt32(salt.Length);
+        uint hashLength = context.HashLength;
+
         uint encodedLength = GetEncodedLength(
             context.TimeCost,
             context.MemoryCost,
             context.DegreeOfParallelism,
             saltLength,
-            context.HashLength,
+            hashLength,
             context.Type
         );
 
+        bool errored = false;
+        string outputEncodedHash = string.Empty;
+
         IntPtr passPtr = default,
             saltPtr = default,
-            encodedBufferPointer = Marshal.AllocHGlobal((int) context.HashLength);
+            encodedBufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(hashLength));
 
         try
         {
@@ -129,31 +134,134 @@ public static class Argon2Core
                 passwordLength,
                 saltPtr,
                 saltLength,
-                context.HashLength,
+                hashLength,
                 encodedBufferPointer,
                 encodedLength
             );
 
             if (result is not Argon2Result.Ok)
-                Console.Error.WriteLine(result);
+                throw new Exception(Argon2Errors.GetErrorMessage(result));
+
+            var encodedBytes = GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
+            outputEncodedHash = Encoding.UTF8.GetString(encodedBytes);
         }
         catch (Exception e)
         {
+            errored = true;
             Console.Error.WriteLine(e);
 
             Marshal.FreeHGlobal(passPtr);
             Marshal.FreeHGlobal(saltPtr);
             Marshal.FreeHGlobal(encodedBufferPointer);
         }
+        finally
+        {
+            if (!errored)
+            {
+                Marshal.FreeHGlobal(passPtr);
+                Marshal.FreeHGlobal(saltPtr);
+                Marshal.FreeHGlobal(encodedBufferPointer);
+            }
+        }
 
-        var encodedBytes = GetBytesFromPointer(encodedBufferPointer, (int) encodedLength);
+        return outputEncodedHash;
+    }
+    
+    public static byte[] Hash(
+        byte[] passwordBytes,
+        byte[] saltBytes,
+        Argon2Context context,
+        bool encodeHash = true)
+    {
+        uint passwordLength = Convert.ToUInt32(passwordBytes.Length);
+        uint saltLength = Convert.ToUInt32(saltBytes.Length);
 
-        /* Todo: Make sure no weird behavior happens with dealloc pass or salt */
-        Marshal.FreeHGlobal(passPtr);
-        Marshal.FreeHGlobal(saltPtr);
-        Marshal.FreeHGlobal(encodedBufferPointer);
+        bool rawHashRequested = !encodeHash;
 
-        return Encoding.UTF8.GetString(encodedBytes);
+        uint encodedLength = rawHashRequested
+            ? 0
+            : GetEncodedLength(
+                context.TimeCost,
+                context.MemoryCost,
+                context.DegreeOfParallelism,
+                saltLength,
+                context.HashLength,
+                context.Type);
+
+        bool errored = false;
+        byte[] outputBytes = {};
+
+        IntPtr passPtr = default,
+            saltPtr = default,
+            rawHashBufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(context.HashLength)),
+            encodedBufferPointer = rawHashRequested 
+                ? IntPtr.Zero 
+                : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
+
+        void SafeFreeEncodedPointer()
+        {
+            if (rawHashRequested) return;
+            Marshal.FreeHGlobal(encodedBufferPointer);
+        }
+
+        void FreeManagedPointers()
+        {
+            Marshal.FreeHGlobal(passPtr);
+            Marshal.FreeHGlobal(saltPtr);
+            Marshal.FreeHGlobal(rawHashBufferPointer);
+        }
+
+        try
+        {
+            passPtr = GetPointerToBytes(passwordBytes);
+            saltPtr = GetPointerToBytes(saltBytes);
+
+            Argon2Result result = Argon2Library.argon2_hash(
+                context.TimeCost,
+                context.MemoryCost,
+                context.DegreeOfParallelism,
+                passPtr,
+                passwordLength,
+                saltPtr,
+                saltLength,
+                rawHashBufferPointer,
+                context.HashLength,
+                encodedBufferPointer,
+                encodedLength,
+                context.Type,
+                context.Version);
+
+            if (result is not Argon2Result.Ok)
+                throw new Exception(Argon2Errors.GetErrorMessage(result));
+
+            outputBytes = rawHashRequested 
+                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(context.HashLength)) 
+                : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
+        }
+        catch (Exception e)
+        {
+            errored = true;
+            Console.Error.WriteLine(e);
+
+            FreeManagedPointers();
+            SafeFreeEncodedPointer();
+        }
+        finally
+        {
+            if (!errored)
+            {
+                FreeManagedPointers();
+                SafeFreeEncodedPointer();
+            }
+        }
+
+        return outputBytes;
+    }
+
+    public static string GetErrorMessage(Argon2Result error)
+    {
+        var messagePtr = Argon2Library.argon2_error_message(error);
+        return Marshal.PtrToStringAuto(messagePtr);
     }
 
     private static uint GetEncodedLength(
