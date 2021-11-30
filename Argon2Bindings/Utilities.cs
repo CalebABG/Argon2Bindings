@@ -14,7 +14,7 @@ public static class Utilities
     {
         WriteLine(text, ConsoleColor.Red);
     }
-    
+
     /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
     private static void WriteLine(string text, ConsoleColor? color = null)
     {
