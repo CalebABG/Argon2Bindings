@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using static Argon2Bindings.Utilities;
 
 namespace Argon2Bindings;
 
@@ -253,6 +254,7 @@ public static class Argon2Core
             if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
+            /* Todo: TrimRight null-terminator byte (\x00) */
             outputBytes = rawHashRequested
                 ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(context.HashLength))
                 : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
@@ -260,12 +262,13 @@ public static class Argon2Core
         catch (Exception e)
         {
             errored = true;
-            Console.Error.WriteLine(e);
             FreeManagedPointers();
+            WriteError(e.StackTrace);
         }
         finally
         {
-            if (!errored) FreeManagedPointers();
+            if (!errored) 
+                FreeManagedPointers();
         }
 
         return outputBytes;

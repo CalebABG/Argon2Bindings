@@ -4,12 +4,12 @@ namespace Argon2Bindings;
 
 public struct Argon2Context
 {
-    public uint TimeCost;
-    public uint MemoryCost;
-    public uint DegreeOfParallelism;
-    public uint HashLength;
-    public Argon2Type Type;
-    public Argon2Version Version;
+    public readonly uint TimeCost;
+    public readonly uint MemoryCost;
+    public readonly uint DegreeOfParallelism;
+    public readonly uint HashLength;
+    public readonly Argon2Type Type;
+    public readonly Argon2Version Version;
 
     public Argon2Context()
     {
