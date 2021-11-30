@@ -13,9 +13,9 @@ for (var i = 0; i < 5; ++i)
 {
     Console.WriteLine($"\nTEST: {i + 1}");
 
-    byte[] outRawBytes = Argon2Core.Hash(pass, salt, context, false);
-    Console.WriteLine($"RAW (HEX): {outRawBytes.ToHexString()}");
+    byte[] rawHashBytes = Argon2Core.HashRaw(pass, salt, context);
+    Console.WriteLine($"RAW (HEX): {rawHashBytes.ToHexString()}");
 
-    byte[] outEncodedBytes = Argon2Core.Hash(pass, salt, context);
-    Console.WriteLine($"Encoded (B64): {Encoding.UTF8.GetString(outEncodedBytes)}");
+    string encodedHash = Argon2Core.HashEncoded(pass, salt, context);
+    Console.WriteLine($"Encoded (B64): {encodedHash}");
 }
