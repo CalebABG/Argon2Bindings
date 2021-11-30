@@ -263,7 +263,7 @@ public static class Argon2Core
         {
             errored = true;
             FreeManagedPointers();
-            WriteError(e.StackTrace);
+            WriteError($"{e.Message}\n {e.StackTrace}");
         }
         finally
         {
