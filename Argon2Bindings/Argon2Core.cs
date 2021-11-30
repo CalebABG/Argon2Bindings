@@ -193,22 +193,25 @@ public static class Argon2Core
 
         IntPtr passPtr = default,
             saltPtr = default,
-            rawHashBufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(context.HashLength)),
+            rawHashBufferPointer = rawHashRequested 
+                ? Marshal.AllocHGlobal(Convert.ToInt32(context.HashLength))
+                : IntPtr.Zero,
             encodedBufferPointer = rawHashRequested 
                 ? IntPtr.Zero 
                 : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
 
-        void SafeFreeEncodedPointer()
+        void SafeFreePointer(IntPtr pointer)
         {
-            if (rawHashRequested) return;
-            Marshal.FreeHGlobal(encodedBufferPointer);
+            if (pointer == IntPtr.Zero) return;
+            Marshal.FreeHGlobal(pointer);
         }
 
         void FreeManagedPointers()
         {
-            Marshal.FreeHGlobal(passPtr);
-            Marshal.FreeHGlobal(saltPtr);
-            Marshal.FreeHGlobal(rawHashBufferPointer);
+            SafeFreePointer(passPtr);
+            SafeFreePointer(saltPtr);
+            SafeFreePointer(rawHashBufferPointer);
+            SafeFreePointer(encodedBufferPointer);
         }
 
         try
@@ -242,17 +245,11 @@ public static class Argon2Core
         {
             errored = true;
             Console.Error.WriteLine(e);
-
             FreeManagedPointers();
-            SafeFreeEncodedPointer();
         }
         finally
         {
-            if (!errored)
-            {
-                FreeManagedPointers();
-                SafeFreeEncodedPointer();
-            }
+            if (!errored) FreeManagedPointers();
         }
 
         return outputBytes;
