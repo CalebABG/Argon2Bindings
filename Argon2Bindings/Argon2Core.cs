@@ -50,8 +50,8 @@ public static class Argon2Core
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
-        var hashString = HashEncoded(passwordBytes, saltBytes, context);
-        return hashString;
+        var encodedHashString = HashEncoded(passwordBytes, saltBytes, context);
+        return encodedHashString;
     }
 
     public static string HashEncoded(
@@ -60,8 +60,8 @@ public static class Argon2Core
         Argon2Context context)
     {
         var hashBytes = Hash(password, salt, context);
-        var hashString = Encoding.UTF8.GetString(hashBytes);
-        return hashString;
+        var encodedHashString = Encoding.UTF8.GetString(hashBytes);
+        return encodedHashString;
     }
 
     public static byte[] Hash(
@@ -70,13 +70,9 @@ public static class Argon2Core
         Argon2Context context,
         bool encodeHash = true)
     {
-        var hashBytes = Hash(
-            Encoding.UTF8.GetBytes(password),
-            Encoding.UTF8.GetBytes(salt),
-            context,
-            encodeHash
-        );
-
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var saltBytes = Encoding.UTF8.GetBytes(salt);
+        var hashBytes = Hash(passwordBytes, saltBytes, context, encodeHash);
         return hashBytes;
     }
 
@@ -92,7 +88,7 @@ public static class Argon2Core
         uint saltLength = Convert.ToUInt32(saltBytes.Length);
         uint encodedLength = rawHashRequested
             ? 0
-            : GetEncodedLength(
+            : GetEncodedHashLength(
                 context.TimeCost,
                 context.MemoryCost,
                 context.DegreeOfParallelism,
@@ -176,7 +172,7 @@ public static class Argon2Core
         return Marshal.PtrToStringAuto(messagePtr);
     }
 
-    private static uint GetEncodedLength(
+    private static uint GetEncodedHashLength(
         uint timeCost,
         uint memoryCost,
         uint degreeOfParallelism,
