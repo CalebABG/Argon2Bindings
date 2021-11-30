@@ -2,21 +2,20 @@
 using Argon2Bindings;
 
 const string salt = "testing123";
-const string pass = "testing12345";
+const string pass = "test";
 
 Argon2Context context = new();
 
-byte[] outEncodedString = Argon2Core.Hash(Encoding.UTF8.GetBytes(pass), Encoding.UTF8.GetBytes(salt), context);
-Console.WriteLine($"ENCODED (B64): {Encoding.UTF8.GetString(outEncodedString)}");
+/*byte[] outEncodedBytes = Argon2Core.Hash(pass, salt, context);
+Console.WriteLine($"Encoded (B64): {Encoding.UTF8.GetString(outEncodedBytes)}");*/
 
-/*for (var i = 0; i < 5; ++i)
+for (var i = 0; i < 5; ++i)
 {
     Console.WriteLine($"\nTEST: {i + 1}");
 
-    var outBytes = Argon2Core.HashRaw(pass, salt, context);
-    var outString = outBytes.ToHexString();
-    Console.WriteLine($"RAW (HEX): {outString}");
+    byte[] outRawBytes = Argon2Core.Hash(pass, salt, context, false);
+    Console.WriteLine($"RAW (HEX): {outRawBytes.ToHexString()}");
 
-    var outEncodedString = Argon2Core.HashEncoded(pass, salt, context);
-    Console.WriteLine($"ENCODED (B64): {outEncodedString}");
-}*/
+    byte[] outEncodedBytes = Argon2Core.Hash(pass, salt, context);
+    Console.WriteLine($"Encoded (B64): {Encoding.UTF8.GetString(outEncodedBytes)}");
+}

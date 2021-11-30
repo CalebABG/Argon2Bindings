@@ -166,7 +166,23 @@ public static class Argon2Core
 
         return outputEncodedHash;
     }
-    
+
+    public static byte[] Hash(
+        string password,
+        string salt,
+        Argon2Context context,
+        bool encodeHash = true)
+    {
+        var hashBytes = Hash(
+            Encoding.UTF8.GetBytes(password),
+            Encoding.UTF8.GetBytes(salt),
+            context,
+            encodeHash
+        );
+
+        return hashBytes;
+    }
+
     public static byte[] Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
@@ -189,15 +205,15 @@ public static class Argon2Core
                 context.Type);
 
         bool errored = false;
-        byte[] outputBytes = {};
+        byte[] outputBytes = { };
 
         IntPtr passPtr = default,
             saltPtr = default,
-            rawHashBufferPointer = rawHashRequested 
+            rawHashBufferPointer = rawHashRequested
                 ? Marshal.AllocHGlobal(Convert.ToInt32(context.HashLength))
                 : IntPtr.Zero,
-            encodedBufferPointer = rawHashRequested 
-                ? IntPtr.Zero 
+            encodedBufferPointer = rawHashRequested
+                ? IntPtr.Zero
                 : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
 
         void SafeFreePointer(IntPtr pointer)
@@ -237,8 +253,8 @@ public static class Argon2Core
             if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
-            outputBytes = rawHashRequested 
-                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(context.HashLength)) 
+            outputBytes = rawHashRequested
+                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(context.HashLength))
                 : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
         }
         catch (Exception e)
@@ -255,7 +271,8 @@ public static class Argon2Core
         return outputBytes;
     }
 
-    public static string GetErrorMessage(Argon2Result error)
+    public static string GetErrorMessage(
+        Argon2Result error)
     {
         var messagePtr = Argon2Library.argon2_error_message(error);
         return Marshal.PtrToStringAuto(messagePtr);
@@ -281,7 +298,9 @@ public static class Argon2Core
         return length;
     }
 
-    private static byte[] GetBytesFromPointer(IntPtr ptr, int length)
+    private static byte[] GetBytesFromPointer(
+        IntPtr ptr, 
+        int length)
     {
         byte[] outBytes = new byte[length];
         Marshal.Copy(ptr, outBytes, 0, length);
@@ -289,7 +308,8 @@ public static class Argon2Core
         return outBytes;
     }
 
-    private static IntPtr GetPointerToBytes(byte[] array)
+    private static IntPtr GetPointerToBytes(
+        byte[] array)
     {
         IntPtr ptr = Marshal.AllocHGlobal(array.Length);
         Marshal.Copy(array, 0, ptr, array.Length);
