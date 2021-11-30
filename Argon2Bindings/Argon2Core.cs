@@ -39,7 +39,7 @@ public static class Argon2Core
         byte[] salt,
         Argon2Context context)
     {
-        var hashBytes = Hash(password, salt, context);
+        var hashBytes = Hash(password, salt, context, false);
         return hashBytes;
     }
 
