@@ -26,10 +26,13 @@ public static class Argon2Core
     public static byte[] HashRaw(
         string password,
         string salt,
-        Argon2Context context)
+        Argon2Context? context = null)
     {
+        ValidatePasswordAndSaltStrings(password, salt);
+
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
+
         var hashBytes = HashRaw(passwordBytes, saltBytes, context);
         return hashBytes;
     }
@@ -37,8 +40,12 @@ public static class Argon2Core
     public static byte[] HashRaw(
         byte[] password,
         byte[] salt,
-        Argon2Context context)
+        Argon2Context? context = null)
     {
+        ValidatePasswordAndSaltCollections(password, salt);
+
+        context ??= new();
+
         var hashBytes = Hash(password, salt, context, false);
         return hashBytes;
     }
@@ -46,10 +53,13 @@ public static class Argon2Core
     public static string HashEncoded(
         string password,
         string salt,
-        Argon2Context context)
+        Argon2Context? context = null)
     {
+        ValidatePasswordAndSaltStrings(password, salt);
+
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
+
         var encodedHashString = HashEncoded(passwordBytes, saltBytes, context);
         return encodedHashString;
     }
@@ -57,9 +67,14 @@ public static class Argon2Core
     public static string HashEncoded(
         byte[] password,
         byte[] salt,
-        Argon2Context context)
+        Argon2Context? context = null)
     {
+        ValidatePasswordAndSaltCollections(password, salt);
+
+        context ??= new();
+
         var hashBytes = Hash(password, salt, context);
+
         var encodedHashString = Encoding.UTF8.GetString(hashBytes);
         return encodedHashString;
     }
@@ -72,11 +87,12 @@ public static class Argon2Core
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
+
         var hashBytes = Hash(passwordBytes, saltBytes, context, encodeHash);
         return hashBytes;
     }
 
-    public static byte[] Hash(
+    private static byte[] Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
         Argon2Context context,
@@ -165,11 +181,29 @@ public static class Argon2Core
         return outputBytes;
     }
 
+    private static void ValidatePasswordAndSaltStrings(string password, string salt)
+    {
+        if (string.IsNullOrEmpty(password))
+            throw new ArgumentException("Value cannot be null or empty.", nameof(password));
+
+        if (string.IsNullOrEmpty(salt))
+            throw new ArgumentException("Value cannot be null or empty.", nameof(salt));
+    }
+
+    private static void ValidatePasswordAndSaltCollections(byte[] password, byte[] salt)
+    {
+        if (password is null || password.Length <= 0)
+            throw new ArgumentException("Value cannot be null or an empty collection.", nameof(password));
+
+        if (salt is null || salt.Length <= 0)
+            throw new ArgumentException("Value cannot be null or an empty collection.", nameof(salt));
+    }
+
     public static string GetErrorMessage(
         Argon2Result error)
     {
         var messagePtr = Argon2Library.argon2_error_message(error);
-        return Marshal.PtrToStringAuto(messagePtr);
+        return Marshal.PtrToStringAuto(messagePtr) ?? string.Empty;
     }
 
     private static uint GetEncodedHashLength(
