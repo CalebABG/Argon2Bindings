@@ -23,7 +23,7 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
-    public static byte[] HashRaw(
+    public static (Argon2Result Result, byte[] HashBytes) HashRaw(
         string password,
         string salt,
         Argon2Context? context = null)
@@ -37,7 +37,7 @@ public static class Argon2Core
         return hashBytes;
     }
 
-    public static byte[] HashRaw(
+    public static (Argon2Result Result, byte[] HashBytes) HashRaw(
         byte[] password,
         byte[] salt,
         Argon2Context? context = null)
@@ -46,11 +46,11 @@ public static class Argon2Core
 
         context ??= new();
 
-        var hashBytes = Hash(password, salt, context, false);
-        return hashBytes;
+        var result = Hash(password, salt, context, false);
+        return result;
     }
 
-    public static string HashEncoded(
+    public static (Argon2Result Result, string EncodedHash) HashEncoded(
         string password,
         string salt,
         Argon2Context? context = null)
@@ -60,11 +60,11 @@ public static class Argon2Core
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
 
-        var encodedHashString = HashEncoded(passwordBytes, saltBytes, context);
-        return encodedHashString;
+        var result = HashEncoded(passwordBytes, saltBytes, context);
+        return result;
     }
 
-    public static string HashEncoded(
+    public static (Argon2Result Result, string EncodedHash) HashEncoded(
         byte[] password,
         byte[] salt,
         Argon2Context? context = null)
@@ -73,13 +73,13 @@ public static class Argon2Core
 
         context ??= new();
 
-        var hashBytes = Hash(password, salt, context);
+        var result = Hash(password, salt, context);
 
-        var encodedHashString = Encoding.UTF8.GetString(hashBytes);
-        return encodedHashString;
+        var encodedHashString = Encoding.UTF8.GetString(result.HashBytes);
+        return (result.Result, encodedHashString);
     }
 
-    public static byte[] Hash(
+    public static (Argon2Result Result, byte[] HashBytes) Hash(
         string password,
         string salt,
         Argon2Context context,
@@ -88,11 +88,11 @@ public static class Argon2Core
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
 
-        var hashBytes = Hash(passwordBytes, saltBytes, context, encodeHash);
-        return hashBytes;
+        var result = Hash(passwordBytes, saltBytes, context, encodeHash);
+        return result;
     }
 
-    private static byte[] Hash(
+    private static (Argon2Result Result, byte[] HashBytes) Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
         Argon2Context context,
@@ -114,6 +114,7 @@ public static class Argon2Core
 
         bool errored = false;
         byte[] outputBytes = { };
+        Argon2Result result = Argon2Result.Ok;
 
         IntPtr passPtr = default,
             saltPtr = default,
@@ -143,7 +144,7 @@ public static class Argon2Core
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
 
-            Argon2Result result = Argon2Library.argon2_hash(
+            result = Argon2Library.argon2_hash(
                 context.TimeCost,
                 context.MemoryCost,
                 context.DegreeOfParallelism,
@@ -158,8 +159,9 @@ public static class Argon2Core
                 context.Type,
                 context.Version);
 
-            if (result is not Argon2Result.Ok)
-                throw new Exception(Argon2Errors.GetErrorMessage(result));
+            /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
+            /*if (result is not Argon2Result.Ok)
+                throw new Exception(Argon2Errors.GetErrorMessage(result));*/
 
             /* Todo: TrimRight null-terminator byte (\x00) */
             outputBytes = rawHashRequested
@@ -178,7 +180,7 @@ public static class Argon2Core
                 FreeManagedPointers();
         }
 
-        return outputBytes;
+        return (result, outputBytes);
     }
 
     private static void ValidatePasswordAndSaltStrings(string password, string salt)
