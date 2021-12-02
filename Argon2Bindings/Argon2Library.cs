@@ -5,58 +5,60 @@ namespace Argon2Bindings;
 
 public static class Argon2Library
 {
+    /* Todo: Make dynamic platform DLL name */
+    /* Todo: These DLL constants will change due to testing (for now, till dynamic dll lookup) */
 #if WINDOWS
-    private const string DllName = @"libs\libargon2.dll";
+    private const string DllName = @"argon2binaries\win-x64\libargon2.dll";
 #elif MACOS
-    private const string DllName = @"libs\libargon2.1.dylib";
+    private const string DllName = @"argon2binaries\osx-arm64\libargon2.dylib";
 #elif LINUX
-    private const string DllName = @"libs\libargon2.so.1";
+    private const string DllName = @"argon2binaries\linux-x64\libargon2.so";
 #endif
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2i_hash_encoded(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        uint hashlen,
-        IntPtr encoded, uint encodedlen);
+        nuint t_cost,
+        nuint m_cost,
+        nuint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        nuint hashlen,
+        IntPtr encoded, nuint encodedlen);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2i_hash_raw(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        IntPtr hash, uint hashlen);
+        nuint t_cost,
+        nuint m_cost,
+        nuint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        IntPtr hash, nuint hashlen);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern Argon2Result argon2_hash(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
+        nuint t_cost,
+        nuint m_cost,
+        nuint parallelism,
         IntPtr pwd,
-        uint pwdlen,
+        nuint pwdlen,
         IntPtr salt,
-        uint saltlen,
-        IntPtr hash, uint hashlen,
-        IntPtr encoded, uint encodedlen,
+        nuint saltlen,
+        IntPtr hash, nuint hashlen,
+        IntPtr encoded, nuint encodedlen,
         Argon2Type type,
         Argon2Version version);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     public static extern IntPtr argon2_error_message(
         Argon2Result error_code
     );
 
-    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-    public static extern uint argon2_encodedlen(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        uint saltlen,
-        uint hashlen,
+    [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+    public static extern nuint argon2_encodedlen(
+        nuint t_cost,
+        nuint m_cost,
+        nuint parallelism,
+        nuint saltlen,
+        nuint hashlen,
         Argon2Type type);
 }

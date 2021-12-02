@@ -6,28 +6,48 @@
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
-        <IsMacOS Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsMacOS>
-        <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>x86;x64;arm;arm64</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Argon2BinariesFolderName>argon2binaries</Argon2BinariesFolderName>
+        <Argon2BinariesFolder>$(ProjectDir)$(Argon2BinariesFolderName)</Argon2BinariesFolder>
+
+        <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
+        <IsMac Condition="$([MSBuild]::IsOSPlatform('OSX'))">true</IsMac>
+        <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
     </PropertyGroup>
 
     <!-- Resource: https://blog.magnusmontin.net/2018/11/05/platform-conditional-compilation-in-net-core/ -->
-    <PropertyGroup Condition="'$(IsWindows)'=='true'">
+    <PropertyGroup Condition=" '$(IsWindows)' == 'true' ">
         <DefineConstants>WINDOWS</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(IsMacOS)'=='true'">
+    <PropertyGroup Condition=" '$(IsMac)' == 'true' ">
         <DefineConstants>MACOS</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(IsLinux)'=='true'">
+    <PropertyGroup Condition=" '$(IsLinux)' == 'true' ">
         <DefineConstants>LINUX</DefineConstants>
     </PropertyGroup>
 
-    <ItemGroup>
-        <Content Include="libs\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
+    <!-- Copy Windows binary -->
+    <ItemGroup Condition=" '$(IsWindows)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\win-$(Platform)\libargon2.dll"
+                 CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <!-- Copy Mac binary -->
+    <ItemGroup Condition=" '$(IsMac)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\osx-$(Platform)\libargon2.dylib"
+                 CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <!-- Copy Linux binary -->
+    <ItemGroup Condition=" '$(IsLinux)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\linux-$(Platform)\libargon2.so"
+                 CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

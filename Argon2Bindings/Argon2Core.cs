@@ -9,7 +9,6 @@ namespace Argon2Bindings;
 /* Todo: Add argon2 lib comments */
 /* Todo: Add test project */
 /* Todo: Automate building argon2 platform binaries (using Docker?) */
-/* Todo: Add validation to method parameters for all public api methods  */
 /*
  **Note**
  Always malloc mem for functions where it's 
@@ -23,7 +22,7 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
-    public static (Argon2Result Result, byte[] HashBytes) HashRaw(
+    public static Argon2HashResult HashRaw(
         string password,
         string salt,
         Argon2Context? context = null)
@@ -33,11 +32,10 @@ public static class Argon2Core
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
 
-        var hashBytes = HashRaw(passwordBytes, saltBytes, context);
-        return hashBytes;
+        return HashRaw(passwordBytes, saltBytes, context);
     }
 
-    public static (Argon2Result Result, byte[] HashBytes) HashRaw(
+    public static Argon2HashResult HashRaw(
         byte[] password,
         byte[] salt,
         Argon2Context? context = null)
@@ -46,11 +44,10 @@ public static class Argon2Core
 
         context ??= new();
 
-        var result = Hash(password, salt, context, false);
-        return result;
+        return Hash(password, salt, context, false);
     }
 
-    public static (Argon2Result Result, string EncodedHash) HashEncoded(
+    public static Argon2HashResult HashEncoded(
         string password,
         string salt,
         Argon2Context? context = null)
@@ -60,11 +57,10 @@ public static class Argon2Core
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
 
-        var result = HashEncoded(passwordBytes, saltBytes, context);
-        return result;
+        return HashEncoded(passwordBytes, saltBytes, context);
     }
 
-    public static (Argon2Result Result, string EncodedHash) HashEncoded(
+    public static Argon2HashResult HashEncoded(
         byte[] password,
         byte[] salt,
         Argon2Context? context = null)
@@ -73,13 +69,10 @@ public static class Argon2Core
 
         context ??= new();
 
-        var result = Hash(password, salt, context);
-
-        var encodedHashString = Encoding.UTF8.GetString(result.HashBytes);
-        return (result.Result, encodedHashString);
+        return Hash(password, salt, context);
     }
 
-    public static (Argon2Result Result, byte[] HashBytes) Hash(
+    public static Argon2HashResult Hash(
         string password,
         string salt,
         Argon2Context context,
@@ -92,7 +85,7 @@ public static class Argon2Core
         return result;
     }
 
-    private static (Argon2Result Result, byte[] HashBytes) Hash(
+    private static Argon2HashResult Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
         Argon2Context context,
@@ -100,9 +93,9 @@ public static class Argon2Core
     {
         bool rawHashRequested = !encodeHash;
 
-        uint passwordLength = Convert.ToUInt32(passwordBytes.Length);
-        uint saltLength = Convert.ToUInt32(saltBytes.Length);
-        uint encodedLength = rawHashRequested
+        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
+        nuint saltLength = Convert.ToUInt32(saltBytes.Length);
+        nuint encodedLength = rawHashRequested
             ? 0
             : GetEncodedHashLength(
                 context.TimeCost,
@@ -180,7 +173,11 @@ public static class Argon2Core
                 FreeManagedPointers();
         }
 
-        return (result, outputBytes);
+        var encodedForm = rawHashRequested
+            ? Convert.ToBase64String(outputBytes)
+            : Encoding.UTF8.GetString(outputBytes);
+
+        return new(result, outputBytes, encodedForm);
     }
 
     private static void ValidatePasswordAndSaltStrings(string password, string salt)
@@ -208,12 +205,12 @@ public static class Argon2Core
         return Marshal.PtrToStringAuto(messagePtr) ?? string.Empty;
     }
 
-    private static uint GetEncodedHashLength(
-        uint timeCost,
-        uint memoryCost,
-        uint degreeOfParallelism,
-        uint saltLength,
-        uint hashLength,
+    private static nuint GetEncodedHashLength(
+        nuint timeCost,
+        nuint memoryCost,
+        nuint degreeOfParallelism,
+        nuint saltLength,
+        nuint hashLength,
         Argon2Type type)
     {
         var length = Argon2Library.argon2_encodedlen(
