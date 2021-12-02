@@ -1,5 +1,7 @@
 # This folder contains subfolders which have the name of each platform, and contain the compiled argon2 binary for the platform (platforms this project currently supports, more may be added in future, if newer platforms arise).
 
+## The subfolder naming convention aligns with the dotnet `runtime identifiers`. More information about dotnet runtime identifiers and the catalog of them can be found here: [dotnet runtime identifiers](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)
+
 ## When compiling the argon2 source for your platform, make sure to copy the binary to the corresponding subfolder in this directory.
 
 ## Binaries are compiled from [argon2 source code](https://github.com/P-H-C/phc-winner-argon2) - branch: `master` - commit: `f57e61e19229e23c`
