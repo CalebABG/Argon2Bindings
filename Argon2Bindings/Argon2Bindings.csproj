@@ -6,8 +6,6 @@
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Configurations>Debug;Release</Configurations>
-        <Platforms>x86;x64;arm;arm64</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -22,34 +20,28 @@
     <!-- Resource: https://blog.magnusmontin.net/2018/11/05/platform-conditional-compilation-in-net-core/ -->
     <PropertyGroup Condition=" '$(IsWindows)' == 'true' ">
         <DefineConstants>WINDOWS</DefineConstants>
-        <PlatformArgonBinaryPath>$(Argon2BinariesFolder)\win-$(Platform)\libargon2.dll</PlatformArgonBinaryPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(IsMac)' == 'true' ">
         <DefineConstants>MACOS</DefineConstants>
-        <PlatformArgonBinaryPath>$(Argon2BinariesFolder)\osx-$(Platform)\libargon2.dylib</PlatformArgonBinaryPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(IsLinux)' == 'true' ">
         <DefineConstants>LINUX</DefineConstants>
-        <PlatformArgonBinaryPath>$(Argon2BinariesFolder)\linux-$(Platform)\libargon2.so</PlatformArgonBinaryPath>
     </PropertyGroup>
 
-    <!-- Copy Windows binary -->
-    <ItemGroup Condition=" '$(IsWindows)' == 'true' AND Exists('$(PlatformArgonBinaryPath)') ">
-        <Content Include="$(Argon2BinariesFolder)\win-$(Platform)\libargon2.dll"
+    <ItemGroup Condition=" '$(IsWindows)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\win-*\*.*"
                  CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
-    <!-- Copy Mac binary -->
-    <ItemGroup Condition=" '$(IsMac)' == 'true' AND Exists('$(PlatformArgonBinaryPath)') ">
-        <Content Include="$(Argon2BinariesFolder)\osx-$(Platform)\libargon2.dylib"
+    <ItemGroup Condition=" '$(IsMac)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\osx-*\*.*"
                  CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
-    <!-- Copy Linux binary -->
-    <ItemGroup Condition=" '$(IsLinux)' == 'true' AND Exists('$(PlatformArgonBinaryPath)') ">
-        <Content Include="$(Argon2BinariesFolder)\linux-$(Platform)\libargon2.so"
+    <ItemGroup Condition=" '$(IsLinux)' == 'true' ">
+        <Content Include="$(Argon2BinariesFolder)\linux-*\*.*"
                  CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
