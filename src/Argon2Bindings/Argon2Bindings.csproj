@@ -31,18 +31,15 @@
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsWindows)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\win-*\*.*"
-                 CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="$(Argon2BinariesFolder)\win-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(IsMac)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\osx-*\*.*"
-                 CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="$(Argon2BinariesFolder)\osx-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(IsLinux)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\linux-*\*.*"
-                 CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="$(Argon2BinariesFolder)\linux-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>
