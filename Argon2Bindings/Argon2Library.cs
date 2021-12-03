@@ -10,7 +10,7 @@ public static class Argon2Library
 #if WINDOWS
     private const string DllName = @"argon2binaries\win-x64\libargon2.dll";
 #elif MACOS
-    private const string DllName = @"argon2binaries\osx-arm64\libargon2.dylib";
+    private const string DllName = @"argon2binaries\osx-x64\libargon2.dylib";
 #elif LINUX
     private const string DllName = @"argon2binaries\linux-x64\libargon2.so";
 #endif
