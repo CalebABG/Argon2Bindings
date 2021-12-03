@@ -1,6 +1,6 @@
 # Compiling Argon2 Source
 
-## Copying Output Binaries:
+## Copying Output Binaries
 
 Once you've successfully compiled a binary for your platform, locate the corresponding platform + cpu architecture
 folder in [argon2binaries](../src/Argon2Bindings/argon2binaries) and copy your compiled binary to corresponding folder.
