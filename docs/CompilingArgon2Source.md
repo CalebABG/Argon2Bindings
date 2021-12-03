@@ -1,8 +1,6 @@
 # Compiling Argon2 Source
 
-## Binaries are compiled from [argon2 source code](https://github.com/P-H-C/phc-winner-argon2) - branch: `master` - commit: `f57e61e19229e23c`
-
-## Copying output binaries:
+## Copying Output Binaries:
 
 Once you've successfully compiled a binary for your platform, locate the corresponding platform + cpu architecture
 folder in [argon2binaries](../src/Argon2Bindings/argon2binaries) and copy your compiled binary to corresponding folder.
