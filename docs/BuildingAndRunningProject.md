@@ -41,8 +41,8 @@ this repo.
 
 Then to run the console test application, enter and execute this command:
 
-- `dotnet run --project .\src\Argon2BindingsConsole\Argon2BindingsConsole.csproj`
+- `dotnet run --project src\Argon2BindingsConsole\Argon2BindingsConsole.csproj`
 
 To run the unit tests, enter and execute this command:
 
-- `dotnet run --project .\tests\Argon2BindingsTests\Argon2BindingsTests.csproj`
+- `dotnet run --project tests\Argon2BindingsTests\Argon2BindingsTests.csproj`
