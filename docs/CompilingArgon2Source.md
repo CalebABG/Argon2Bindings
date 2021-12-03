@@ -1,7 +1,5 @@
 # Compiling Argon2 Source
 
-## When compiling the Argon2 source for your platform, make sure to copy the binary to the corresponding subfolder in this directory.
-
 ## Binaries are compiled from [argon2 source code](https://github.com/P-H-C/phc-winner-argon2) - branch: `master` - commit: `f57e61e19229e23c`
 
 ## Copying output binaries:
