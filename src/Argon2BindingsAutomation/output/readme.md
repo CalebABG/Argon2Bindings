@@ -1,0 +1,1 @@
+## This folder will contain the platform output folders with their corresponding argon2 compiled binaries from Docker.

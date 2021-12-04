@@ -343,4 +343,4 @@ SqlQueries/
 
 .vscode/
 
-postgres/data
+src/Argon2BindingsAutomation/output/**/

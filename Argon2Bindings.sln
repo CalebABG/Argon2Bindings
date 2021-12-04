@@ -23,6 +23,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{39745D41
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2BindingsTests", "tests\Argon2BindingsTests\Argon2BindingsTests.csproj", "{5E98D2DA-BFE3-484A-8402-6FCA69CAB998}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Argon2BindingsAutomation", "Argon2BindingsAutomation", "{9D296329-56E9-44BE-B805-113CCD857550}"
+	ProjectSection(SolutionItems) = preProject
+		src\Argon2BindingsAutomation\Dockerfile.linux = src\Argon2BindingsAutomation\Dockerfile.linux
+		src\Argon2BindingsAutomation\build.sh = src\Argon2BindingsAutomation\build.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,5 +52,6 @@ Global
 		{C8000D19-71FC-4091-9550-5CCD79909CE9} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
 		{0EB83D7F-A0CF-494E-AEE6-E1FB6932A919} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
 		{5E98D2DA-BFE3-484A-8402-6FCA69CAB998} = {39745D41-74B0-46EE-91B1-EE849AF09786}
+		{9D296329-56E9-44BE-B805-113CCD857550} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
 	EndGlobalSection
 EndGlobal
