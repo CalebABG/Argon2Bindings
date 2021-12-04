@@ -12,34 +12,44 @@
         <Argon2BinariesFolderName>argon2binaries</Argon2BinariesFolderName>
         <Argon2BinariesFolder>$(ProjectDir)$(Argon2BinariesFolderName)</Argon2BinariesFolder>
 
+        <!-- Determine the platform -->
         <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
         <IsMac Condition="$([MSBuild]::IsOSPlatform('OSX'))">true</IsMac>
         <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+
+        <!-- Determine the platform architecture -->
+        <Argon2OSArch Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X86' ">x86</Argon2OSArch>
+        <Argon2OSArch Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ">x64</Argon2OSArch>
+        <Argon2OSArch Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm' ">arm</Argon2OSArch>
+        <Argon2OSArch Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' ">arm64</Argon2OSArch>
     </PropertyGroup>
 
-    <!-- Resource: https://blog.magnusmontin.net/2018/11/05/platform-conditional-compilation-in-net-core/ -->
+    <!--
+    Define preprocessor constants based on platform
+    Resource: https://blog.magnusmontin.net/2018/11/05/platform-conditional-compilation-in-net-core/ 
+    -->
     <PropertyGroup Condition=" '$(IsWindows)' == 'true' ">
         <DefineConstants>WINDOWS</DefineConstants>
+        <Argon2OSName>win</Argon2OSName>
+        <Argon2OSBinaryExtension>dll</Argon2OSBinaryExtension>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(IsMac)' == 'true' ">
         <DefineConstants>MACOS</DefineConstants>
+        <Argon2OSName>osx</Argon2OSName>
+        <Argon2OSBinaryExtension>dylib</Argon2OSBinaryExtension>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(IsLinux)' == 'true' ">
         <DefineConstants>LINUX</DefineConstants>
+        <Argon2OSName>linux</Argon2OSName>
+        <Argon2OSBinaryExtension>so</Argon2OSBinaryExtension>
     </PropertyGroup>
 
-    <ItemGroup Condition=" '$(IsWindows)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\win-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(IsMac)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\osx-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(IsLinux)' == 'true' ">
-        <Content Include="$(Argon2BinariesFolder)\linux-*\*.*" CopyToOutputDirectory="PreserveNewest"/>
+    <ItemGroup>
+        <Content Include="$(Argon2BinariesFolder)\$(Argon2OSName)-$(Argon2OSArch)\*.$(Argon2OSBinaryExtension)"
+                 Link="%(Filename)%(Extension)"
+                 CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

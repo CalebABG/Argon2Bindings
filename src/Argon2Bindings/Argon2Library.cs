@@ -5,14 +5,12 @@ namespace Argon2Bindings;
 
 public static class Argon2Library
 {
-    /* Todo: Make dynamic platform DLL name */
-    /* Todo: These DLL constants will change due to testing (for now, till dynamic dll lookup) */
 #if WINDOWS
-    private const string DllName = @"argon2binaries\win-x64\libargon2.dll";
+    private const string DllName = @"libargon2.dll";
 #elif MACOS
-    private const string DllName = @"argon2binaries\osx-x64\libargon2.dylib";
+    private const string DllName = @"libargon2.dylib";
 #elif LINUX
-    private const string DllName = @"argon2binaries\linux-x64\libargon2.so";
+    private const string DllName = @"libargon2.so";
 #endif
 
     [DllImport(DllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
