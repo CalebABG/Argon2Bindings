@@ -134,7 +134,7 @@ public static class Argon2Library
             return ("osx", "dylib");
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            return ("osx", "dylib");
+            return ("linux", "so");
 
         throw new Exception("Platform not currently supported");
     }
