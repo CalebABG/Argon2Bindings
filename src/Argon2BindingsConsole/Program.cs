@@ -9,7 +9,7 @@ var r = (IntPtr)t.Invoke(null, new object[]
 });
 
 /* Todo: Update method in Argon2Core `argon2_error_message` */
-var s = Marshal.PtrToStringUTF8(r);
+var s = Marshal.PtrToStringAnsi(r);
 Console.WriteLine(s);
 
 /*const string salt = "testing123";
