@@ -21,7 +21,7 @@ is: `<binaries_folder>\<platform_name-cpu_architecture>\libargon2.<extension>`
 
 ## Building
 
-Even though the bindings project targets `netstandard2.0` currently, the other projects take full advantage of dotnet 6,
+Even though the bindings project targets `netstandard2.1` currently, the other projects take full advantage of dotnet 6,
 so the minimum SDK version needed to build and run the project is `dotnet 6 SDK`. If you don't have the SDK installed
 you can get it here: [download dotnet sdk](https://dotnet.microsoft.com/download)
 
