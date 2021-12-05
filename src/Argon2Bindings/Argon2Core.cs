@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using static Argon2Bindings.Utilities;
@@ -221,11 +222,22 @@ public static class Argon2Core
         string methodName,
         object?[]? methodParameters)
     {
-        var t = Argon2CoreDynamic.GetMethod(methodName);
-        if (t is null) throw new MissingMethodException(nameof(Argon2CoreDynamic), methodName);
-        var val = t.Invoke(null, methodParameters);
-        if (val is null) return default!;
-        return (T) val;
+        T retVal = default(T)!;
+
+        var method = Argon2CoreDynamic.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
+        if (method is null) 
+            throw new MissingMethodException(nameof(Argon2CoreDynamic), methodName);
+
+        try
+        {
+            retVal = (T) method.Invoke(null, methodParameters);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return retVal;
     }
 
     private static nuint GetEncodedHashLength(

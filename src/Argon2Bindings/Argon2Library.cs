@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Argon2Bindings;
 
-internal static class Argon2Library
+public static class Argon2Library
 {
     /* Note: need to provide non-empty string (but will be replaced by dynamically) */
     [DllImport("libargon2")]
@@ -56,7 +56,7 @@ internal static class Argon2Library
         nuint hashlen,
         Argon2Type type);
 
-    internal static Type CreateDynamicType()
+    public static Type CreateDynamicType()
     {
         return CreateDynamicType(typeof(Argon2Library), $"{nameof(Argon2Library)}Dynamic");
     }
@@ -72,12 +72,14 @@ internal static class Argon2Library
         AssemblyBuilder assemblyBuilder =
             AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 
-        var moduleBuilder = assemblyBuilder.DefineDynamicModule(dynamicBaseName + "Module");
+        ModuleBuilder? moduleBuilder = assemblyBuilder.DefineDynamicModule(dynamicBaseName + "Module");
 
         TypeBuilder typeBuilder = moduleBuilder.DefineType(dynamicBaseName + "Type", TypeAttributes.Class);
 
         MethodInfo[] methodInfos = originalType.GetMethods(BindingFlags.Public | BindingFlags.Static);
 
+        string dllPath = GetDynamicDllPath();
+        
         for (var i = 0; i < methodInfos.GetLength(0); ++i)
         {
             MethodInfo mi = methodInfos[i];
@@ -96,7 +98,7 @@ internal static class Argon2Library
 
             MethodBuilder methodBuilder = typeBuilder.DefinePInvokeMethod(
                 mi.Name,
-                GetDynamicDllPath(),
+                dllPath,
                 mi.Attributes,
                 mi.CallingConvention,
                 mi.ReturnType,
@@ -124,7 +126,13 @@ internal static class Argon2Library
         var (platformName, platformBinaryExtension) = GetPlatformNameAndBinaryExtension();
         var argon2BinaryFolder = $"{platformName}-{platformArch}";
 
-        return Path.Combine("argon2binaries", argon2BinaryFolder, $"libargon2.{platformBinaryExtension}");
+        var assemPath = Assembly.GetExecutingAssembly().Location;
+        var path = Path.GetFullPath(
+            Path.Combine(assemPath, "..", "argon2binaries", 
+                argon2BinaryFolder, $"libargon2.{platformBinaryExtension}"));
+
+        Console.WriteLine(path);
+        return path;
     }
 
     private static (string platformName, string platformBinaryExtension) GetPlatformNameAndBinaryExtension()
