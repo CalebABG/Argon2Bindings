@@ -22,6 +22,8 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
+    internal static Type Argon2CoreDynamic = Argon2Library.CreateDynamicType();
+
     public static Argon2HashResult HashRaw(
         string password,
         string salt,
@@ -137,20 +139,23 @@ public static class Argon2Core
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
 
-            result = Argon2Library.argon2_hash(
-                context.TimeCost,
-                context.MemoryCost,
-                context.DegreeOfParallelism,
-                passPtr,
-                passwordLength,
-                saltPtr,
-                saltLength,
-                rawHashBufferPointer,
-                context.HashLength,
-                encodedBufferPointer,
-                encodedLength,
-                context.Type,
-                context.Version);
+            result = InvokeBinding<Argon2Result>(nameof(Argon2Library.argon2_hash),
+                new object[]
+                {
+                    (nuint) context.TimeCost,
+                    (nuint) context.MemoryCost,
+                    (nuint) context.DegreeOfParallelism,
+                    passPtr,
+                    passwordLength,
+                    saltPtr,
+                    saltLength,
+                    rawHashBufferPointer,
+                    (nuint) context.HashLength,
+                    encodedBufferPointer,
+                    encodedLength,
+                    context.Type,
+                    context.Version
+                });
 
             /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
             /*if (result is not Argon2Result.Ok)
@@ -180,7 +185,19 @@ public static class Argon2Core
         return new(result, outputBytes, encodedForm);
     }
 
-    private static void ValidatePasswordAndSaltStrings(string password, string salt)
+    public static string GetErrorMessage(
+        Argon2Result error)
+    {
+        var messagePtr = InvokeBinding<IntPtr>(
+            nameof(Argon2Library.argon2_error_message),
+            new object?[] {error});
+
+        return Marshal.PtrToStringAnsi(messagePtr) ?? string.Empty;
+    }
+
+    private static void ValidatePasswordAndSaltStrings(
+        string password,
+        string salt)
     {
         if (string.IsNullOrEmpty(password))
             throw new ArgumentException("Value cannot be null or empty.", nameof(password));
@@ -189,7 +206,9 @@ public static class Argon2Core
             throw new ArgumentException("Value cannot be null or empty.", nameof(salt));
     }
 
-    private static void ValidatePasswordAndSaltCollections(byte[] password, byte[] salt)
+    private static void ValidatePasswordAndSaltCollections(
+        byte[] password,
+        byte[] salt)
     {
         if (password is null || password.Length <= 0)
             throw new ArgumentException("Value cannot be null or an empty collection.", nameof(password));
@@ -198,11 +217,15 @@ public static class Argon2Core
             throw new ArgumentException("Value cannot be null or an empty collection.", nameof(salt));
     }
 
-    public static string GetErrorMessage(
-        Argon2Result error)
+    private static T? InvokeBinding<T>(
+        string methodName,
+        object?[]? methodParameters)
     {
-        var messagePtr = Argon2Library.argon2_error_message(error);
-        return Marshal.PtrToStringAnsi(messagePtr) ?? string.Empty;
+        var t = Argon2CoreDynamic.GetMethod(methodName);
+        if (t is null) throw new MissingMethodException(nameof(Argon2CoreDynamic), methodName);
+        var val = t.Invoke(null, methodParameters);
+        if (val is null) return default!;
+        return (T) val;
     }
 
     private static nuint GetEncodedHashLength(
@@ -213,14 +236,16 @@ public static class Argon2Core
         nuint hashLength,
         Argon2Type type)
     {
-        var length = Argon2Library.argon2_encodedlen(
-            timeCost,
-            memoryCost,
-            degreeOfParallelism,
-            saltLength,
-            hashLength,
-            type
-        );
+        var length = InvokeBinding<nuint>(nameof(Argon2Library.argon2_encodedlen),
+            new object[]
+            {
+                timeCost,
+                memoryCost,
+                degreeOfParallelism,
+                saltLength,
+                hashLength,
+                type
+            });
 
         return length;
     }

@@ -1,18 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using Argon2Bindings;
+﻿using Argon2Bindings;
 
-var d = Argon2Library.CreateDynamicType();
-var t = d.GetMethod(nameof(Argon2Library.argon2_error_message));
-var r = (IntPtr)t.Invoke(null, new object[]
-{
-    Argon2Result.DecodingFail
-});
-
-/* Todo: Update method in Argon2Core `argon2_error_message` */
-var s = Marshal.PtrToStringAnsi(r);
-Console.WriteLine(s);
-
-/*const string salt = "testing123";
+const string salt = "testing123";
 const string pass = "test";
 
 int rawHashFailures = 0,
@@ -40,4 +28,4 @@ for (var i = 0; i < 5; ++i)
         encodedHashResult.EncodedHash);
 }
 
-Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\nTotal Encoded Hash Failures: {encodedHashFailures}");*/
+Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\nTotal Encoded Hash Failures: {encodedHashFailures}");

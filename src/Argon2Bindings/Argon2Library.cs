@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Argon2Bindings;
 
-public static class Argon2Library
+internal static class Argon2Library
 {
     /* Note: need to provide non-empty string (but will be replaced by dynamically) */
     [DllImport("libargon2")]
@@ -56,8 +56,7 @@ public static class Argon2Library
         nuint hashlen,
         Argon2Type type);
 
-    /* Todo: probably make this internal */
-    public static Type CreateDynamicType()
+    internal static Type CreateDynamicType()
     {
         return CreateDynamicType(typeof(Argon2Library), $"{nameof(Argon2Library)}Dynamic");
     }
@@ -65,7 +64,6 @@ public static class Argon2Library
     /* Reference: https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310 */
     private static Type CreateDynamicType(Type originalType, string dynamicBaseName)
     {
-        // Create dynamic assembly    
         AssemblyName assemblyName = new AssemblyName
         {
             Name = dynamicBaseName + "Assembly"
@@ -90,7 +88,7 @@ public static class Argon2Library
             Type[] parameterTypes = new Type[parameterCount];
             ParameterAttributes[] parameterAttributes = new ParameterAttributes[parameterCount];
 
-            for (int j = 0; j < parameterCount; j++)
+            for (var j = 0; j < parameterCount; ++j)
             {
                 parameterTypes[j] = methodParameters[j].ParameterType;
                 parameterAttributes[j] = methodParameters[j].Attributes;
@@ -113,6 +111,10 @@ public static class Argon2Library
         }
 
         Type dynamicType = typeBuilder.CreateType();
+
+        if (dynamicType is null)
+            throw new Exception("Could not create dynamic bindings Type");
+
         return dynamicType;
     }
 
