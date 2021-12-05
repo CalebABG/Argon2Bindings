@@ -122,7 +122,7 @@ public static class Argon2Library
         var (platformName, platformBinaryExtension) = GetPlatformNameAndBinaryExtension();
         var argon2BinaryFolder = $"{platformName}-{platformArch}";
 
-        return Path.Combine("argon2binaries", $"libargon2-{argon2BinaryFolder}.{platformBinaryExtension}");
+        return Path.Combine("argon2binaries", argon2BinaryFolder, $"libargon2.{platformBinaryExtension}");
     }
 
     private static (string platformName, string platformBinaryExtension) GetPlatformNameAndBinaryExtension()
