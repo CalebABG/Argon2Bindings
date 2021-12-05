@@ -202,7 +202,7 @@ public static class Argon2Core
         Argon2Result error)
     {
         var messagePtr = Argon2Library.argon2_error_message(error);
-        return Marshal.PtrToStringUTF8(messagePtr) ?? string.Empty;
+        return Marshal.PtrToStringAnsi(messagePtr) ?? string.Empty;
     }
 
     private static nuint GetEncodedHashLength(
