@@ -2,12 +2,12 @@
 
 namespace Argon2Bindings;
 
-public record Argon2Context
+public struct Argon2Context
 {
-    public readonly uint TimeCost = DefaultTimeCost;
-    public readonly uint MemoryCost = DefaultMemoryCost;
-    public readonly uint DegreeOfParallelism = DefaultDegreeOfParallelism;
-    public readonly uint HashLength = DefaultHashLength;
-    public readonly Argon2Type Type = DefaultType;
-    public readonly Argon2Version Version = DefaultVersion;
+    public uint TimeCost = DefaultTimeCost;
+    public uint MemoryCost = DefaultMemoryCost;
+    public uint DegreeOfParallelism = DefaultDegreeOfParallelism;
+    public uint HashLength = DefaultHashLength;
+    public Argon2Type Type = DefaultType;
+    public Argon2Version Version = DefaultVersion;
 }

@@ -78,7 +78,7 @@ public static class Argon2Core
     public static Argon2HashResult Hash(
         string password,
         string salt,
-        Argon2Context context,
+        Argon2Context? context,
         bool encodeHash = true)
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -91,9 +91,11 @@ public static class Argon2Core
     private static Argon2HashResult Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
-        Argon2Context context,
+        Argon2Context? context,
         bool encodeHash = true)
     {
+        Argon2Context ctx = context ?? new();
+        
         bool rawHashRequested = !encodeHash;
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
@@ -101,12 +103,12 @@ public static class Argon2Core
         nuint encodedLength = rawHashRequested
             ? 0
             : GetEncodedHashLength(
-                context.TimeCost,
-                context.MemoryCost,
-                context.DegreeOfParallelism,
+                ctx.TimeCost,
+                ctx.MemoryCost,
+                ctx.DegreeOfParallelism,
                 saltLength,
-                context.HashLength,
-                context.Type);
+                ctx.HashLength,
+                ctx.Type);
 
         bool errored = false;
         byte[] outputBytes = { };
@@ -115,7 +117,7 @@ public static class Argon2Core
         IntPtr passPtr = default,
             saltPtr = default,
             rawHashBufferPointer = rawHashRequested
-                ? Marshal.AllocHGlobal(Convert.ToInt32(context.HashLength))
+                ? Marshal.AllocHGlobal(Convert.ToInt32(ctx.HashLength))
                 : IntPtr.Zero,
             encodedBufferPointer = rawHashRequested
                 ? IntPtr.Zero
@@ -143,19 +145,19 @@ public static class Argon2Core
             result = InvokeBinding<Argon2Result>(nameof(Argon2Library.argon2_hash),
                 new object[]
                 {
-                    (nuint) context.TimeCost,
-                    (nuint) context.MemoryCost,
-                    (nuint) context.DegreeOfParallelism,
+                    (nuint) ctx.TimeCost,
+                    (nuint) ctx.MemoryCost,
+                    (nuint) ctx.DegreeOfParallelism,
                     passPtr,
                     passwordLength,
                     saltPtr,
                     saltLength,
                     rawHashBufferPointer,
-                    (nuint) context.HashLength,
+                    (nuint) ctx.HashLength,
                     encodedBufferPointer,
                     encodedLength,
-                    context.Type,
-                    context.Version
+                    ctx.Type,
+                    ctx.Version
                 });
 
             /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
@@ -164,7 +166,7 @@ public static class Argon2Core
 
             /* Todo: TrimRight null-terminator byte (\x00) */
             outputBytes = rawHashRequested
-                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(context.HashLength))
+                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(ctx.HashLength))
                 : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
         }
         catch (Exception e)
