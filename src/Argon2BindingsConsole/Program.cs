@@ -1,6 +1,6 @@
 ﻿using Argon2Bindings;
 
-var s = Argon2Core.GetErrorMessage(Argon2Result.VerifyMismatch);
+var s = Argon2Core.HashEncoded("test", "testing123");
 Console.WriteLine(s);
 
 /*const string salt = "testing123";

@@ -6,57 +6,101 @@ using System.Runtime.InteropServices;
 
 namespace Argon2Bindings;
 
-public static class Argon2Library
+/*
+ * Note:
+ * uint32_t -> uint
+ * size_t   -> nuint
+ */
+internal static class Argon2Library
 {
-    /* Note: need to provide non-empty string (but will be replaced by dynamically) */
-    [DllImport("libargon2")]
+    private const string TempDllName = "libargon2";
+
+    /* Note: need to provide non-empty string (but will be replaced dynamically) */
+    [DllImport(TempDllName)]
     public static extern Argon2Result argon2i_hash_encoded(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
         IntPtr pwd, nuint pwdlen,
         IntPtr salt, nuint saltlen,
         nuint hashlen,
         IntPtr encoded, nuint encodedlen);
 
-    [DllImport("libargon2")]
+    [DllImport(TempDllName)]
     public static extern Argon2Result argon2i_hash_raw(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
         IntPtr pwd, nuint pwdlen,
         IntPtr salt, nuint saltlen,
         IntPtr hash, nuint hashlen);
 
-    [DllImport("libargon2")]
+    [DllImport(TempDllName)]
+    public static extern Argon2Result argon2d_hash_encoded(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        nuint hashlen,
+        IntPtr encoded, nuint encodedlen);
+
+    [DllImport(TempDllName)]
+    public static extern Argon2Result argon2d_hash_raw(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        IntPtr hash, nuint hashlen);
+
+    [DllImport(TempDllName)]
+    public static extern Argon2Result argon2id_hash_encoded(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        nuint hashlen,
+        IntPtr encoded, nuint encodedlen);
+
+    [DllImport(TempDllName)]
+    public static extern Argon2Result argon2id_hash_raw(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
+        IntPtr hash, nuint hashlen);
+
+    /* Todo: Fix issue with M1 or dynamic type / Remove method and use type specific methods  */
+    /*[DllImport(TempDllName)]
     public static extern Argon2Result argon2_hash(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
-        IntPtr pwd,
-        nuint pwdlen,
-        IntPtr salt,
-        nuint saltlen,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, nuint pwdlen,
+        IntPtr salt, nuint saltlen,
         IntPtr hash, nuint hashlen,
         IntPtr encoded, nuint encodedlen,
         Argon2Type type,
-        Argon2Version version);
+        Argon2Version version);*/
 
-    [DllImport("libargon2")]
+    [DllImport(TempDllName)]
     public static extern IntPtr argon2_error_message(
         Argon2Result error_code
     );
 
-    [DllImport("libargon2")]
+    [DllImport(TempDllName)]
     public static extern nuint argon2_encodedlen(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
-        nuint saltlen,
-        nuint hashlen,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        uint saltlen,
+        uint hashlen,
         Argon2Type type);
 
-    public static Type CreateDynamicType()
+    internal static Type CreateDynamicType()
     {
         return CreateDynamicType(typeof(Argon2Library), $"{nameof(Argon2Library)}Dynamic");
     }
@@ -79,7 +123,7 @@ public static class Argon2Library
         MethodInfo[] methodInfos = originalType.GetMethods(BindingFlags.Public | BindingFlags.Static);
 
         string dllPath = GetDynamicDllPath();
-        
+
         for (var i = 0; i < methodInfos.GetLength(0); ++i)
         {
             MethodInfo mi = methodInfos[i];
@@ -127,9 +171,9 @@ public static class Argon2Library
         var argon2BinaryFolder = $"{platformName}-{platformArch}";
 
         var assemPath = Assembly.GetExecutingAssembly().Location;
-        var path = Path.GetFullPath(
-            Path.Combine(assemPath, "..", "argon2binaries", 
-                argon2BinaryFolder, $"libargon2.{platformBinaryExtension}"));
+        var path = Path.GetFullPath(Path.Combine(
+            assemPath, "..", "argon2binaries",
+            argon2BinaryFolder, $"libargon2.{platformBinaryExtension}"));
 
         Console.WriteLine(path);
         return path;

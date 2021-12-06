@@ -23,7 +23,7 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
-    internal static Type Argon2CoreDynamic = Argon2Library.CreateDynamicType();
+    internal static readonly Type Argon2CoreDynamic = Argon2Library.CreateDynamicType();
 
     public static Argon2HashResult HashRaw(
         string password,
@@ -75,66 +75,35 @@ public static class Argon2Core
         return Hash(password, salt, context);
     }
 
-    public static Argon2HashResult Hash(
-        string password,
-        string salt,
-        Argon2Context? context,
-        bool encodeHash = true)
-    {
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-        var result = Hash(passwordBytes, saltBytes, context, encodeHash);
-        return result;
-    }
-
     private static Argon2HashResult Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
-        Argon2Context? context,
+        Argon2Context? context = null,
         bool encodeHash = true)
     {
-        Argon2Context ctx = context ?? new();
-        
-        bool rawHashRequested = !encodeHash;
+        ValidatePasswordAndSaltCollections(passwordBytes, saltBytes);
 
-        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
-        nuint saltLength = Convert.ToUInt32(saltBytes.Length);
-        nuint encodedLength = rawHashRequested
-            ? 0
-            : GetEncodedHashLength(
-                ctx.TimeCost,
-                ctx.MemoryCost,
-                ctx.DegreeOfParallelism,
-                saltLength,
-                ctx.HashLength,
-                ctx.Type);
+        var ctx = context ?? new();
+
+        uint passwordLength = Convert.ToUInt32(passwordBytes.Length);
+        uint saltLength = Convert.ToUInt32(saltBytes.Length);
 
         bool errored = false;
         byte[] outputBytes = { };
+
         Argon2Result result = Argon2Result.Ok;
+
+        var bufferLength = GetBufferLength(encodeHash, saltLength, ctx);
 
         IntPtr passPtr = default,
             saltPtr = default,
-            rawHashBufferPointer = rawHashRequested
-                ? Marshal.AllocHGlobal(Convert.ToInt32(ctx.HashLength))
-                : IntPtr.Zero,
-            encodedBufferPointer = rawHashRequested
-                ? IntPtr.Zero
-                : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
-
-        void SafelyFreePointer(IntPtr pointer)
-        {
-            if (pointer == IntPtr.Zero) return;
-            Marshal.FreeHGlobal(pointer);
-        }
+            bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
 
         void FreeManagedPointers()
         {
             SafelyFreePointer(passPtr);
             SafelyFreePointer(saltPtr);
-            SafelyFreePointer(rawHashBufferPointer);
-            SafelyFreePointer(encodedBufferPointer);
+            SafelyFreePointer(bufferPointer);
         }
 
         try
@@ -142,32 +111,28 @@ public static class Argon2Core
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
 
-            result = InvokeBinding<Argon2Result>(nameof(Argon2Library.argon2_hash),
-                new object[]
-                {
-                    (nuint) ctx.TimeCost,
-                    (nuint) ctx.MemoryCost,
-                    (nuint) ctx.DegreeOfParallelism,
-                    passPtr,
-                    passwordLength,
-                    saltPtr,
-                    saltLength,
-                    rawHashBufferPointer,
-                    (nuint) ctx.HashLength,
-                    encodedBufferPointer,
-                    encodedLength,
-                    ctx.Type,
-                    ctx.Version
-                });
+            string method = GetDynamicHashingMethod(
+                encodeHash,
+                ctx);
+
+            object[] arguments = GetDynamicMethodArguments(
+                encodeHash,
+                passPtr,
+                passwordLength,
+                saltPtr,
+                saltLength,
+                bufferPointer,
+                bufferLength,
+                ctx);
+
+            result = InvokeBinding<Argon2Result>(method, arguments);
 
             /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
             /*if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));*/
 
             /* Todo: TrimRight null-terminator byte (\x00) */
-            outputBytes = rawHashRequested
-                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(ctx.HashLength))
-                : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
+            outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
         }
         catch (Exception e)
         {
@@ -181,9 +146,9 @@ public static class Argon2Core
                 FreeManagedPointers();
         }
 
-        var encodedForm = rawHashRequested
-            ? Convert.ToBase64String(outputBytes)
-            : Encoding.UTF8.GetString(outputBytes);
+        var encodedForm = encodeHash
+            ? Encoding.UTF8.GetString(outputBytes)
+            : Convert.ToBase64String(outputBytes);
 
         return new(result, outputBytes, encodedForm);
     }
@@ -196,6 +161,99 @@ public static class Argon2Core
             new object?[] {error});
 
         return Marshal.PtrToStringAnsi(messagePtr) ?? string.Empty;
+    }
+
+    private static object[] GetDynamicMethodArguments(
+        bool encodeHash,
+        IntPtr passPtr,
+        uint passwordLength,
+        IntPtr saltPtr,
+        uint saltLength,
+        IntPtr bufferPointer,
+        nuint bufferLength,
+        Argon2Context ctx)
+    {
+        object[] arguments;
+        if (encodeHash)
+        {
+            arguments = new object[]
+            {
+                ctx.TimeCost,
+                ctx.MemoryCost,
+                ctx.DegreeOfParallelism,
+                passPtr,
+                (nuint) passwordLength,
+                saltPtr,
+                (nuint) saltLength,
+                (nuint) ctx.HashLength,
+                bufferPointer,
+                bufferLength
+            };
+        }
+        else
+        {
+            arguments = new object[]
+            {
+                ctx.TimeCost,
+                ctx.MemoryCost,
+                ctx.DegreeOfParallelism,
+                passPtr,
+                (nuint) passwordLength,
+                saltPtr,
+                (nuint) saltLength,
+                bufferPointer,
+                bufferLength
+            };
+        }
+
+        return arguments;
+    }
+
+    private static string GetDynamicHashingMethod(
+        bool encodeHash,
+        Argon2Context ctx)
+    {
+        string method;
+        if (encodeHash)
+        {
+            method = ctx.Type switch
+            {
+                Argon2Type.Argon2D => nameof(Argon2Library.argon2d_hash_encoded),
+                Argon2Type.Argon2I => nameof(Argon2Library.argon2i_hash_encoded),
+                Argon2Type.Argon2Id => nameof(Argon2Library.argon2id_hash_encoded),
+                _ => nameof(Argon2Library.argon2i_hash_encoded)
+            };
+        }
+        else
+        {
+            method = ctx.Type switch
+            {
+                Argon2Type.Argon2D => nameof(Argon2Library.argon2d_hash_raw),
+                Argon2Type.Argon2I => nameof(Argon2Library.argon2i_hash_raw),
+                Argon2Type.Argon2Id => nameof(Argon2Library.argon2id_hash_raw),
+                _ => nameof(Argon2Library.argon2i_hash_raw)
+            };
+        }
+
+        return method;
+    }
+
+    private static nuint GetBufferLength(
+        bool encodeHash,
+        uint saltLength,
+        Argon2Context ctx)
+    {
+        nuint bufferLength = encodeHash
+            ? GetEncodedHashLength(
+                ctx.TimeCost,
+                ctx.MemoryCost,
+                ctx.DegreeOfParallelism,
+                saltLength,
+                ctx.HashLength,
+                ctx.Type)
+            : ctx.HashLength;
+
+        return bufferLength;
     }
 
     private static void ValidatePasswordAndSaltStrings(
@@ -227,7 +285,7 @@ public static class Argon2Core
         T retVal = default(T)!;
 
         var method = Argon2CoreDynamic.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
-        if (method is null) 
+        if (method is null)
             throw new MissingMethodException(nameof(Argon2CoreDynamic), methodName);
 
         try
@@ -243,14 +301,15 @@ public static class Argon2Core
     }
 
     private static nuint GetEncodedHashLength(
-        nuint timeCost,
-        nuint memoryCost,
-        nuint degreeOfParallelism,
-        nuint saltLength,
-        nuint hashLength,
+        uint timeCost,
+        uint memoryCost,
+        uint degreeOfParallelism,
+        uint saltLength,
+        uint hashLength,
         Argon2Type type)
     {
-        var length = InvokeBinding<nuint>(nameof(Argon2Library.argon2_encodedlen),
+        var length = InvokeBinding<nuint>(
+            nameof(Argon2Library.argon2_encodedlen),
             new object[]
             {
                 timeCost,
@@ -281,5 +340,12 @@ public static class Argon2Core
         Marshal.Copy(array, 0, ptr, array.Length);
 
         return ptr;
+    }
+
+    private static void SafelyFreePointer(
+        IntPtr pointer)
+    {
+        if (pointer == IntPtr.Zero) return;
+        Marshal.FreeHGlobal(pointer);
     }
 }
