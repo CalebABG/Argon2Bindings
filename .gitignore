@@ -343,4 +343,5 @@ SqlQueries/
 
 .vscode/
 
+# Platform binaries (win,osx,linux)
 src/Argon2BindingsAutomation/output/**/

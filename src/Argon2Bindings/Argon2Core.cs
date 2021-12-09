@@ -6,10 +6,7 @@ using static Argon2Bindings.Utilities;
 
 namespace Argon2Bindings;
 
-/* Todo: Add argon2 LICENSE file, binary, provide link to exact version of source which was used to compile binary */
 /* Todo: Add argon2 lib comments */
-/* Todo: Add test project */
-/* Todo: Automate building argon2 platform binaries (using Docker?) */
 /*
  **Note**
  Always malloc mem for functions where it's 
