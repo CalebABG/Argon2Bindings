@@ -5,6 +5,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ARGON2_LICENSE.txt = ARGON2_LICENSE.txt
 		LICENSE = LICENSE
 		README.md = README.md
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{ACAD56DF-AFFD-47AB-9439-A1F4B0B6F377}"
@@ -25,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2BindingsTests", "test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Argon2BindingsAutomation", "Argon2BindingsAutomation", "{9D296329-56E9-44BE-B805-113CCD857550}"
 	ProjectSection(SolutionItems) = preProject
-		src\Argon2BindingsAutomation\Dockerfile.linux = src\Argon2BindingsAutomation\Dockerfile.linux
+		src\Argon2BindingsAutomation\Dockerfile-linux = src\Argon2BindingsAutomation\Dockerfile-linux
 		src\Argon2BindingsAutomation\build.sh = src\Argon2BindingsAutomation\build.sh
 	EndProjectSection
 EndProject

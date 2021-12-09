@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-# Create output folders
+# Create platform folders
 mkdir -p /output/{linux-arm,linux-arm64,linux-x86,linux-x64}
 
 ARGON2_ABI_VERSION="1"
@@ -13,31 +13,36 @@ ARGON2_COMPILED_BINARY_PREFIX="libargon2.so"
 ARGON2_COMPILED_BINARY="$ARGON2_COMPILED_BINARY_PREFIX.$ARGON2_ABI_VERSION"
 ARGON2_OUTPUT_BINARY=$ARGON2_COMPILED_BINARY_PREFIX
 
+# Repo name & latest repo commit or last commit of latest release
 ARGON2_REPO_NAME="phc-winner-argon2"
-# Latest repo commit or last commit of latest release
 ARGON2_COMMIT_ID="f57e61e19229e23c"
 
-# Clone Argon2 source
+# Clone Argon2 source & checkout given commit
+echo "Cloning Argon2 source & checking out commit: $ARGON2_COMMIT_ID"
 cd /tmp
 git clone https://github.com/P-H-C/$ARGON2_REPO_NAME.git
 cd $ARGON2_REPO_NAME
 git checkout $ARGON2_COMMIT_ID
 
-# Used for `OPTTARGET` as 'generic' for -march is not a valid option
+# Used for `OPTTARGET`; 'generic' for -march is not a valid option
 NONE_ARCH_TARGET=""
 
-# Compile for x86
+# x86
+printf "\nCompiling for: x86\n"
 make clean && CFLAGS=-m32 OPTTARGET=$NONE_ARCH_TARGET make
 cp $ARGON2_COMPILED_BINARY /output/linux-x86/$ARGON2_OUTPUT_BINARY
 
-# Compile for x64
+# x64
+printf "\nCompiling for: x64\n"
 make clean && CFLAGS=-m64 OPTTARGET=$NONE_ARCH_TARGET make
 cp $ARGON2_COMPILED_BINARY /output/linux-x64/$ARGON2_OUTPUT_BINARY
 
-# Compile for ARM
+# ARM
+printf "\nCompiling for: arm\n"
 make clean && CC=arm-linux-gnueabihf-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm/$ARGON2_OUTPUT_BINARY
 
-# Compile for ARM-64
+# ARM64
+printf "\nCompiling for: arm64 (aarch64)"
 make clean && CC=aarch64-linux-gnu-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm64/$ARGON2_OUTPUT_BINARY
