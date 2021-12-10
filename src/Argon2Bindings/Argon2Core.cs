@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using static Argon2Bindings.Utilities;
+using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings;
 
@@ -40,10 +40,6 @@ public static class Argon2Core
         byte[] salt,
         Argon2Context? context = null)
     {
-        ValidatePasswordAndSaltCollections(password, salt);
-
-        context ??= new();
-
         return Hash(password, salt, context, false);
     }
 
@@ -65,10 +61,6 @@ public static class Argon2Core
         byte[] salt,
         Argon2Context? context = null)
     {
-        ValidatePasswordAndSaltCollections(password, salt);
-
-        context ??= new();
-
         return Hash(password, salt, context);
     }
 
@@ -108,9 +100,7 @@ public static class Argon2Core
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
 
-            string method = GetDynamicHashingMethod(
-                encodeHash,
-                ctx);
+            string method = GetDynamicHashingMethod(encodeHash, ctx);
 
             object[] arguments = GetDynamicMethodArguments(
                 encodeHash,
@@ -268,10 +258,10 @@ public static class Argon2Core
         byte[] password,
         byte[] salt)
     {
-        if (password is null || password.Length <= 0)
+        if (password is null || password.Length < 1)
             throw new ArgumentException("Value cannot be null or an empty collection.", nameof(password));
 
-        if (salt is null || salt.Length <= 0)
+        if (salt is null || salt.Length < 1)
             throw new ArgumentException("Value cannot be null or an empty collection.", nameof(salt));
     }
 

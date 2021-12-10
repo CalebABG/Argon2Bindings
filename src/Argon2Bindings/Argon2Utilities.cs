@@ -2,7 +2,7 @@
 
 namespace Argon2Bindings;
 
-public static class Utilities
+public static class Argon2Utilities
 {
     public static string ToHexString(this byte[] bytes, string separator = "")
     {
