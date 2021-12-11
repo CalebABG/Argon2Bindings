@@ -5,4 +5,11 @@ public record Argon2HashResult(Argon2Result Status, byte[] RawHash, string Encod
     public Argon2Result Status { get; } = Status;
     public byte[] RawHash { get; } = RawHash;
     public string EncodedHash { get; } = EncodedHash;
+
+    public override string ToString()
+    {
+        return $"{{ {nameof(Status)}: {Status}, " +
+               $"{nameof(RawHash)}: {RawHash.ToHexString()}, " +
+               $"{nameof(EncodedHash)}: {EncodedHash} }}";
+    }
 }
