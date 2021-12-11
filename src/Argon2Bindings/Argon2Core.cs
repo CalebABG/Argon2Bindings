@@ -82,7 +82,7 @@ public static class Argon2Core
 
         Argon2Result result = Argon2Result.Ok;
 
-        var bufferLength = GetBufferLength(encodeHash, saltLength, ctx);
+        uint bufferLength = GetBufferLength(encodeHash, saltLength, ctx);
 
         IntPtr passPtr = default,
             saltPtr = default,
@@ -157,7 +157,7 @@ public static class Argon2Core
         IntPtr saltPtr,
         uint saltLength,
         IntPtr bufferPointer,
-        nuint bufferLength,
+        uint bufferLength,
         Argon2Context ctx)
     {
         object[] arguments;
@@ -169,10 +169,10 @@ public static class Argon2Core
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
                 passPtr,
-                (nuint) passwordLength,
+                passwordLength,
                 saltPtr,
-                (nuint) saltLength,
-                (nuint) ctx.HashLength,
+                saltLength,
+                ctx.HashLength,
                 bufferPointer,
                 bufferLength
             };
@@ -185,9 +185,9 @@ public static class Argon2Core
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
                 passPtr,
-                (nuint) passwordLength,
+                passwordLength,
                 saltPtr,
-                (nuint) saltLength,
+                saltLength,
                 bufferPointer,
                 bufferLength
             };
@@ -225,12 +225,12 @@ public static class Argon2Core
         return method;
     }
 
-    private static nuint GetBufferLength(
+    private static uint GetBufferLength(
         bool encodeHash,
         uint saltLength,
         Argon2Context ctx)
     {
-        nuint bufferLength = encodeHash
+        uint bufferLength = encodeHash
             ? GetEncodedHashLength(
                 ctx.TimeCost,
                 ctx.MemoryCost,
@@ -287,7 +287,7 @@ public static class Argon2Core
         return retVal;
     }
 
-    private static nuint GetEncodedHashLength(
+    private static uint GetEncodedHashLength(
         uint timeCost,
         uint memoryCost,
         uint degreeOfParallelism,
@@ -295,7 +295,7 @@ public static class Argon2Core
         uint hashLength,
         Argon2Type type)
     {
-        var length = InvokeBinding<nuint>(
+        var length = InvokeBinding<uint>(
             nameof(Argon2Library.argon2_encodedlen),
             new object[]
             {

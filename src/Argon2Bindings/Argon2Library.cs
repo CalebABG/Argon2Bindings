@@ -21,57 +21,57 @@ internal static class Argon2Library
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        nuint hashlen,
-        IntPtr encoded, nuint encodedlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        uint hashlen,
+        IntPtr encoded, uint encodedlen);
 
     [DllImport(TempDllName)]
     public static extern Argon2Result argon2i_hash_raw(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        IntPtr hash, nuint hashlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        IntPtr hash, uint hashlen);
 
     [DllImport(TempDllName)]
     public static extern Argon2Result argon2d_hash_encoded(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        nuint hashlen,
-        IntPtr encoded, nuint encodedlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        uint hashlen,
+        IntPtr encoded, uint encodedlen);
 
     [DllImport(TempDllName)]
     public static extern Argon2Result argon2d_hash_raw(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        IntPtr hash, nuint hashlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        IntPtr hash, uint hashlen);
 
     [DllImport(TempDllName)]
     public static extern Argon2Result argon2id_hash_encoded(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        nuint hashlen,
-        IntPtr encoded, nuint encodedlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        uint hashlen,
+        IntPtr encoded, uint encodedlen);
 
     [DllImport(TempDllName)]
     public static extern Argon2Result argon2id_hash_raw(
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        IntPtr hash, nuint hashlen);
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        IntPtr hash, uint hashlen);
 
     /* Todo: Fix issue with M1 or dynamic type / Remove method and use type specific methods  */
     /*[DllImport(TempDllName)]
@@ -79,10 +79,10 @@ internal static class Argon2Library
         uint t_cost,
         uint m_cost,
         uint parallelism,
-        IntPtr pwd, nuint pwdlen,
-        IntPtr salt, nuint saltlen,
-        IntPtr hash, nuint hashlen,
-        IntPtr encoded, nuint encodedlen,
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        IntPtr hash, uint hashlen,
+        IntPtr encoded, uint encodedlen,
         Argon2Type type,
         Argon2Version version);*/
 
@@ -92,7 +92,7 @@ internal static class Argon2Library
     );
 
     [DllImport(TempDllName)]
-    public static extern nuint argon2_encodedlen(
+    public static extern uint argon2_encodedlen(
         uint t_cost,
         uint m_cost,
         uint parallelism,
