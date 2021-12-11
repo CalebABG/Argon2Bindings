@@ -11,5 +11,5 @@ public struct Argon2Context
     public Argon2Type Type = DefaultType;
     
     /* Todo: Currently unused due to issues potentially with: Apple Silicon, dynamic type marshaling enums / `argon2_hash` */
-    //public Argon2Version Version = DefaultVersion; 
+    public Argon2Version Version = DefaultVersion;
 }

@@ -74,7 +74,7 @@ internal static class Argon2Library
         IntPtr hash, uint hashlen);
 
     /* Todo: Fix issue with M1 or dynamic type / Remove method and use type specific methods  */
-    /*[DllImport(TempDllName)]
+    [DllImport(TempDllName)]
     public static extern Argon2Result argon2_hash(
         uint t_cost,
         uint m_cost,
@@ -84,7 +84,7 @@ internal static class Argon2Library
         IntPtr hash, uint hashlen,
         IntPtr encoded, uint encodedlen,
         Argon2Type type,
-        Argon2Version version);*/
+        Argon2Version version);
 
     [DllImport(TempDllName)]
     public static extern IntPtr argon2_error_message(
@@ -99,6 +99,45 @@ internal static class Argon2Library
         uint saltlen,
         uint hashlen,
         Argon2Type type);
+    
+    /* Delegates */
+    public delegate Argon2Result Argon2HashDelegate(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        IntPtr pwd, uint pwdlen,
+        IntPtr salt, uint saltlen,
+        IntPtr hash, uint hashlen,
+        IntPtr encoded, uint encodedlen,
+        Argon2Type type,
+        Argon2Version version);
+    
+    public delegate uint Argon2GetEncodedHashLengthDelegate(
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        uint saltlen,
+        uint hashlen,
+        Argon2Type type
+    );
+    
+    public static Argon2HashDelegate Argon2Hash;
+    public static Argon2GetEncodedHashLengthDelegate Argon2GetEncodedHashLength;
+    
+    private static readonly Type _dynamicType;
+
+    static Argon2Library()
+    {
+        _dynamicType = CreateDynamicType();
+
+        Argon2Hash = (Argon2HashDelegate) Delegate.CreateDelegate(
+            typeof(Argon2HashDelegate), 
+            _dynamicType.GetMethod("argon2_hash")!);
+        
+        Argon2GetEncodedHashLength = (Argon2GetEncodedHashLengthDelegate) Delegate.CreateDelegate(
+            typeof(Argon2GetEncodedHashLengthDelegate), 
+            _dynamicType.GetMethod("argon2_encodedlen")!);
+    }
 
     internal static Type CreateDynamicType()
     {

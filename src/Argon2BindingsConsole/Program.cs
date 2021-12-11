@@ -1,6 +1,6 @@
 ﻿using Argon2Bindings;
 
-var s = Argon2Core.HashEncoded("test", "testing123");
+var s = Argon2Core.HashRaw("test", "testing123");
 Console.WriteLine(s);
 
 /*const string salt = "testing123";
