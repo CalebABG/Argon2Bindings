@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
@@ -13,93 +15,6 @@ namespace Argon2Bindings;
  */
 internal static class Argon2Library
 {
-    private const string TempDllName = "libargon2";
-
-    /* Note: need to provide non-empty string (but will be replaced dynamically) */
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2i_hash_encoded(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        uint hashlen,
-        IntPtr encoded, uint encodedlen);
-
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2i_hash_raw(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        IntPtr hash, uint hashlen);
-
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2d_hash_encoded(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        uint hashlen,
-        IntPtr encoded, uint encodedlen);
-
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2d_hash_raw(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        IntPtr hash, uint hashlen);
-
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2id_hash_encoded(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        uint hashlen,
-        IntPtr encoded, uint encodedlen);
-
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2id_hash_raw(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        IntPtr hash, uint hashlen);
-
-    /* Todo: Fix issue with M1 or dynamic type / Remove method and use type specific methods  */
-    [DllImport(TempDllName)]
-    public static extern Argon2Result argon2_hash(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        IntPtr pwd, uint pwdlen,
-        IntPtr salt, uint saltlen,
-        IntPtr hash, uint hashlen,
-        IntPtr encoded, uint encodedlen,
-        Argon2Type type,
-        Argon2Version version);
-
-    [DllImport(TempDllName)]
-    public static extern IntPtr argon2_error_message(
-        Argon2Result error_code
-    );
-
-    [DllImport(TempDllName)]
-    public static extern uint argon2_encodedlen(
-        uint t_cost,
-        uint m_cost,
-        uint parallelism,
-        uint saltlen,
-        uint hashlen,
-        Argon2Type type);
-    
     /* Delegates */
     public delegate Argon2Result Argon2HashDelegate(
         uint t_cost,
@@ -110,7 +25,8 @@ internal static class Argon2Library
         IntPtr hash, uint hashlen,
         IntPtr encoded, uint encodedlen,
         Argon2Type type,
-        Argon2Version version);
+        Argon2Version version
+    );
     
     public delegate uint Argon2GetEncodedHashLengthDelegate(
         uint t_cost,
@@ -123,82 +39,209 @@ internal static class Argon2Library
     
     public static Argon2HashDelegate Argon2Hash;
     public static Argon2GetEncodedHashLengthDelegate Argon2GetEncodedHashLength;
-    
-    private static readonly Type _dynamicType;
 
     static Argon2Library()
     {
-        _dynamicType = CreateDynamicType();
+        var dynamicType = CreateDynamicType();
 
-        Argon2Hash = (Argon2HashDelegate) Delegate.CreateDelegate(
-            typeof(Argon2HashDelegate), 
-            _dynamicType.GetMethod("argon2_hash")!);
+        Argon2Hash = (Argon2HashDelegate) Delegate.CreateDelegate(typeof(Argon2HashDelegate), dynamicType.GetMethod("argon2_hash")!);
         
-        Argon2GetEncodedHashLength = (Argon2GetEncodedHashLengthDelegate) Delegate.CreateDelegate(
-            typeof(Argon2GetEncodedHashLengthDelegate), 
-            _dynamicType.GetMethod("argon2_encodedlen")!);
+        Argon2GetEncodedHashLength = (Argon2GetEncodedHashLengthDelegate) Delegate.CreateDelegate(typeof(Argon2GetEncodedHashLengthDelegate), dynamicType.GetMethod("argon2_encodedlen")!);
     }
 
     internal static Type CreateDynamicType()
     {
-        return CreateDynamicType(typeof(Argon2Library), $"{nameof(Argon2Library)}Dynamic");
+        Type typeArgon2Result = typeof(Argon2Result);
+        Type typeArgon2Type = typeof(Argon2Type);
+        Type typeArgon2Version = typeof(Argon2Version);
+        Type typeUInt = typeof(uint);
+        Type typeIntPtr = typeof(IntPtr);
+        
+        return CreateDynamicType(new[]
+        {
+            new MethodDefinition
+            {
+                Name = "argon2i_hash_encoded",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeUInt, "hashlen"),
+                    new(typeIntPtr, "encoded"),
+                    new(typeUInt, "encodedlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2i_hash_raw",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost") ,
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeIntPtr, "hash"),
+                    new(typeUInt, "hashlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2d_hash_encoded",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeUInt, "hashlen"),
+                    new(typeIntPtr, "encoded"),
+                    new(typeUInt, "encodedlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2d_hash_raw",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeIntPtr, "hash"),
+                    new(typeUInt, "hashlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2id_hash_encoded",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeUInt, "hashlen"),
+                    new(typeIntPtr, "encoded"),
+                    new(typeUInt, "encodedlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2id_hash_raw",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeIntPtr, "hash"),
+                    new(typeUInt, "hashlen")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2_hash",
+                ReturnType = typeArgon2Result,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeIntPtr, "pwd"),
+                    new(typeUInt, "pwdlen"),
+                    new(typeIntPtr, "salt"),
+                    new(typeUInt, "saltlen"),
+                    new(typeIntPtr, "hash"),
+                    new(typeUInt, "hashlen"),
+                    new(typeIntPtr, "encoded"),
+                    new(typeUInt, "encodedlen"),
+                    new(typeArgon2Type, "type"),
+                    new(typeArgon2Version, "version")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2_error_message",
+                ReturnType = typeIntPtr,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeArgon2Result, "error_code")
+                }
+            },
+            new MethodDefinition
+            {
+                Name = "argon2_encodedlen",
+                ReturnType = typeUInt,
+                Parameters = new MethodParameterDefinition[]
+                {
+                    new(typeUInt, "t_cost"),
+                    new(typeUInt, "m_cost"),
+                    new(typeUInt, "parallelism"),
+                    new(typeUInt, "saltlen"),
+                    new(typeUInt, "hashlen"),
+                    new(typeArgon2Type, "type")
+                }
+            }
+        }, $"{nameof(Argon2Library)}Dynamic");
     }
 
     /* Reference: https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310 */
-    private static Type CreateDynamicType(Type originalType, string dynamicBaseName)
+    private static Type CreateDynamicType(MethodDefinition[] definitions, string dynamicBaseName)
     {
-        AssemblyName assemblyName = new AssemblyName
+        AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName
         {
             Name = dynamicBaseName + "Assembly"
-        };
+        }, AssemblyBuilderAccess.Run);
 
-        AssemblyBuilder assemblyBuilder =
-            AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+        TypeBuilder typeBuilder = assemblyBuilder.DefineDynamicModule(dynamicBaseName + "Module").DefineType(dynamicBaseName + "Type", TypeAttributes.Class);
 
-        ModuleBuilder? moduleBuilder = assemblyBuilder.DefineDynamicModule(dynamicBaseName + "Module");
-
-        TypeBuilder typeBuilder = moduleBuilder.DefineType(dynamicBaseName + "Type", TypeAttributes.Class);
-
-        MethodInfo[] methodInfos = originalType.GetMethods(BindingFlags.Public | BindingFlags.Static);
-
-        string dllPath = GetDynamicDllPath();
-
-        for (var i = 0; i < methodInfos.GetLength(0); ++i)
+        foreach (MethodDefinition definition in definitions)
         {
-            MethodInfo mi = methodInfos[i];
-
-            ParameterInfo[] methodParameters = mi.GetParameters();
-            int parameterCount = methodParameters.GetLength(0);
-
-            Type[] parameterTypes = new Type[parameterCount];
-            ParameterAttributes[] parameterAttributes = new ParameterAttributes[parameterCount];
-
-            for (var j = 0; j < parameterCount; ++j)
-            {
-                parameterTypes[j] = methodParameters[j].ParameterType;
-                parameterAttributes[j] = methodParameters[j].Attributes;
-            }
-
             MethodBuilder methodBuilder = typeBuilder.DefinePInvokeMethod(
-                mi.Name,
-                dllPath,
-                mi.Attributes,
-                mi.CallingConvention,
-                mi.ReturnType,
-                parameterTypes,
+                definition.Name,
+                GetDynamicDllPath(),
+                MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.PinvokeImpl,
+                CallingConventions.Standard,
+                definition.ReturnType,
+                definition.Parameters.Select(t => t.Type).ToArray(),
                 CallingConvention.Cdecl,
-                CharSet.Unicode);
+                CharSet.Auto
+            );
 
-            for (var j = 0; j < parameterCount; ++j)
-                methodBuilder.DefineParameter(j + 1, parameterAttributes[j], methodParameters[j].Name);
+            for (var j = 0; j < definition.Parameters.Length; ++j) methodBuilder.DefineParameter(j + 1, ParameterAttributes.None, definition.Parameters[j].Name);
 
-            methodBuilder.SetImplementationFlags(mi.GetMethodImplementationFlags());
+            methodBuilder.SetImplementationFlags(MethodImplAttributes.PreserveSig);
         }
 
         Type dynamicType = typeBuilder.CreateType();
 
-        if (dynamicType is null)
-            throw new Exception("Could not create dynamic bindings Type");
+        if (dynamicType is null) throw new Exception("Could not create dynamic bindings Type");
 
         return dynamicType;
     }
@@ -210,9 +253,7 @@ internal static class Argon2Library
         var argon2BinaryFolder = $"{platformName}-{platformArch}";
 
         var assemPath = Assembly.GetExecutingAssembly().Location;
-        var path = Path.GetFullPath(Path.Combine(
-            assemPath, "..", "argon2binaries",
-            argon2BinaryFolder, $"libargon2.{platformBinaryExtension}"));
+        var path = Path.GetFullPath(Path.Combine(assemPath, "..", "argon2binaries", argon2BinaryFolder, $"libargon2.{platformBinaryExtension}"));
 
         Console.WriteLine(path);
         return path;
@@ -220,14 +261,11 @@ internal static class Argon2Library
 
     private static (string platformName, string platformBinaryExtension) GetPlatformNameAndBinaryExtension()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return ("win", "dll");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return ("win", "dll");
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return ("osx", "dylib");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return ("osx", "dylib");
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            return ("linux", "so");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return ("linux", "so");
 
         throw new Exception("Platform not currently supported");
     }
