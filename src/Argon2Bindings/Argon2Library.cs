@@ -12,9 +12,9 @@ internal static class Argon2Library
 {
     [Argon2MappingMethod("argon2_hash")]
     internal delegate Argon2Result Argon2HashDelegate(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
         IntPtr pwd, nuint pwdlen,
         IntPtr salt, nuint saltlen,
         IntPtr hash, nuint hashlen,
@@ -25,16 +25,16 @@ internal static class Argon2Library
 
     [Argon2MappingMethod("argon2_encodedlen")]
     internal delegate nuint Argon2GetEncodedHashLengthDelegate(
-        nuint t_cost,
-        nuint m_cost,
-        nuint parallelism,
-        nuint saltlen,
-        nuint hashlen,
+        uint t_cost,
+        uint m_cost,
+        uint parallelism,
+        uint saltlen,
+        uint hashlen,
         Argon2Type type
     );
 
     [Argon2MappingMethod("argon2_verify")]
-    internal delegate nuint Argon2VerifyDelegate(
+    internal delegate Argon2Result Argon2VerifyDelegate(
         IntPtr encoded,
         IntPtr pwd,
         nuint pwdlen,

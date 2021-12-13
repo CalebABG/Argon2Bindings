@@ -76,7 +76,7 @@ public static class Argon2Core
                 ctx.TimeCost,
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
-                saltLength,
+                (uint)saltLength,
                 ctx.HashLength,
                 ctx.Type);
 
@@ -173,11 +173,11 @@ public static class Argon2Core
     }
 
     private static nuint GetEncodedHashLength(
-        nuint timeCost,
-        nuint memoryCost,
-        nuint degreeOfParallelism,
-        nuint saltLength,
-        nuint hashLength,
+        uint timeCost,
+        uint memoryCost,
+        uint degreeOfParallelism,
+        uint saltLength,
+        uint hashLength,
         Argon2Type type)
     {
         var length = Argon2Library.Argon2GetEncodedHashLength(
