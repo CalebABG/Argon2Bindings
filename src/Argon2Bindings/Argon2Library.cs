@@ -4,19 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using Argon2Bindings.Attributes;
 
 namespace Argon2Bindings;
 
-/*
- * Note:
- * uint32_t -> uint
- * size_t   -> nuint
- */
 internal static class Argon2Library
 {
     /* Delegates */
-    [Argon2MappingMethodName("argon2_hash")]
-    public delegate Argon2Result Argon2HashDelegate(
+    [Argon2MappingMethod("argon2_hash")]
+    internal delegate Argon2Result Argon2HashDelegate(
         nuint t_cost,
         nuint m_cost,
         nuint parallelism,
@@ -28,8 +24,8 @@ internal static class Argon2Library
         Argon2Version version
     );
 
-    [Argon2MappingMethodName("argon2_encodedlen")]
-    public delegate nuint Argon2GetEncodedHashLengthDelegate(
+    [Argon2MappingMethod("argon2_encodedlen")]
+    internal delegate nuint Argon2GetEncodedHashLengthDelegate(
         nuint t_cost,
         nuint m_cost,
         nuint parallelism,
@@ -38,19 +34,9 @@ internal static class Argon2Library
         Argon2Type type
     );
 
-    private class Argon2MappingMethodNameAttribute : Attribute
+    private static string GetMappingMethod(MemberInfo type)
     {
-        public readonly string Name;
-
-        public Argon2MappingMethodNameAttribute(string name)
-        {
-            Name = name;
-        }
-    }
-
-    private static string GetMappingMethodName(Type type)
-    {
-        var attribute = type.GetCustomAttribute<Argon2MappingMethodNameAttribute>();
+        var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
         if (attribute is null) throw new Exception("Delegate not given a name to map to argon2 C library");
         return attribute.Name;
     }
@@ -72,7 +58,7 @@ internal static class Argon2Library
         where TDelegate : Delegate
     {
         var delegateType = typeof(TDelegate);
-        var mappingMethodName = GetMappingMethodName(delegateType);
+        var mappingMethodName = GetMappingMethod(delegateType);
         return (TDelegate) Delegate.CreateDelegate(delegateType, DynamicType.GetMethod(mappingMethodName)!);
     }
 
@@ -108,13 +94,15 @@ internal static class Argon2Library
                                             MethodAttributes.HideBySig |
                                             MethodAttributes.PinvokeImpl;
 
-        foreach (var delegateType in delegateTypes)
+        for (var i = 0; i < delegateTypes.Length; ++i)
         {
-            var mappingMethodName = GetMappingMethodName(delegateType);
+            Type delegateType = delegateTypes[i];
+
+            string mappingMethodName = GetMappingMethod(delegateType);
 
             MethodInfo method = delegateType.GetMethod("Invoke")!;
 
-            var methodParameterTypes = method.GetParameters()
+            Type[] methodParameterTypes = method.GetParameters()
                 .Select(t => t.ParameterType)
                 .ToArray();
 
@@ -138,7 +126,7 @@ internal static class Argon2Library
         Type dynamicType = typeBuilder.CreateType();
 
         if (dynamicType is null)
-            throw new Exception("Could not create dynamic bindings Type");
+            throw new Exception("Could not create dynamic binding type");
 
         return dynamicType;
     }

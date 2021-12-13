@@ -2,7 +2,7 @@
 
 namespace Argon2Bindings;
 
-public class Argon2Errors
+public static class Argon2Errors
 {
     public static string GetErrorMessage(Argon2Result result)
     {

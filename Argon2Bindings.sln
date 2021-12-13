@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{ACAD56DF-A
 	ProjectSection(SolutionItems) = preProject
 		docs\CompilingArgon2Source.md = docs\CompilingArgon2Source.md
 		docs\BuildingAndRunningProject.md = docs\BuildingAndRunningProject.md
+		docs\Notes.md = docs\Notes.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}"

@@ -12,14 +12,17 @@ Credit and appropriate licenses for original sources of the Argon2 C library sha
 as top level comments for files where needed / appropriate. The Argon2 C library source code license can be found
 here [Argon2 License](ARGON2_LICENSE.txt).
 
-Binaries are compiled from [Argon2 source](https://github.com/P-H-C/phc-winner-argon2) - branch: `master` - commit: `f57e61e19229e23c`
+Binaries are compiled from [Argon2 source](https://github.com/P-H-C/phc-winner-argon2) - branch: `master` -
+commit: `f57e61e19229e23c`
 
 ## Compiling Argon2 Source
 
 Checkout this handy writeup for how to compile the Argon2 source code for your platform
+
 - [How to compile Argon2 source](docs/CompilingArgon2Source.md)
 
 ### Resources
+
 - [GCC online documentation](https://gcc.gnu.org/onlinedocs/)
 - [GCC and Makefiles](https://youtu.be/OnEF1MexJlI)
 - [Differences between windows build files](https://github.com/P-H-C/phc-winner-argon2/issues/258)
@@ -33,6 +36,7 @@ Checkout this handy writeup for how to compile the Argon2 source code for your p
 ## Building / Running
 
 Head over to this doc for how to build and run this projects solution
+
 - [How to build and run this project](docs/BuildingAndRunningProject.md)
 
 ## Packaging / Usage

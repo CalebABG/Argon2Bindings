@@ -1,9 +1,6 @@
 ﻿using Argon2Bindings;
 
-var s = Argon2Core.HashEncoded("test", "testing123");
-Console.WriteLine(s);
-
-/*const string salt = "testing123";
+const string salt = "testing123";
 const string pass = "test";
 
 int rawHashFailures = 0,
@@ -32,4 +29,4 @@ for (var i = 0; i < 5; ++i)
         Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
 }
 
-Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\nTotal Encoded Hash Failures: {encodedHashFailures}");*/
+Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\nTotal Encoded Hash Failures: {encodedHashFailures}");

@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

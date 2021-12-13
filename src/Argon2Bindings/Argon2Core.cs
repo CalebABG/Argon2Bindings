@@ -7,21 +7,9 @@ using static Argon2Bindings.Argon2Utilities;
 namespace Argon2Bindings;
 
 /* Todo: Add argon2 lib comments */
-/*
- **Note**
- Always malloc mem for functions where it's 
- expecting a pointer to memory (unless told otherwise)
- 
- Steps (Think in terms of IDisposable):
- 1. Malloc
- 2. Call
- 3. Free
-*/
 
 public static class Argon2Core
 {
-    // internal static readonly Type Argon2CoreDynamic = Argon2Library.CreateDynamicType();
-
     public static Argon2HashResult HashRaw(
         string password,
         string salt,
@@ -189,12 +177,12 @@ public static class Argon2Core
         Argon2Type type)
     {
         var length = Argon2Library.Argon2GetEncodedHashLength(
-                timeCost,
-                memoryCost,
-                degreeOfParallelism,
-                saltLength,
-                hashLength,
-                type);
+            timeCost,
+            memoryCost,
+            degreeOfParallelism,
+            saltLength,
+            hashLength,
+            type);
 
         return length;
     }
