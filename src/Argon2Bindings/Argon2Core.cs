@@ -56,6 +56,65 @@ public static class Argon2Core
         return Hash(password, salt, context);
     }
 
+    public static Argon2Result Verify(
+        string inputPassword, 
+        string encodedPassword,
+        Argon2Type type = Argon2Constants.DefaultType)
+    {
+        if (string.IsNullOrEmpty(inputPassword))
+            throw new ArgumentException("Value cannot be null or empty.", nameof(inputPassword));
+
+        if (string.IsNullOrEmpty(encodedPassword))
+            throw new ArgumentException("Value cannot be null or empty.", nameof(encodedPassword));
+        
+        bool errored = false;
+
+        Argon2Result result = Argon2Result.Ok;
+
+        var inputPasswordBytes = Encoding.UTF8.GetBytes(inputPassword);
+        var encodedPasswordBytes = Encoding.UTF8.GetBytes(encodedPassword);
+
+        nuint inputPasswordLength = Convert.ToUInt32(inputPasswordBytes.Length);
+
+        IntPtr inputPasswordBufferPointer = default,
+        encodedPasswordBufferPointer = default;
+
+        void FreeManagedPointers()
+        {
+            SafelyFreePointer(inputPasswordBufferPointer);
+            SafelyFreePointer(encodedPasswordBufferPointer);
+        }
+        
+        try
+        {
+            inputPasswordBufferPointer = GetPointerToBytes(inputPasswordBytes);
+            encodedPasswordBufferPointer = GetPointerToBytes(encodedPasswordBytes);
+            
+            result = Argon2Library.Argon2Verify(
+                encodedPasswordBufferPointer,
+                inputPasswordBufferPointer,
+                inputPasswordLength,
+                type);
+
+            /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
+            if (result is not (Argon2Result.Ok or Argon2Result.VerifyMismatch))
+                throw new Exception(Argon2Errors.GetErrorMessage(result));
+        }
+        catch (Exception e)
+        {
+            errored = true;
+            FreeManagedPointers();
+            WriteError($"{e.Message}\n {e.StackTrace}");
+        }
+        finally
+        {
+            if (!errored)
+                FreeManagedPointers();
+        }
+
+        return result;
+    }
+
     private static Argon2HashResult Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
