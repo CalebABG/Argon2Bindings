@@ -57,7 +57,7 @@ public static class Argon2Core
     }
 
     public static Argon2Result Verify(
-        string inputPassword, 
+        string inputPassword,
         string encodedPassword,
         Argon2Type type = Argon2Constants.DefaultType)
     {
@@ -66,7 +66,7 @@ public static class Argon2Core
 
         if (string.IsNullOrEmpty(encodedPassword))
             throw new ArgumentException("Value cannot be null or empty.", nameof(encodedPassword));
-        
+
         bool errored = false;
 
         Argon2Result result = Argon2Result.Ok;
@@ -77,19 +77,19 @@ public static class Argon2Core
         nuint inputPasswordLength = Convert.ToUInt32(inputPasswordBytes.Length);
 
         IntPtr inputPasswordBufferPointer = default,
-        encodedPasswordBufferPointer = default;
+            encodedPasswordBufferPointer = default;
 
         void FreeManagedPointers()
         {
             SafelyFreePointer(inputPasswordBufferPointer);
             SafelyFreePointer(encodedPasswordBufferPointer);
         }
-        
+
         try
         {
             inputPasswordBufferPointer = GetPointerToBytes(inputPasswordBytes);
             encodedPasswordBufferPointer = GetPointerToBytes(encodedPasswordBytes);
-            
+
             result = Argon2Library.Argon2Verify(
                 encodedPasswordBufferPointer,
                 inputPasswordBufferPointer,
@@ -135,7 +135,7 @@ public static class Argon2Core
                 ctx.TimeCost,
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
-                (uint)saltLength,
+                (uint) saltLength,
                 ctx.HashLength,
                 ctx.Type);
 
@@ -146,12 +146,8 @@ public static class Argon2Core
 
         IntPtr passPtr = default,
             saltPtr = default,
-            rawHashBufferPointer = rawHashRequested
-                ? Marshal.AllocHGlobal(Convert.ToInt32(ctx.HashLength))
-                : IntPtr.Zero,
-            encodedBufferPointer = rawHashRequested
-                ? IntPtr.Zero
-                : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
+            rawHashBufferPointer = default,
+            encodedBufferPointer = default;
 
         void FreeManagedPointers()
         {
@@ -165,6 +161,14 @@ public static class Argon2Core
         {
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
+
+            rawHashBufferPointer = rawHashRequested
+                ? Marshal.AllocHGlobal(Convert.ToInt32(ctx.HashLength))
+                : IntPtr.Zero;
+
+            encodedBufferPointer = rawHashRequested
+                ? IntPtr.Zero
+                : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
 
             result = Argon2Library.Argon2Hash(
                 ctx.TimeCost,
