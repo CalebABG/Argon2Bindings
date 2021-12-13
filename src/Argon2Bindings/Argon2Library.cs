@@ -10,7 +10,6 @@ namespace Argon2Bindings;
 
 internal static class Argon2Library
 {
-    /* Delegates */
     [Argon2MappingMethod("argon2_hash")]
     internal delegate Argon2Result Argon2HashDelegate(
         nuint t_cost,
@@ -34,17 +33,25 @@ internal static class Argon2Library
         Argon2Type type
     );
 
-    private static string GetMappingMethod(MemberInfo type)
+    [Argon2MappingMethod("argon2_verify")]
+    internal delegate nuint Argon2VerifyDelegate(
+        IntPtr encoded,
+        IntPtr pwd,
+        nuint pwdlen,
+        Argon2Type type);
+
+    private static readonly Type[] DelegateTypes =
     {
-        var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
-        if (attribute is null) throw new Exception("Delegate not given a name to map to argon2 C library");
-        return attribute.Name;
-    }
+        typeof(Argon2HashDelegate),
+        typeof(Argon2GetEncodedHashLengthDelegate),
+        typeof(Argon2VerifyDelegate)
+    };
 
     private static readonly Type DynamicType;
 
     internal static readonly Argon2HashDelegate Argon2Hash;
     internal static readonly Argon2GetEncodedHashLengthDelegate Argon2GetEncodedHashLength;
+    internal static readonly Argon2VerifyDelegate Argon2Verify;
 
     static Argon2Library()
     {
@@ -52,6 +59,14 @@ internal static class Argon2Library
 
         Argon2Hash = GetDelegate<Argon2HashDelegate>();
         Argon2GetEncodedHashLength = GetDelegate<Argon2GetEncodedHashLengthDelegate>();
+        Argon2Verify = GetDelegate<Argon2VerifyDelegate>();
+    }
+
+    private static string GetMappingMethod(MemberInfo type)
+    {
+        var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
+        if (attribute is null) throw new Exception("Delegate not given a method name to map to argon2 C library");
+        return attribute.Name;
     }
 
     private static TDelegate GetDelegate<TDelegate>()
@@ -64,13 +79,7 @@ internal static class Argon2Library
 
     private static Type CreateDynamicType()
     {
-        return CreateDynamicType(
-            $"{nameof(Argon2Library)}Dynamic",
-            new[]
-            {
-                typeof(Argon2HashDelegate),
-                typeof(Argon2GetEncodedHashLengthDelegate)
-            });
+        return CreateDynamicType(nameof(Argon2Library) + "Dynamic", DelegateTypes);
     }
 
     /* Reference: https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310 */
@@ -146,7 +155,6 @@ internal static class Argon2Library
 
         var fullPath = Path.GetFullPath(partialPath);
 
-        Console.WriteLine(fullPath);
         return fullPath;
     }
 
