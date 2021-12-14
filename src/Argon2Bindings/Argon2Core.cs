@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections;
 using System.Runtime.InteropServices;
 using System.Text;
+using Argon2Bindings.Results;
 using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings;
@@ -19,7 +20,8 @@ public static class Argon2Core
         string salt,
         Argon2Context? context = null)
     {
-        ValidatePasswordAndSaltStrings(password, salt);
+        ValidateString(salt, nameof(salt));
+        ValidateString(password, nameof(password));
 
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
@@ -40,7 +42,8 @@ public static class Argon2Core
         string salt,
         Argon2Context? context = null)
     {
-        ValidatePasswordAndSaltStrings(password, salt);
+        ValidateString(salt, nameof(salt));
+        ValidateString(password, nameof(password));
 
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
@@ -56,20 +59,17 @@ public static class Argon2Core
         return Hash(password, salt, context);
     }
 
-    public static Argon2Result Verify(
+    public static Argon2VerifyResult Verify(
         string inputPassword,
         string encodedPassword,
         Argon2Type type = Argon2Constants.DefaultType)
     {
-        if (string.IsNullOrEmpty(inputPassword))
-            throw new ArgumentException("Value cannot be null or empty.", nameof(inputPassword));
+        ValidateString(inputPassword, nameof(inputPassword));
+        ValidateString(encodedPassword, nameof(encodedPassword));
 
-        if (string.IsNullOrEmpty(encodedPassword))
-            throw new ArgumentException("Value cannot be null or empty.", nameof(encodedPassword));
+        bool error = false;
 
-        bool errored = false;
-
-        Argon2Result result = Argon2Result.Ok;
+        Argon2VerifyResult verifyResult = new(false);
 
         var inputPasswordBytes = Encoding.UTF8.GetBytes(inputPassword);
         var encodedPasswordBytes = Encoding.UTF8.GetBytes(encodedPassword);
@@ -90,29 +90,32 @@ public static class Argon2Core
             inputPasswordBufferPointer = GetPointerToBytes(inputPasswordBytes);
             encodedPasswordBufferPointer = GetPointerToBytes(encodedPasswordBytes);
 
-            result = Argon2Library.Argon2Verify(
+            var status = Argon2Library.Argon2Verify(
                 encodedPasswordBufferPointer,
                 inputPasswordBufferPointer,
                 inputPasswordLength,
                 type);
 
-            /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
-            if (result is not (Argon2Result.Ok or Argon2Result.VerifyMismatch))
-                throw new Exception(Argon2Errors.GetErrorMessage(result));
+            verifyResult = status switch
+            {
+                Argon2Result.Ok => new(true),
+                Argon2Result.VerifyMismatch => new(false),
+                _ => new(false, Argon2Errors.GetErrorMessage(status))
+            };
         }
         catch (Exception e)
         {
-            errored = true;
+            error = true;
             FreeManagedPointers();
             WriteError($"{e.Message}\n {e.StackTrace}");
         }
         finally
         {
-            if (!errored)
+            if (!error)
                 FreeManagedPointers();
         }
 
-        return result;
+        return verifyResult;
     }
 
     private static Argon2HashResult Hash(
@@ -121,54 +124,49 @@ public static class Argon2Core
         Argon2Context? context = null,
         bool encodeHash = true)
     {
-        ValidatePasswordAndSaltCollections(passwordBytes, saltBytes);
+        ValidateCollection(saltBytes, nameof(saltBytes));
+        ValidateCollection(passwordBytes, nameof(passwordBytes));
 
         var ctx = context ?? new();
 
-        bool rawHashRequested = !encodeHash;
+        bool error = false;
+
+        byte[] outputBytes = { };
+
+        Argon2Result result = Argon2Result.Ok;
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
         nuint saltLength = Convert.ToUInt32(saltBytes.Length);
-        nuint encodedLength = rawHashRequested
-            ? 0
-            : GetEncodedHashLength(
+        nuint bufferLength = encodeHash
+            ? GetEncodedHashLength(
                 ctx.TimeCost,
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
                 (uint) saltLength,
                 ctx.HashLength,
-                ctx.Type);
-
-        bool errored = false;
-        byte[] outputBytes = { };
-
-        Argon2Result result = Argon2Result.Ok;
+                ctx.Type)
+            : ctx.HashLength;
 
         IntPtr passPtr = default,
             saltPtr = default,
-            rawHashBufferPointer = default,
-            encodedBufferPointer = default;
+            bufferPointer = default;
 
         void FreeManagedPointers()
         {
             SafelyFreePointer(passPtr);
             SafelyFreePointer(saltPtr);
-            SafelyFreePointer(rawHashBufferPointer);
-            SafelyFreePointer(encodedBufferPointer);
+            SafelyFreePointer(bufferPointer);
         }
 
         try
         {
             passPtr = GetPointerToBytes(passwordBytes);
             saltPtr = GetPointerToBytes(saltBytes);
+            bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
 
-            rawHashBufferPointer = rawHashRequested
-                ? Marshal.AllocHGlobal(Convert.ToInt32(ctx.HashLength))
-                : IntPtr.Zero;
-
-            encodedBufferPointer = rawHashRequested
-                ? IntPtr.Zero
-                : Marshal.AllocHGlobal(Convert.ToInt32(encodedLength));
+            var hashPtr = encodeHash ? IntPtr.Zero : bufferPointer;
+            var encodePtr = encodeHash ? bufferPointer : IntPtr.Zero;
+            var encodeLen = encodeHash ? bufferLength : 0;
 
             result = Argon2Library.Argon2Hash(
                 ctx.TimeCost,
@@ -178,10 +176,10 @@ public static class Argon2Core
                 passwordLength,
                 saltPtr,
                 saltLength,
-                rawHashBufferPointer,
+                hashPtr,
                 ctx.HashLength,
-                encodedBufferPointer,
-                encodedLength,
+                encodePtr,
+                encodeLen,
                 ctx.Type,
                 ctx.Version);
 
@@ -190,49 +188,37 @@ public static class Argon2Core
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
             /* Todo: TrimRight null-terminator byte (\x00) */
-            outputBytes = rawHashRequested
-                ? GetBytesFromPointer(rawHashBufferPointer, Convert.ToInt32(ctx.HashLength))
-                : GetBytesFromPointer(encodedBufferPointer, Convert.ToInt32(encodedLength));
+            outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
         }
         catch (Exception e)
         {
-            errored = true;
+            error = true;
             FreeManagedPointers();
             WriteError($"{e.Message}\n {e.StackTrace}");
         }
         finally
         {
-            if (!errored)
+            if (!error)
                 FreeManagedPointers();
         }
 
-        var encodedForm = rawHashRequested
-            ? Convert.ToBase64String(outputBytes)
-            : Encoding.UTF8.GetString(outputBytes);
+        var encodedForm = encodeHash
+            ? Encoding.UTF8.GetString(outputBytes)
+            : Convert.ToBase64String(outputBytes);
 
         return new(result, outputBytes, encodedForm);
     }
 
-    private static void ValidatePasswordAndSaltStrings(
-        string password,
-        string salt)
+    private static void ValidateString(string @string, string paramName)
     {
-        if (string.IsNullOrEmpty(password))
-            throw new ArgumentException("Value cannot be null or empty.", nameof(password));
-
-        if (string.IsNullOrEmpty(salt))
-            throw new ArgumentException("Value cannot be null or empty.", nameof(salt));
+        if (string.IsNullOrEmpty(@string))
+            throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
 
-    private static void ValidatePasswordAndSaltCollections(
-        byte[] password,
-        byte[] salt)
+    private static void ValidateCollection(ICollection collection, string paramName)
     {
-        if (password is null || password.Length < 1)
-            throw new ArgumentException("Value cannot be null or an empty collection.", nameof(password));
-
-        if (salt is null || salt.Length < 1)
-            throw new ArgumentException("Value cannot be null or an empty collection.", nameof(salt));
+        if (collection is null || collection.Count < 1)
+            throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
     }
 
     private static nuint GetEncodedHashLength(

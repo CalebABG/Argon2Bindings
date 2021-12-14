@@ -10,4 +10,18 @@ public struct Argon2Context
     public uint HashLength = DefaultHashLength;
     public Argon2Type Type = DefaultType;
     public Argon2Version Version = DefaultVersion;
+
+    public static Argon2Context CreateReasonableContext(
+        Argon2Type type = DefaultType)
+    {
+        return new()
+        {
+            TimeCost = 3,
+            MemoryCost = 1 << 16,
+            DegreeOfParallelism = 1,
+            HashLength = 32,
+            Version = DefaultVersion,
+            Type = type,
+        };
+    }
 }
