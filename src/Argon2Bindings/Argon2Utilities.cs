@@ -5,7 +5,7 @@ namespace Argon2Bindings;
 public static class Argon2Utilities
 {
     public static string ToHexString(
-        this byte[] bytes, 
+        this byte[] bytes,
         string separator = "")
     {
         var output = BitConverter.ToString(bytes);
@@ -20,7 +20,7 @@ public static class Argon2Utilities
 
     /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
     private static void WriteLine(
-        string text, 
+        string text,
         ConsoleColor? color = null)
     {
         if (!color.HasValue)

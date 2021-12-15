@@ -103,10 +103,9 @@ public static class Argon2Core
         var ctx = context ?? new();
 
         bool error = false;
-
-        byte[] outputBytes = { };
-
         Argon2Result result = Argon2Result.Ok;
+
+        byte[] outputBytes = Array.Empty<byte>();
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
         nuint saltLength = Convert.ToUInt32(saltBytes.Length);
@@ -171,13 +170,10 @@ public static class Argon2Core
         }
         finally
         {
-            if (!error)
-                FreeManagedPointers();
+            if (!error) FreeManagedPointers();
         }
 
-        var encodedForm = encodeHash
-            ? Encoding.UTF8.GetString(outputBytes)
-            : Convert.ToBase64String(outputBytes);
+        var encodedForm = GetEncodedString(outputBytes, encodeHash);
 
         return new(result, outputBytes, encodedForm);
     }
@@ -208,10 +204,9 @@ public static class Argon2Core
         var ctx = context ?? new();
 
         bool error = false;
-
-        byte[] outputBytes = { };
-
         Argon2Result result = Argon2Result.Ok;
+
+        byte[] outputBytes = Array.Empty<byte>();
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
         nuint saltLength = Convert.ToUInt32(saltBytes.Length);
@@ -230,11 +225,6 @@ public static class Argon2Core
             SafelyFreePointer(secretPointer);
             SafelyFreePointer(associatedDataPointer);
             SafelyFreePointer(bufferPointer);
-        }
-
-        bool ContextDataValid(byte[]? data)
-        {
-            return data is not null && data.Length > 0;
         }
 
         try
@@ -293,13 +283,13 @@ public static class Argon2Core
             if (!error) FreeManagedPointers();
         }
 
-        var encodedForm = Convert.ToBase64String(outputBytes);
+        var encodedForm = GetEncodedString(outputBytes, false);
 
         return new(result, outputBytes, encodedForm);
     }
 
     private static void ValidateString(
-        string input, 
+        string input,
         string paramName)
     {
         if (string.IsNullOrEmpty(input))
@@ -307,7 +297,7 @@ public static class Argon2Core
     }
 
     private static void ValidateCollection(
-        ICollection collection, 
+        ICollection collection,
         string paramName)
     {
         if (collection is null || collection.Count < 1)
@@ -333,6 +323,15 @@ public static class Argon2Core
         return length;
     }
 
+    private static string GetEncodedString(
+        byte[] outputBytes,
+        bool encodeHash)
+    {
+        return encodeHash
+            ? Encoding.UTF8.GetString(outputBytes)
+            : Convert.ToBase64String(outputBytes);
+    }
+
     private static byte[] GetBytesFromPointer(
         IntPtr ptr,
         int length)
@@ -348,6 +347,13 @@ public static class Argon2Core
         IntPtr ptr = Marshal.AllocHGlobal(array.Length);
         Marshal.Copy(array, 0, ptr, array.Length);
         return ptr;
+    }
+
+    private static bool ContextDataValid(
+        byte[]? data)
+    {
+        return data is not null &&
+               data.Length > 0;
     }
 
     private static void SafelyFreePointer(
