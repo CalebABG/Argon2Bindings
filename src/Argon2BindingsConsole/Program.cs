@@ -1,63 +1,74 @@
 ﻿using System.Diagnostics;
 using Argon2Bindings;
+using Argon2Bindings.Enums;
 
-const string salt = "testing123";
-const string pass = "test";
-Argon2Context context = new()
+namespace Argon2BindingsConsole;
+
+public static class Program
 {
-    TimeCost = 3,
-    MemoryCost = 1 << 4,
-    DegreeOfParallelism = 1,
-    Type = Argon2Type.Argon2I,
-};
+    private const string Salt = "testing123";
+    private const string Password = "test";
 
-PrintHashAndVerify();
-// PrintTabularHashResults();
+    private static readonly Argon2Context Context = new() { };
 
-void PrintHashAndVerify()
-{
-    var stopwatch = Stopwatch.StartNew();
-    var hash = Argon2Core.HashEncoded(pass, salt, context);
-
-    stopwatch.Stop();
-    Console.WriteLine($"\nHash Time: {stopwatch.ElapsedMilliseconds}ms");
-    Console.WriteLine(hash);
-
-    stopwatch.Restart();
-    var verify = Argon2Core.Verify(pass, hash.EncodedHash, context.Type);
-
-    stopwatch.Stop();
-    Console.WriteLine($"\nVerify Time: {stopwatch.ElapsedMilliseconds}ms");
-    Console.WriteLine(verify);
-}
-
-void PrintTabularHashResults()
-{
-    int rawHashFailures = 0,
-        encodedHashFailures = 0;
-
-    const string format = "{0}\t\t{1}\t\t{2}\t\t{3}\n";
-
-    Console.WriteLine("Legend:\nR = Raw Hash\nE = Encoded Hash\n");
-    Console.WriteLine("Run #\t\tType\t\tResult\t\tOutput\n");
-
-    for (var i = 0; i < 5; ++i)
+    public static void Main(string[] args)
     {
-        var runNum = $"{i + 1}";
-
-        var rawHashResult = Argon2Core.HashRaw(pass, salt, context);
-        if (rawHashResult.Status is not Argon2Result.Ok)
-            ++rawHashFailures;
-        else
-            Console.Write(format, runNum, "R (HEX)", rawHashResult.Status, rawHashResult.RawHash.ToHexString());
-
-
-        var encodedHashResult = Argon2Core.HashEncoded(pass, salt, context);
-        if (encodedHashResult.Status is not Argon2Result.Ok)
-            ++encodedHashFailures;
-        else
-            Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
+        PrintContextHash();
+        // PrintHashAndVerify();
+        // PrintTabularHashResults();
     }
 
-    Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\nTotal Encoded Hash Failures: {encodedHashFailures}");
+    private static void PrintContextHash()
+    {
+        var result = Argon2Core.ContextHash(Password, Salt, Context);
+        Console.WriteLine(result);
+    }
+
+    private static void PrintHashAndVerify()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        var hash = Argon2Core.Hash(Password, Salt, Context);
+
+        stopwatch.Stop();
+        Console.WriteLine($"\nHash Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine(hash);
+
+        stopwatch.Restart();
+        var verify = Argon2Core.Verify(Password, hash.EncodedHash, Context.Type);
+
+        stopwatch.Stop();
+        Console.WriteLine($"\nVerify Time: {stopwatch.ElapsedMilliseconds}ms");
+        Console.WriteLine(verify);
+    }
+
+    private static void PrintTabularHashResults()
+    {
+        int rawHashFailures = 0,
+            encodedHashFailures = 0;
+
+        const string format = "{0}\t\t{1}\t\t{2}\t\t{3}\n";
+
+        Console.WriteLine("Legend:\nR = Raw Hash\nE = Encoded Hash\n");
+        Console.WriteLine("Run #\t\tType\t\tResult\t\tOutput\n");
+
+        for (var i = 0; i < 5; ++i)
+        {
+            var runNum = $"{i + 1}";
+
+            var rawHashResult = Argon2Core.Hash(Password, Salt, Context, false);
+            if (rawHashResult.Status is not Argon2Result.Ok)
+                ++rawHashFailures;
+            else
+                Console.Write(format, runNum, "R (HEX)", rawHashResult.Status, rawHashResult.RawHash.ToHexString());
+
+            var encodedHashResult = Argon2Core.Hash(Password, Salt, Context);
+            if (encodedHashResult.Status is not Argon2Result.Ok)
+                ++encodedHashFailures;
+            else
+                Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
+        }
+
+        Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\n" +
+                          $"Total Encoded Hash Failures: {encodedHashFailures}");
+    }
 }

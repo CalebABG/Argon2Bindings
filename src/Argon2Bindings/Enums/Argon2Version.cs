@@ -1,6 +1,6 @@
-﻿namespace Argon2Bindings;
+﻿namespace Argon2Bindings.Enums;
 
-public enum Argon2Version : uint
+public enum Argon2Version
 {
     Argon2Version10 = 0x10,
     Argon2Version13 = 0x13,

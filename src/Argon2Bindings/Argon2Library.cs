@@ -5,11 +5,19 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using Argon2Bindings.Attributes;
+using Argon2Bindings.Enums;
+using Argon2Bindings.Structures;
 
 namespace Argon2Bindings;
 
 internal static class Argon2Library
 {
+    [Argon2MappingMethod("argon2_ctx")]
+    internal delegate Argon2Result Argon2ContextHashDelegate(
+        Argon2MarshalContext context,
+        Argon2Type type
+    );
+
     [Argon2MappingMethod("argon2_hash")]
     internal delegate Argon2Result Argon2HashDelegate(
         uint t_cost,
@@ -38,13 +46,15 @@ internal static class Argon2Library
         IntPtr encoded,
         IntPtr pwd,
         nuint pwdlen,
-        Argon2Type type);
+        Argon2Type type
+    );
 
     private static readonly Type[] DelegateTypes =
     {
         typeof(Argon2HashDelegate),
         typeof(Argon2GetEncodedHashLengthDelegate),
-        typeof(Argon2VerifyDelegate)
+        typeof(Argon2VerifyDelegate),
+        typeof(Argon2ContextHashDelegate),
     };
 
     private static readonly Type DynamicType;
@@ -52,6 +62,7 @@ internal static class Argon2Library
     internal static readonly Argon2HashDelegate Argon2Hash;
     internal static readonly Argon2GetEncodedHashLengthDelegate Argon2GetEncodedHashLength;
     internal static readonly Argon2VerifyDelegate Argon2Verify;
+    internal static readonly Argon2ContextHashDelegate Argon2ContextHash;
 
     static Argon2Library()
     {
@@ -60,6 +71,7 @@ internal static class Argon2Library
         Argon2Hash = GetDelegate<Argon2HashDelegate>();
         Argon2GetEncodedHashLength = GetDelegate<Argon2GetEncodedHashLengthDelegate>();
         Argon2Verify = GetDelegate<Argon2VerifyDelegate>();
+        Argon2ContextHash = GetDelegate<Argon2ContextHashDelegate>();
     }
 
     private static string GetMappingMethod(MemberInfo type)

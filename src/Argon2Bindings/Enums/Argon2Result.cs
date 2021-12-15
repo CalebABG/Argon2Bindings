@@ -1,4 +1,4 @@
-﻿namespace Argon2Bindings;
+﻿namespace Argon2Bindings.Enums;
 
 public enum Argon2Result
 {

@@ -1,3 +1,5 @@
+using Argon2Bindings.Enums;
+
 namespace Argon2Bindings.Results;
 
 public record Argon2HashResult(Argon2Result Status, byte[] RawHash, string EncodedHash)

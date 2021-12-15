@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Text;
+using Argon2Bindings.Enums;
 using Argon2Bindings.Results;
+using Argon2Bindings.Structures;
 using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings;
@@ -15,50 +17,6 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
-    public static Argon2HashResult HashRaw(
-        string password,
-        string salt,
-        Argon2Context? context = null)
-    {
-        ValidateString(salt, nameof(salt));
-        ValidateString(password, nameof(password));
-
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-        return HashRaw(passwordBytes, saltBytes, context);
-    }
-
-    public static Argon2HashResult HashRaw(
-        byte[] password,
-        byte[] salt,
-        Argon2Context? context = null)
-    {
-        return Hash(password, salt, context, false);
-    }
-
-    public static Argon2HashResult HashEncoded(
-        string password,
-        string salt,
-        Argon2Context? context = null)
-    {
-        ValidateString(salt, nameof(salt));
-        ValidateString(password, nameof(password));
-
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-        return HashEncoded(passwordBytes, saltBytes, context);
-    }
-
-    public static Argon2HashResult HashEncoded(
-        byte[] password,
-        byte[] salt,
-        Argon2Context? context = null)
-    {
-        return Hash(password, salt, context);
-    }
-
     public static Argon2VerifyResult Verify(
         string inputPassword,
         string encodedPassword,
@@ -118,7 +76,22 @@ public static class Argon2Core
         return verifyResult;
     }
 
-    private static Argon2HashResult Hash(
+    public static Argon2HashResult Hash(
+        string password,
+        string salt,
+        Argon2Context? context = null,
+        bool encodeHash = true)
+    {
+        ValidateString(salt, nameof(salt));
+        ValidateString(password, nameof(password));
+
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var saltBytes = Encoding.UTF8.GetBytes(salt);
+
+        return Hash(passwordBytes, saltBytes, context, encodeHash);
+    }
+
+    public static Argon2HashResult Hash(
         byte[] passwordBytes,
         byte[] saltBytes,
         Argon2Context? context = null,
@@ -153,8 +126,8 @@ public static class Argon2Core
 
         void FreeManagedPointers()
         {
-            SafelyFreePointer(passPtr);
             SafelyFreePointer(saltPtr);
+            SafelyFreePointer(passPtr);
             SafelyFreePointer(bufferPointer);
         }
 
@@ -209,13 +182,133 @@ public static class Argon2Core
         return new(result, outputBytes, encodedForm);
     }
 
-    private static void ValidateString(string @string, string paramName)
+    public static Argon2HashResult ContextHash(
+        string password,
+        string salt,
+        Argon2Context? context = null)
     {
-        if (string.IsNullOrEmpty(@string))
+        ValidateString(salt, nameof(salt));
+        ValidateString(password, nameof(password));
+
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var saltBytes = Encoding.UTF8.GetBytes(salt);
+
+        return ContextHash(passwordBytes, saltBytes, context);
+    }
+
+    /* Todo: Yes, I know there's similar logic here as in method `Hash` (will cleanup/refactor) */
+    public static Argon2HashResult ContextHash(
+        byte[] passwordBytes,
+        byte[] saltBytes,
+        Argon2Context? context = null)
+    {
+        ValidateCollection(saltBytes, nameof(saltBytes));
+        ValidateCollection(passwordBytes, nameof(passwordBytes));
+
+        var ctx = context ?? new();
+
+        bool error = false;
+
+        byte[] outputBytes = { };
+
+        Argon2Result result = Argon2Result.Ok;
+
+        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
+        nuint saltLength = Convert.ToUInt32(saltBytes.Length);
+        nuint bufferLength = ctx.HashLength;
+
+        IntPtr passPtr = default,
+            saltPtr = default,
+            secretPointer = default,
+            associatedDataPointer = default,
+            bufferPointer = default;
+
+        void FreeManagedPointers()
+        {
+            SafelyFreePointer(passPtr);
+            SafelyFreePointer(saltPtr);
+            SafelyFreePointer(secretPointer);
+            SafelyFreePointer(associatedDataPointer);
+            SafelyFreePointer(bufferPointer);
+        }
+
+        bool ContextDataValid(byte[]? data)
+        {
+            return data is not null && data.Length > 0;
+        }
+
+        try
+        {
+            saltPtr = GetPointerToBytes(saltBytes);
+            passPtr = GetPointerToBytes(passwordBytes);
+
+            secretPointer = ContextDataValid(ctx.Secret)
+                ? GetPointerToBytes(ctx.Secret!)
+                : IntPtr.Zero;
+
+            nuint secretBufferLen = secretPointer == IntPtr.Zero
+                ? 0
+                : Convert.ToUInt32(ctx.Secret!.Length);
+
+            associatedDataPointer = ContextDataValid(ctx.AssociatedData)
+                ? GetPointerToBytes(ctx.AssociatedData!)
+                : IntPtr.Zero;
+
+            nuint associatedDataBufferLen = associatedDataPointer == IntPtr.Zero
+                ? 0
+                : Convert.ToUInt32(ctx.AssociatedData!.Length);
+
+            bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
+
+            result = Argon2Library.Argon2ContextHash(
+                Argon2MarshalContext.Create(
+                    bufferPointer,
+                    (uint) bufferLength,
+                    passPtr,
+                    (uint) passwordLength,
+                    saltPtr,
+                    (uint) saltLength,
+                    secretPointer,
+                    (uint) secretBufferLen,
+                    associatedDataPointer,
+                    (uint) associatedDataBufferLen,
+                    ctx),
+                ctx.Type
+            );
+
+            if (result is not Argon2Result.Ok)
+                throw new Exception(Argon2Errors.GetErrorMessage(result));
+
+            /* Todo: TrimRight null-terminator byte (\x00) */
+            outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
+        }
+        catch (Exception e)
+        {
+            error = true;
+            FreeManagedPointers();
+            WriteError($"{e.Message}\n {e.StackTrace}");
+        }
+        finally
+        {
+            if (!error) FreeManagedPointers();
+        }
+
+        var encodedForm = Convert.ToBase64String(outputBytes);
+
+        return new(result, outputBytes, encodedForm);
+    }
+
+    private static void ValidateString(
+        string input, 
+        string paramName)
+    {
+        if (string.IsNullOrEmpty(input))
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
 
-    private static void ValidateCollection(ICollection collection, string paramName)
+    private static void ValidateCollection(
+        ICollection collection, 
+        string paramName)
     {
         if (collection is null || collection.Count < 1)
             throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
@@ -246,7 +339,6 @@ public static class Argon2Core
     {
         byte[] outBytes = new byte[length];
         Marshal.Copy(ptr, outBytes, 0, length);
-
         return outBytes;
     }
 
@@ -255,7 +347,6 @@ public static class Argon2Core
     {
         IntPtr ptr = Marshal.AllocHGlobal(array.Length);
         Marshal.Copy(array, 0, ptr, array.Length);
-
         return ptr;
     }
 

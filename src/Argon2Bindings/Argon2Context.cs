@@ -1,4 +1,5 @@
-﻿using static Argon2Bindings.Argon2Constants;
+﻿using Argon2Bindings.Enums;
+using static Argon2Bindings.Argon2Constants;
 
 namespace Argon2Bindings;
 
@@ -8,8 +9,13 @@ public struct Argon2Context
     public uint MemoryCost = DefaultMemoryCost;
     public uint DegreeOfParallelism = DefaultDegreeOfParallelism;
     public uint HashLength = DefaultHashLength;
+
     public Argon2Type Type = DefaultType;
     public Argon2Version Version = DefaultVersion;
+    public Argon2Flag Flags = DefaultFlag;
+
+    public byte[]? Secret;
+    public byte[]? AssociatedData;
 
     public static Argon2Context CreateReasonableContext(
         Argon2Type type = DefaultType)
