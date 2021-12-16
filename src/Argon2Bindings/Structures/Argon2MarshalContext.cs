@@ -114,15 +114,15 @@ internal struct Argon2MarshalContext
     /// Mapping delegate to argon2 function pointer for memory allocator 
     /// </summary>
     public unsafe delegate int MemoryAllocator(
-        uint** memory,
+        byte** memory,
         nuint bytes_to_allocate
     );
 
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory de-allocator
     /// </summary>
-    public unsafe delegate int MemoryDeallocator(
-        uint* memory,
+    public unsafe delegate void MemoryDeallocator(
+        byte* memory,
         nuint bytes_to_allocate
     );
 
