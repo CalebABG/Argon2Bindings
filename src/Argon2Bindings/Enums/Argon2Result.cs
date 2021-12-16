@@ -1,5 +1,12 @@
 ﻿namespace Argon2Bindings.Enums;
 
+/// <summary>
+/// Enum for determining which fields are securely wiped.
+/// <remarks>
+/// This enum is used as an enum mapping to the argon2 C library
+/// <b>argon2_error_codes</b> enum type, as well as integer return results.
+/// </remarks>
+/// </summary>
 public enum Argon2Result
 {
     Ok = 0,

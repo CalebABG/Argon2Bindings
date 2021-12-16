@@ -4,6 +4,10 @@ using Argon2Bindings.Enums;
 
 namespace Argon2Bindings;
 
+/// <summary>
+/// Class which maps argon2 results to their associated
+/// error message.
+/// </summary>
 public static class Argon2Errors
 {
     private static readonly Dictionary<Argon2Result, string> ResultMap = new()
@@ -46,6 +50,14 @@ public static class Argon2Errors
         [Argon2Result.VerifyMismatch] = "The password does not match the supplied hash",
     };
 
+    /// <summary>
+    /// Gets the error message for an argon2 result. <see cref="Argon2Result"/>
+    /// </summary>
+    /// <param name="result">The result to get the error message for</param>
+    /// <returns>The error message that corresponds to the result</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Occurs when an invalid or out-of-range result value is passed
+    /// </exception>
     public static string GetErrorMessage(Argon2Result result)
     {
         return ResultMap.TryGetValue(result, out var errorMessage)

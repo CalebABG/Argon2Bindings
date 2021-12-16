@@ -17,6 +17,13 @@ namespace Argon2Bindings;
 
 public static class Argon2Core
 {
+    /// <summary>
+    /// Verifies if a password matches a given argon2 hash.
+    /// </summary>
+    /// <param name="inputPassword">The input password to verify</param>
+    /// <param name="encodedPassword">The encoded argon2 hash</param>
+    /// <param name="type">The argon2 variant used</param>
+    /// <returns>A result object with the outcome.</returns>
     public static Argon2VerifyResult Verify(
         string inputPassword,
         string encodedPassword,
@@ -76,6 +83,7 @@ public static class Argon2Core
         return verifyResult;
     }
 
+    /// <inheritdoc cref="Hash(byte[],byte[],System.Nullable{Argon2Bindings.Argon2Context},bool)" />
     public static Argon2HashResult Hash(
         string password,
         string salt,
@@ -91,14 +99,30 @@ public static class Argon2Core
         return Hash(passwordBytes, saltBytes, context, encodeHash);
     }
 
+    /// <summary>
+    /// Hashes a password with salt and using the given
+    /// context input parameters.
+    /// </summary>
+    /// <param name="password">The password to hash</param>
+    /// <param name="salt">The salt to use</param>
+    /// <param name="context">The context to use</param>
+    /// <param name="encodeHash">
+    /// Whether to encode the hash or not.
+    /// If not set explicitly, this parameter defaults to <b>true</b>
+    /// </param>
+    /// <remarks>
+    /// The <see cref="Argon2Context.Secret"/> and <see cref="Argon2Context.AssociatedData"/>
+    /// properties are ignored. To make use of those properties, use either of the <b>ContextHash</b> methods.
+    /// </remarks>
+    /// <returns>A result object with the outcome.</returns>
     public static Argon2HashResult Hash(
-        byte[] passwordBytes,
-        byte[] saltBytes,
+        byte[] password,
+        byte[] salt,
         Argon2Context? context = null,
         bool encodeHash = true)
     {
-        ValidateCollection(saltBytes, nameof(saltBytes));
-        ValidateCollection(passwordBytes, nameof(passwordBytes));
+        ValidateCollection(salt, nameof(salt));
+        ValidateCollection(password, nameof(password));
 
         var ctx = context ?? new();
 
@@ -107,8 +131,8 @@ public static class Argon2Core
 
         byte[] outputBytes = Array.Empty<byte>();
 
-        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
-        nuint saltLength = Convert.ToUInt32(saltBytes.Length);
+        nuint passwordLength = Convert.ToUInt32(password.Length);
+        nuint saltLength = Convert.ToUInt32(salt.Length);
         nuint bufferLength = encodeHash
             ? GetEncodedHashLength(
                 ctx.TimeCost,
@@ -132,8 +156,8 @@ public static class Argon2Core
 
         try
         {
-            passPtr = GetPointerToBytes(passwordBytes);
-            saltPtr = GetPointerToBytes(saltBytes);
+            passPtr = GetPointerToBytes(password);
+            saltPtr = GetPointerToBytes(salt);
             bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
 
             var hashPtr = encodeHash ? IntPtr.Zero : bufferPointer;
@@ -178,6 +202,7 @@ public static class Argon2Core
         return new(result, outputBytes, encodedForm);
     }
 
+    /// <inheritdoc cref="ContextHash(byte[],byte[],System.Nullable{Argon2Bindings.Argon2Context})"/>
     public static Argon2HashResult ContextHash(
         string password,
         string salt,
@@ -192,14 +217,23 @@ public static class Argon2Core
         return ContextHash(passwordBytes, saltBytes, context);
     }
 
+    /// <summary>
+    /// Hashes a password with salt and using the given
+    /// context input parameters, optionally using a secret
+    /// and associated data byte arrays. 
+    /// </summary>
+    /// <param name="password">The password to hash</param>
+    /// <param name="salt">The salt to use</param>
+    /// <param name="context">The context to use</param>
+    /// <returns>A result object with the outcome.</returns>
     /* Todo: Yes, I know there's similar logic here as in method `Hash` (will cleanup/refactor) */
     public static Argon2HashResult ContextHash(
-        byte[] passwordBytes,
-        byte[] saltBytes,
+        byte[] password,
+        byte[] salt,
         Argon2Context? context = null)
     {
-        ValidateCollection(saltBytes, nameof(saltBytes));
-        ValidateCollection(passwordBytes, nameof(passwordBytes));
+        ValidateCollection(salt, nameof(salt));
+        ValidateCollection(password, nameof(password));
 
         var ctx = context ?? new();
 
@@ -208,8 +242,8 @@ public static class Argon2Core
 
         byte[] outputBytes = Array.Empty<byte>();
 
-        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
-        nuint saltLength = Convert.ToUInt32(saltBytes.Length);
+        nuint passwordLength = Convert.ToUInt32(password.Length);
+        nuint saltLength = Convert.ToUInt32(salt.Length);
         nuint bufferLength = ctx.HashLength;
 
         IntPtr passPtr = default,
@@ -229,8 +263,8 @@ public static class Argon2Core
 
         try
         {
-            saltPtr = GetPointerToBytes(saltBytes);
-            passPtr = GetPointerToBytes(passwordBytes);
+            saltPtr = GetPointerToBytes(salt);
+            passPtr = GetPointerToBytes(password);
 
             secretPointer = ContextDataValid(ctx.Secret)
                 ? GetPointerToBytes(ctx.Secret!)

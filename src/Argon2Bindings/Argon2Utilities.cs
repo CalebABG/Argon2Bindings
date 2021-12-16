@@ -2,6 +2,10 @@
 
 namespace Argon2Bindings;
 
+/// <summary>
+/// A utility class containing useful functions
+/// for logging errors to the console, hexifying byte arrays, etc...
+/// </summary>
 public static class Argon2Utilities
 {
     public static string ToHexString(

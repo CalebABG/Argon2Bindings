@@ -5,6 +5,10 @@ using static Argon2Bindings.Enums.Argon2Flag;
 
 namespace Argon2Bindings;
 
+/// <summary>
+/// A collection of constants for defining argon2
+/// defaults.
+/// </summary>
 internal static class Argon2Constants
 {
     public const uint DefaultTimeCost = 3;

@@ -1,5 +1,12 @@
 namespace Argon2Bindings.Enums;
 
+/// <summary>
+/// Enum for determining which fields are securely wiped.
+/// <remarks>
+/// This enum is used as an enum mapping to the argon2 C library
+/// preprocessor defined flags.
+/// </remarks>
+/// </summary>
 public enum Argon2Flag
 {
     Default = 0,
