@@ -47,7 +47,24 @@ public struct Argon2Context
     /// </summary>
     public Argon2Flag Flags = DefaultFlag;
 
+    /// <summary>
+    /// (Optional) The secret data used for keyed-hashing.
+    /// <remarks>
+    /// If provided it will be used during hashing
+    /// further preventing brute-forcing the password, as the key would be required.
+    /// </remarks> 
+    /// </summary>
     public byte[]? Secret;
+
+    /// <summary>
+    /// (Optional) The associated data used to provide additional
+    /// data during hashing.
+    /// <remarks>
+    /// If provided it will be used as any additional data, similar
+    /// to <see cref="Secret"/>, but works differently. <see cref="Secret"/> should
+    /// be a cryptographically secure random key only usable during <b>Hashing</b>.
+    /// </remarks> 
+    /// </summary>
     public byte[]? AssociatedData;
 
     /// <summary>
