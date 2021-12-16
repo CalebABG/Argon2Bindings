@@ -179,7 +179,6 @@ public static class Argon2Core
                 ctx.Type,
                 ctx.Version);
 
-            /* Todo: Throw an exception when no success, or return error w/ empty / incomplete data? */
             if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
