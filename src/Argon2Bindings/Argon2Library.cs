@@ -25,7 +25,7 @@ internal static class Argon2Library
     [Argon2ApiBrokenOnPlatform(nameof(OSPlatform.OSX), Architecture.X64)]
     [Argon2MappingMethod("argon2_ctx")]
     internal delegate Argon2Result Argon2ContextHashDelegate(
-        Argon2MarshalContext context,
+        ref Argon2MarshalContext context,
         Argon2Type type
     );
 

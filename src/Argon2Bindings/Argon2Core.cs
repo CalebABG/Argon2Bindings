@@ -283,19 +283,21 @@ public static class Argon2Core
 
             bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
 
+            var marshalContext = Argon2MarshalContext.Create(
+                bufferPointer,
+                (uint) bufferLength,
+                passPtr,
+                (uint) passwordLength,
+                saltPtr,
+                (uint) saltLength,
+                secretPointer,
+                (uint) secretBufferLen,
+                associatedDataPointer,
+                (uint) associatedDataBufferLen,
+                ctx);
+
             result = Argon2Library.Argon2ContextHash(
-                Argon2MarshalContext.Create(
-                    bufferPointer,
-                    (uint) bufferLength,
-                    passPtr,
-                    (uint) passwordLength,
-                    saltPtr,
-                    (uint) saltLength,
-                    secretPointer,
-                    (uint) secretBufferLen,
-                    associatedDataPointer,
-                    (uint) associatedDataBufferLen,
-                    ctx),
+                ref marshalContext,
                 ctx.Type
             );
 
