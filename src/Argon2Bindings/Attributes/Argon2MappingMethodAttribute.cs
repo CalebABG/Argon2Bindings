@@ -12,6 +12,7 @@ namespace Argon2Bindings.Attributes;
 /// of mapping the C# delegate with the appropriate / matching argon2 C library
 /// function.
 /// </remarks>
+[AttributeUsage(AttributeTargets.Delegate)]
 internal class Argon2MappingMethodAttribute : Attribute
 {
     /// <summary>
