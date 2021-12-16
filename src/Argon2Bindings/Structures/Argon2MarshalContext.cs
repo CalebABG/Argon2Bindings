@@ -94,11 +94,6 @@ internal struct Argon2MarshalContext
     public uint Version;
 
     /// <summary>
-    /// Field clearing flags
-    /// </summary>
-    public uint Flags;
-
-    /// <summary>
     /// Pointer to memory allocator
     /// </summary>
     [MarshalAs(UnmanagedType.FunctionPtr)] 
@@ -109,6 +104,11 @@ internal struct Argon2MarshalContext
     /// </summary>
     [MarshalAs(UnmanagedType.FunctionPtr)] 
     public MemoryDeallocator? FreeCbk;
+
+    /// <summary>
+    /// Field clearing flags
+    /// </summary>
+    public uint Flags;
 
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory allocator 
