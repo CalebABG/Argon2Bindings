@@ -21,6 +21,8 @@ internal static class Argon2Library
     /// An error result if something went wrong, otherwise <see cref="Argon2Result.Ok"/> result.
     /// </returns>
     /// </summary>
+    [Argon2ApiBrokenOnPlatform(nameof(OSPlatform.Linux), Architecture.X64)]
+    [Argon2ApiBrokenOnPlatform(nameof(OSPlatform.OSX), Architecture.X64)]
     [Argon2MappingMethod("argon2_ctx")]
     internal delegate Argon2Result Argon2ContextHashDelegate(
         Argon2MarshalContext context,
