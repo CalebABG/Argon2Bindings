@@ -23,6 +23,9 @@ internal class Argon2MappingMethodAttribute : Attribute
 
     public Argon2MappingMethodAttribute(string name)
     {
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentException($"Method name cannot be null or empty.", nameof(name));
+
         Name = name;
     }
 }

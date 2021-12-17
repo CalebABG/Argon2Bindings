@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Runtime.InteropServices;
 using System.Text;
 using Argon2Bindings.Enums;
@@ -22,45 +21,45 @@ public static class Argon2Core
     /// <summary>
     /// Verifies if a password matches a given argon2 hash.
     /// </summary>
-    /// <param name="inputPassword">The input password to verify</param>
-    /// <param name="encodedPassword">The encoded argon2 hash</param>
+    /// <param name="password">The input password to verify</param>
+    /// <param name="encodedHash">The encoded argon2 hash</param>
     /// <param name="type">The argon2 variant used</param>
     /// <returns>A result object with the outcome.</returns>
     public static Argon2VerifyResult Verify(
-        string inputPassword,
-        string encodedPassword,
+        string password,
+        string encodedHash,
         Argon2Type type = Argon2Defaults.DefaultType)
     {
-        ValidateString(inputPassword, nameof(inputPassword));
-        ValidateString(encodedPassword, nameof(encodedPassword));
+        ValidateString(password, nameof(password));
+        ValidateString(encodedHash, nameof(encodedHash));
 
         bool error = false;
 
         Argon2VerifyResult verifyResult = new(false);
 
-        var inputPasswordBytes = Encoding.UTF8.GetBytes(inputPassword);
-        var encodedPasswordBytes = Encoding.UTF8.GetBytes(encodedPassword);
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var encodedHashBytes = Encoding.UTF8.GetBytes(encodedHash);
 
-        nuint inputPasswordLength = Convert.ToUInt32(inputPasswordBytes.Length);
+        nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
 
-        IntPtr inputPasswordBufferPointer = default,
-            encodedPasswordBufferPointer = default;
+        IntPtr passwordBufferPointer = default,
+            encodedHashBufferPointer = default;
 
         void FreeManagedPointers()
         {
-            SafelyFreePointer(inputPasswordBufferPointer);
-            SafelyFreePointer(encodedPasswordBufferPointer);
+            SafelyFreePointer(passwordBufferPointer);
+            SafelyFreePointer(encodedHashBufferPointer);
         }
 
         try
         {
-            inputPasswordBufferPointer = GetPointerToBytes(inputPasswordBytes);
-            encodedPasswordBufferPointer = GetPointerToBytes(encodedPasswordBytes);
+            passwordBufferPointer = GetPointerToBytes(passwordBytes);
+            encodedHashBufferPointer = GetPointerToBytes(encodedHashBytes);
 
             var status = Argon2Library.Argon2Verify(
-                encodedPasswordBufferPointer,
-                inputPasswordBufferPointer,
-                inputPasswordLength,
+                encodedHashBufferPointer,
+                passwordBufferPointer,
+                passwordLength,
                 type);
 
             verifyResult = status switch
@@ -324,23 +323,20 @@ public static class Argon2Core
         return new(result, outputBytes, encodedForm);
     }
 
-    private static void ValidateString(
-        string input,
-        string paramName)
-    {
-        if (string.IsNullOrEmpty(input))
-            throw new ArgumentException("Value cannot be null or an empty.", paramName);
-    }
-
-    private static void ValidateCollection(
-        ICollection collection,
-        string paramName)
-    {
-        if (collection is null || collection.Count < 1)
-            throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
-    }
-
-    private static nuint GetEncodedHashLength(
+    /// <summary>
+    /// Gets the length in bytes of the encoded hash given the
+    /// input parameters.
+    /// </summary>
+    /// <param name="timeCost">The number of iterations</param>
+    /// <param name="memoryCost">The amount of memory in kibibytes</param>
+    /// <param name="degreeOfParallelism">The number of threads and compute lanes</param>
+    /// <param name="saltLength">The length of the salt in bytes</param>
+    /// <param name="hashLength">The length of the hash in bytes</param>
+    /// <param name="type">The argon2 variant to use</param>
+    /// <returns>
+    /// The length of the encoded hash in bytes.
+    /// </returns>
+    public static nuint GetEncodedHashLength(
         uint timeCost,
         uint memoryCost,
         uint degreeOfParallelism,
@@ -357,45 +353,5 @@ public static class Argon2Core
             type);
 
         return length;
-    }
-
-    private static string GetEncodedString(
-        byte[] outputBytes,
-        bool encodeHash)
-    {
-        return encodeHash
-            ? Encoding.UTF8.GetString(outputBytes)
-            : Convert.ToBase64String(outputBytes);
-    }
-
-    private static byte[] GetBytesFromPointer(
-        IntPtr ptr,
-        int length)
-    {
-        byte[] outBytes = new byte[length];
-        Marshal.Copy(ptr, outBytes, 0, length);
-        return outBytes;
-    }
-
-    private static IntPtr GetPointerToBytes(
-        byte[] array)
-    {
-        IntPtr ptr = Marshal.AllocHGlobal(array.Length);
-        Marshal.Copy(array, 0, ptr, array.Length);
-        return ptr;
-    }
-
-    private static bool ContextDataValid(
-        byte[]? data)
-    {
-        return data is not null &&
-               data.Length > 0;
-    }
-
-    private static void SafelyFreePointer(
-        IntPtr pointer)
-    {
-        if (pointer == IntPtr.Zero) return;
-        Marshal.FreeHGlobal(pointer);
     }
 }
