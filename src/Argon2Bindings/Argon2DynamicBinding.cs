@@ -14,7 +14,7 @@ namespace Argon2Bindings;
 /// through reflection which defines PInvoke methods on the type
 /// which can be used to call native argon2 C library functions.
 /// </summary>
-public static class Argon2DynamicBinding
+internal static class Argon2DynamicBinding
 {
     private const string AssemblyPrefix = nameof(Argon2DynamicBinding);
     private const string AssemblyName = AssemblyPrefix + "Assembly";
@@ -35,21 +35,17 @@ public static class Argon2DynamicBinding
     /// Gets the name of the method to be used which corresponds 
     /// to an argon2 C library function name.
     /// </summary>
-    /// <param name="type">The delegate type to retrive the name from</param>
+    /// <param name="type">The delegate type to retrieve the name from</param>
     /// <returns>
     /// The name of the method to be used.
     /// </returns>
     /// <exception cref="Exception">
-    /// Throws if the provided type is null, not a <see cref="Delegate"/> type,
-    /// or if the provided delegate's method name is null or empty.
+    /// Throws if the provided type is null or if the provided delegate's method name is null or empty.
     /// </exception>
-    public static string GetMappingMethod(Type type)
+    internal static string GetMappingMethod(Type type)
     {
         if (type is null)
-            throw new ArgumentNullException($"Type cannot be null", nameof(type));
-
-        if (type != typeof(Delegate))
-            throw new ArgumentException("Incorrect type, mapping method can only be retrieved from Delegate type.", nameof(type));
+            throw new ArgumentNullException("Type cannot be null", nameof(type));
 
         var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
         if (attribute is null)
