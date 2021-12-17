@@ -29,7 +29,7 @@ public static class Argon2Core
     public static Argon2VerifyResult Verify(
         string inputPassword,
         string encodedPassword,
-        Argon2Type type = Argon2Constants.DefaultType)
+        Argon2Type type = Argon2Defaults.DefaultType)
     {
         ValidateString(inputPassword, nameof(inputPassword));
         ValidateString(encodedPassword, nameof(encodedPassword));

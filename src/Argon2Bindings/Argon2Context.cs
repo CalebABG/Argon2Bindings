@@ -1,5 +1,5 @@
 ﻿using Argon2Bindings.Enums;
-using static Argon2Bindings.Argon2Constants;
+using static Argon2Bindings.Argon2Defaults;
 
 namespace Argon2Bindings;
 

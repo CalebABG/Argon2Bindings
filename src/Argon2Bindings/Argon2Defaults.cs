@@ -9,7 +9,7 @@ namespace Argon2Bindings;
 /// A collection of constants for defining argon2
 /// defaults.
 /// </summary>
-public static class Argon2Constants
+public static class Argon2Defaults
 {
     public const uint DefaultTimeCost = 3;
     public const uint DefaultMemoryCost = 1 << 12;
