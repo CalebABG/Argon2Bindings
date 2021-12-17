@@ -15,6 +15,7 @@ namespace Argon2Bindings;
 /* Todo: Check/add tests for memory leaks */
 /* Todo: Look into optimizing */
 /* Todo: Add Windows x86 + x64 toolchains to Docker binary compilation automation */
+/* Todo: Consolidate or unify logic in `Hash` and `ContextHash` methods */
 
 public static class Argon2Core
 {
@@ -84,7 +85,7 @@ public static class Argon2Core
         return verifyResult;
     }
 
-    /// <inheritdoc cref="Hash(byte[],byte[],System.Nullable{Argon2Bindings.Argon2Context},bool)" />
+    /// <inheritdoc cref="Hash(byte[],byte[],Argon2Context?,bool)" />
     public static Argon2HashResult Hash(
         string password,
         string salt,
@@ -202,7 +203,7 @@ public static class Argon2Core
         return new(result, outputBytes, encodedForm);
     }
 
-    /// <inheritdoc cref="ContextHash(byte[],byte[],System.Nullable{Argon2Bindings.Argon2Context})"/>
+    /// <inheritdoc cref="ContextHash(byte[],byte[],Argon2Context?)"/>
     public static Argon2HashResult ContextHash(
         string password,
         string salt,
@@ -226,7 +227,6 @@ public static class Argon2Core
     /// <param name="salt">The salt to use</param>
     /// <param name="context">The context to use</param>
     /// <returns>A result object with the outcome.</returns>
-    /* Todo: Yes, I know there's similar logic here as in method `Hash` (will cleanup/refactor) */
     public static Argon2HashResult ContextHash(
         byte[] password,
         byte[] salt,
