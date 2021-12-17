@@ -7,7 +7,8 @@ namespace Argon2Bindings;
 /// Structure to hold a portion of input parameters for an argon2
 /// hashing method.
 /// <remarks>
-/// This structure is used as a data class for the <see cref="Argon2Bindings.Structures.Argon2MarshalContext"/>.
+/// This structure is used as a data class for the
+/// <see cref="Argon2Bindings.Structures.Argon2MarshalContext"/>.
 /// </remarks>
 /// </summary>
 public struct Argon2Context

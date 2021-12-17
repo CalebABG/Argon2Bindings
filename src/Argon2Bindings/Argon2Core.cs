@@ -112,8 +112,10 @@ public static class Argon2Core
     /// If not set explicitly, this parameter defaults to <b>true</b>
     /// </param>
     /// <remarks>
-    /// The <see cref="Argon2Context.Secret"/> and <see cref="Argon2Context.AssociatedData"/>
-    /// properties are ignored. To make use of those properties, use either of the <b>ContextHash</b> methods.
+    /// The <see cref="Argon2Context.Secret"/> and
+    /// <see cref="Argon2Context.AssociatedData"/>
+    /// properties are ignored. To make use of those properties,
+    /// use either of the <b>ContextHash</b> methods.
     /// </remarks>
     /// <returns>A result object with the outcome.</returns>
     public static Argon2HashResult Hash(
