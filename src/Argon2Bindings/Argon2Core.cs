@@ -14,6 +14,7 @@ namespace Argon2Bindings;
 /* Todo: Add Benchmark tests */
 /* Todo: Check/add tests for memory leaks */
 /* Todo: Look into optimizing */
+/* Todo: Add Windows x86 + x64 toolchains to Docker binary compilation automation */
 
 public static class Argon2Core
 {
