@@ -13,9 +13,9 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        PrintContextHash();
+        // PrintContextHash();
         // PrintHashAndVerify();
-        // PrintTabularHashResults();
+        PrintTabularHashResults();
     }
 
     private static void PrintContextHash()
