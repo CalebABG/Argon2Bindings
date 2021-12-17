@@ -38,12 +38,12 @@ public struct Argon2Context
     public Argon2Type Type = DefaultType;
 
     /// <summary>
-    /// The argon2 version to use
+    /// The argon2 algorithm version to use
     /// </summary>
     public Argon2Version Version = DefaultVersion;
 
     /// <summary>
-    /// The Field clearing flags
+    /// The field clearing flags
     /// </summary>
     public Argon2Flag Flags = DefaultFlag;
 
@@ -80,11 +80,7 @@ public struct Argon2Context
     {
         return new()
         {
-            TimeCost = 3,
             MemoryCost = 1 << 16,
-            DegreeOfParallelism = 1,
-            HashLength = 32,
-            Version = DefaultVersion,
             Type = type,
         };
     }
