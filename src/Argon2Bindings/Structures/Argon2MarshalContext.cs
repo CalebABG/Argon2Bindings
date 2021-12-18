@@ -22,7 +22,7 @@ internal struct Argon2MarshalContext
     /// Output buffer pointer
     /// </summary>
     public IntPtr Out;
-    
+
     /// <summary>
     /// Output buffer length
     /// </summary>
@@ -32,7 +32,7 @@ internal struct Argon2MarshalContext
     /// Password buffer pointer
     /// </summary>
     public IntPtr PasswordPtr;
-    
+
     /// <summary>
     /// Password buffer length
     /// </summary>
@@ -96,13 +96,13 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Pointer to memory allocator
     /// </summary>
-    [MarshalAs(UnmanagedType.FunctionPtr)] 
+    [MarshalAs(UnmanagedType.FunctionPtr)]
     public MemoryAllocator? AllocateCbk;
 
     /// <summary>
     /// Pointer to memory de-allocator
     /// </summary>
-    [MarshalAs(UnmanagedType.FunctionPtr)] 
+    [MarshalAs(UnmanagedType.FunctionPtr)]
     public MemoryDeallocator? FreeCbk;
 
     /// <summary>
@@ -172,10 +172,10 @@ internal struct Argon2MarshalContext
             MemoryCost = context.MemoryCost,
             Lanes = context.DegreeOfParallelism,
             Threads = context.DegreeOfParallelism,
-            Version = (uint) context.Version,
+            Version = (uint)context.Version,
             AllocateCbk = null,
             FreeCbk = null,
-            Flags = (uint) context.Flags
+            Flags = (uint)context.Flags
         };
     }
 }

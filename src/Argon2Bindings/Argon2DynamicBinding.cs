@@ -24,11 +24,11 @@ internal static class Argon2DynamicBinding
     private const string Argon2BinaryName = "libargon2";
     private const string Argon2BinariesFolder = "argon2binaries";
 
-    private const MethodAttributes MethodAttribs = MethodAttributes.FamANDAssem | 
+    private const MethodAttributes MethodAttribs = MethodAttributes.FamANDAssem |
                                                    MethodAttributes.Family |
-                                                   MethodAttributes.Public | 
+                                                   MethodAttributes.Public |
                                                    MethodAttributes.Static |
-                                                   MethodAttributes.HideBySig | 
+                                                   MethodAttributes.HideBySig |
                                                    MethodAttributes.PinvokeImpl;
 
     /// <summary>
@@ -75,7 +75,7 @@ internal static class Argon2DynamicBinding
     {
         var delegateType = typeof(TDelegate);
         var mappingMethodName = GetMappingMethod(delegateType);
-        return (TDelegate) Delegate.CreateDelegate(delegateType, type.GetMethod(mappingMethodName)!);
+        return (TDelegate)Delegate.CreateDelegate(delegateType, type.GetMethod(mappingMethodName)!);
     }
 
     /// <summary>
@@ -113,9 +113,9 @@ internal static class Argon2DynamicBinding
     /// </exception>
     /* Reference: https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310 */
     private static Type CreateDynamicType(
-        string assemblyName, 
-        string moduleName, 
-        string typeName, 
+        string assemblyName,
+        string moduleName,
+        string typeName,
         IReadOnlyList<Type> delegateTypes)
     {
         AssemblyBuilder assemblyBuilder = AssemblyBuilder

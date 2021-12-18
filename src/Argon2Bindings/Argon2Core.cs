@@ -141,7 +141,7 @@ public static class Argon2Core
                 ctx.TimeCost,
                 ctx.MemoryCost,
                 ctx.DegreeOfParallelism,
-                (uint) saltLength,
+                (uint)saltLength,
                 ctx.HashLength,
                 ctx.Type)
             : ctx.HashLength;
@@ -287,15 +287,15 @@ public static class Argon2Core
 
             var marshalContext = Argon2MarshalContext.Create(
                 bufferPointer,
-                (uint) bufferLength,
+                (uint)bufferLength,
                 passPtr,
-                (uint) passwordLength,
+                (uint)passwordLength,
                 saltPtr,
-                (uint) saltLength,
+                (uint)saltLength,
                 secretPointer,
-                (uint) secretBufferLen,
+                (uint)secretBufferLen,
                 associatedDataPointer,
-                (uint) associatedDataBufferLen,
+                (uint)associatedDataBufferLen,
                 ctx);
 
             result = Argon2Library.Argon2ContextHash(

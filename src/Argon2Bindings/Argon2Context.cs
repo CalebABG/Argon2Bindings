@@ -27,7 +27,7 @@ public struct Argon2Context
     /// The number of threads and compute lanes to use
     /// </summary>
     public uint DegreeOfParallelism = DefaultDegreeOfParallelism;
-    
+
     /// <summary>
     /// The desired length of the hash in bytes
     /// </summary>
