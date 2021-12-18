@@ -177,17 +177,16 @@ internal static class Argon2DynamicBinding
     /// </returns>
     private static string GetDynamicDllPath()
     {
-        var assemblyPath = Assembly.GetExecutingAssembly().Location;
+        var currentDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
         var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture();
         var (platformName, platformBinaryExtension) = Argon2PlatformUtilities.GetPlatformNameAndBinaryExtension();
         var platformBinaryFolder = $"{platformName}-{platformArch}";
 
-        var partialPath = Path.Combine(assemblyPath, "..", Argon2BinariesFolder,
+        var partialPath = Path.Combine(currentDomainBaseDirectory, Argon2BinariesFolder,
             platformBinaryFolder, $"{Argon2BinaryName}.{platformBinaryExtension}");
 
         var fullPath = Path.GetFullPath(partialPath);
-
         return fullPath;
     }
 }
