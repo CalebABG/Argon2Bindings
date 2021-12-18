@@ -79,11 +79,11 @@ public static class Program
             if (encodedHashResult.Status is not Argon2Result.Ok) ++encodedHashFailures;
             else Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
 
-            Console.WriteLine($"\t\t\t\t\t\tR Hash Time:\t{rawHashTime}ms");
-            Console.WriteLine($"\t\t\t\t\t\tE Hash Time:\t{encodedHashTime}ms\n");
+            Console.WriteLine($"\t\t\t\t\t\tR Hash Time:\t{rawHashTime/1000.0}s");
+            Console.WriteLine($"\t\t\t\t\t\tE Hash Time:\t{encodedHashTime/1000.0}s\n");
         }
 
-        Console.WriteLine($"Total Time:\t{totalTime}ms\n" +
+        Console.WriteLine($"Total Time:\t{totalTime/1000.0}s\n" +
                           $"Total Raw Hash Failures:\t{rawHashFailures}\n" +
                           $"Total Encoded Hash Failures:\t{encodedHashFailures}");
     }
