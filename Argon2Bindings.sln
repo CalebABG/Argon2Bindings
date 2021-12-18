@@ -2,7 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35AD4129-2404-4D7A-95AE-82CB8BF539AE}"
 	ProjectSection(SolutionItems) = preProject
-		ARGON2_LICENSE.txt = ARGON2_LICENSE.txt
 		LICENSE = LICENSE
 		README.md = README.md
 		.gitignore = .gitignore
