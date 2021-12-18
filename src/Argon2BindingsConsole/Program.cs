@@ -43,32 +43,47 @@ public static class Program
 
     private static void PrintTabularHashResults()
     {
+        var totalTimeStopWatch = new Stopwatch();
+        var hashStopWatch = new Stopwatch();
+
         int rawHashFailures = 0,
             encodedHashFailures = 0;
 
-        const string format = "{0}\t\t{1}\t\t{2}\t\t{3}\n";
+        const string format = "{0}\t\t{1}\t\t{2}\t\t{3}";
 
-        Console.WriteLine("Legend:\nR = Raw Hash\nE = Encoded Hash\n");
+        Console.WriteLine("\nLegend:\nR = Raw Hash\nE = Encoded Hash\n");
         Console.WriteLine("Run #\t\tType\t\tResult\t\tOutput\n");
+        
+        totalTimeStopWatch.Start();
 
         for (var i = 0; i < 5; ++i)
         {
             var runNum = $"{i + 1}";
 
+            hashStopWatch.Start();
             var rawHashResult = Argon2Core.Hash(Password, Salt, Context, false);
-            if (rawHashResult.Status is not Argon2Result.Ok)
-                ++rawHashFailures;
-            else
-                Console.Write(format, runNum, "R (HEX)", rawHashResult.Status, rawHashResult.RawHash.ToHexString());
+            hashStopWatch.Stop();
+            var rawHashTime = hashStopWatch.ElapsedMilliseconds;
+            
+            if (rawHashResult.Status is not Argon2Result.Ok) ++rawHashFailures;
+            else Console.WriteLine(format, runNum, "R (HEX)", rawHashResult.Status, rawHashResult.RawHash.ToHexString());
 
+            hashStopWatch.Restart();
             var encodedHashResult = Argon2Core.Hash(Password, Salt, Context);
-            if (encodedHashResult.Status is not Argon2Result.Ok)
-                ++encodedHashFailures;
-            else
-                Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
+            hashStopWatch.Stop();
+            var encodedHashTime = hashStopWatch.ElapsedMilliseconds;
+            
+            if (encodedHashResult.Status is not Argon2Result.Ok) ++encodedHashFailures;
+            else Console.WriteLine(format, runNum, "E (B64)", encodedHashResult.Status, encodedHashResult.EncodedHash);
+
+            Console.WriteLine($"\t\t\t\t\t\tR Hash Time:\t{rawHashTime}ms");
+            Console.WriteLine($"\t\t\t\t\t\tE Hash Time:\t{encodedHashTime}ms\n");
         }
 
-        Console.WriteLine($"Total Raw Hash Failures: {rawHashFailures}\n" +
-                          $"Total Encoded Hash Failures: {encodedHashFailures}");
+        totalTimeStopWatch.Stop();
+
+        Console.WriteLine($"Total Time:\t{totalTimeStopWatch.ElapsedMilliseconds}ms\n" +
+                          $"Total Raw Hash Failures:\t{rawHashFailures}\n" +
+                          $"Total Encoded Hash Failures:\t{encodedHashFailures}");
     }
 }
