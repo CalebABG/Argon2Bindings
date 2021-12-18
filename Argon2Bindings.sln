@@ -29,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Argon2BindingsAutomation", 
 	ProjectSection(SolutionItems) = preProject
 		src\Argon2BindingsAutomation\Dockerfile-linux = src\Argon2BindingsAutomation\Dockerfile-linux
 		src\Argon2BindingsAutomation\build.sh = src\Argon2BindingsAutomation\build.sh
+		src\Argon2BindingsAutomation\README.md = src\Argon2BindingsAutomation\README.md
 	EndProjectSection
 EndProject
 Global

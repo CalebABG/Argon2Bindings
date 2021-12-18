@@ -16,6 +16,7 @@ Then to build, enter and execute this command:
 If everything has gone well and no errors, you have just built the solution 🎉
 
 To clean the solution is just as easy:
+
 - `dotnet clean Argon2Bindings.sln`
 
 ## Running
