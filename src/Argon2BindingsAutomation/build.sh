@@ -24,25 +24,21 @@ git clone https://github.com/P-H-C/$ARGON2_REPO_NAME.git
 cd $ARGON2_REPO_NAME
 git checkout $ARGON2_COMMIT_ID
 
-# Used for `OPTTARGET`; 'generic' for -march is not a valid option
-NONE_ARCH_TARGET=""
+# Used for `OPTTARGET`
+ARCH_TARGET="generic"
 
-# x86
 printf "\nCompiling for: x86\n"
-make clean && CFLAGS=-m32 OPTTARGET=$NONE_ARCH_TARGET make
+make clean && CFLAGS=-m32 OPTTARGET=$ARCH_TARGET make
 cp $ARGON2_COMPILED_BINARY /output/linux-x86/$ARGON2_OUTPUT_BINARY
 
-# x64
 printf "\nCompiling for: x64\n"
-make clean && CFLAGS=-m64 OPTTARGET=$NONE_ARCH_TARGET make
+make clean && CFLAGS=-m64 OPTTARGET=$ARCH_TARGET make
 cp $ARGON2_COMPILED_BINARY /output/linux-x64/$ARGON2_OUTPUT_BINARY
 
-# ARM
 printf "\nCompiling for: arm\n"
 make clean && CC=arm-linux-gnueabihf-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm/$ARGON2_OUTPUT_BINARY
 
-# ARM64
 printf "\nCompiling for: arm64 (aarch64)"
 make clean && CC=aarch64-linux-gnu-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm64/$ARGON2_OUTPUT_BINARY

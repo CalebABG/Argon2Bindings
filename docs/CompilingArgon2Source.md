@@ -25,7 +25,13 @@ When copying the binary on Mac / Linux, copy the binary without the ABI version:
 
 ## Mac
 
-You can compile using: `make clean && make`
+You can compile using:
+
+### x64
+- `make clean && OPTTARGET=generic make`
+
+### Arm64
+- `make clean && make`
 
 ## Linux
 
@@ -35,6 +41,13 @@ Make sure you have the needed tools to build C/C++:
 
 Then you can compile with this command:
 
+### x86
+- `make clean && CFLAGS=-m32 OPTTARGET=generic make`
+
+### x64
+- `make clean && CFLAGS=-m64 OPTTARGET=generic make`
+
+### Arm or Arm64
 - `make clean && make`
 
 ## Windows
