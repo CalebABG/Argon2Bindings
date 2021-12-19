@@ -39,6 +39,6 @@ printf "\nCompiling for: arm\n"
 make clean && CC=arm-linux-gnueabihf-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm/$ARGON2_OUTPUT_BINARY
 
-printf "\nCompiling for: arm64 (aarch64)"
+printf "\nCompiling for: arm64 (aarch64)\n"
 make clean && CC=aarch64-linux-gnu-gcc make
 cp $ARGON2_COMPILED_BINARY /output/linux-arm64/$ARGON2_OUTPUT_BINARY
