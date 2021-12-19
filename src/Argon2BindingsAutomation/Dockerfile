@@ -1,7 +1,7 @@
 # Adapted from phxql / argon2-jvm - https://github.com/phxql/argon2-jvm/blob/master/libargon2/Dockerfile
 
 # Note: Run these commands in the current folder
-# Build:     docker build -t argon2bindings-automation-linux -f Dockerfile-linux .
+# Build:     docker build -t argon2bindings-automation-linux .
 # Run:       docker run --rm -v ${PWD}/output:/output argon2bindings-automation-linux
 # Remove:    docker image rm argon2bindings-automation-linux
 

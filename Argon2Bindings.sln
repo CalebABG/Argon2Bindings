@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2BindingsTests", "test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Argon2BindingsAutomation", "Argon2BindingsAutomation", "{9D296329-56E9-44BE-B805-113CCD857550}"
 	ProjectSection(SolutionItems) = preProject
-		src\Argon2BindingsAutomation\Dockerfile-linux = src\Argon2BindingsAutomation\Dockerfile-linux
+		src\Argon2BindingsAutomation\Dockerfile = src\Argon2BindingsAutomation\Dockerfile
 		src\Argon2BindingsAutomation\build.sh = src\Argon2BindingsAutomation\build.sh
 		src\Argon2BindingsAutomation\README.md = src\Argon2BindingsAutomation\README.md
 	EndProjectSection
