@@ -39,6 +39,8 @@ public static class Argon2Utilities
         byte[] outputBytes,
         bool encodeHash)
     {
+        ValidateCollection(outputBytes, nameof(outputBytes));
+
         return encodeHash
             ? Encoding.UTF8.GetString(outputBytes)
             : Convert.ToBase64String(outputBytes);
