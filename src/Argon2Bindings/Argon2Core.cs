@@ -77,8 +77,7 @@ public static class Argon2Core
         }
         finally
         {
-            if (!error)
-                FreeManagedPointers();
+            if (!error) FreeManagedPointers();
         }
 
         return verifyResult;
