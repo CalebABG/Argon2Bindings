@@ -198,7 +198,7 @@ public static class Argon2Core
             if (!error) FreeManagedPointers();
         }
 
-        var encodedForm = GetEncodedString(outputBytes, encodeHash);
+        var encodedForm = !error ? GetEncodedString(outputBytes, encodeHash) : "";
 
         return new(result, outputBytes, encodedForm);
     }
@@ -319,7 +319,7 @@ public static class Argon2Core
             if (!error) FreeManagedPointers();
         }
 
-        var encodedForm = GetEncodedString(outputBytes, false);
+        var encodedForm = !error ? GetEncodedString(outputBytes, false) : "";
 
         return new(result, outputBytes, encodedForm);
     }
