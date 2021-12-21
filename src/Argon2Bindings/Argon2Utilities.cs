@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
+using Argon2Bindings.Enums;
 
 namespace Argon2Bindings;
 
@@ -25,6 +27,15 @@ public static class Argon2Utilities
     {
         if (string.IsNullOrEmpty(input))
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
+    }
+
+    internal static void ValidateEnum(Type enumType, object value)
+    {
+        if (enumType == null) throw new ArgumentNullException(nameof(enumType));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+
+        if (!Enum.IsDefined(enumType, value))
+            throw new InvalidEnumArgumentException(nameof(value), (int) value, enumType);
     }
 
     internal static void ValidateCollection(

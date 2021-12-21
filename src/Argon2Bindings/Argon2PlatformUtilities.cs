@@ -42,7 +42,13 @@ public static class Argon2PlatformUtilities
     /// </exception>
     public static string GetPlatformArchitecture()
     {
-        return RuntimeInformation.OSArchitecture switch
+        return GetPlatformArchitecture(RuntimeInformation.OSArchitecture);
+    }
+    
+    internal static string GetPlatformArchitecture(
+        Architecture architecture)
+    {
+        return architecture switch
         {
             Architecture.Arm => "arm",
             Architecture.Arm64 => "arm64",
