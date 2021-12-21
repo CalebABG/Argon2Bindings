@@ -1,5 +1,8 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Argon2Bindings;
+using Argon2Bindings.Enums;
 using Xunit;
 
 namespace Argon2BindingsTests;
@@ -160,16 +163,133 @@ public class Argon2BindingsTestSuite
     }
 
     [Theory]
+    [InlineData(typeof(Argon2Flag), (Argon2Flag) (-1))]
+    [InlineData(typeof(Argon2Flag), (Argon2Flag) (1 << 4))]
+    [InlineData(typeof(Argon2Type), (Argon2Type) (-1))]
+    [InlineData(typeof(Argon2Type), (Argon2Type) 999)]
+    [InlineData(typeof(Argon2Version), (Argon2Version) 0xF)]
+    [InlineData(typeof(Argon2Version), (Argon2Version) 0xFF)]
+    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputIsInvalidForEnumType(
+        Type enumType,
+        object value)
+    {
+        // Assert
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            Argon2Utilities.ValidateEnum(enumType, value));
+    }
+
+    [Theory]
+    [InlineData(null, (Argon2Flag) (-1))]
+    [InlineData(typeof(Argon2Flag), null)]
+    [InlineData(null, null)]
+    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputParametersAreNull(
+        Type enumType,
+        object value)
+    {
+        // Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            Argon2Utilities.ValidateEnum(enumType, value));
+    }
+
+    [Theory]
     [InlineData(null, "test")]
     [InlineData("", "test")]
     [InlineData("test", null)]
     [InlineData("test", "")]
     public void Argon2Core_Verify_Should_Throw_When_PasswordOrEncodedHashIsNullOrEmpty(
-        string password, 
+        string password,
         string encodedHash)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ArgumentException>(() =>
             Argon2Core.Verify(password, encodedHash));
+    }
+
+    [Theory]
+    [InlineData(null, "test1234")]
+    [InlineData("", "test1234")]
+    [InlineData("test1234", null)]
+    [InlineData("test1234", "")]
+    public void Argon2Core_Hash_Should_Throw_When_PasswordOrSaltStringsAreNullOrEmpty(
+        string password,
+        string salt)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password, salt));
+    }
+
+    [Theory]
+    [InlineData(null, new byte[] {0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34})]
+    [InlineData(new byte[] { }, new byte[] {0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34})]
+    [InlineData(new byte[] {0x74, 0x65, 0x73, 0x74}, null)]
+    [InlineData(new byte[] {0x74, 0x65, 0x73, 0x74}, new byte[] { })]
+    public void Argon2Core_Hash_Should_Throw_When_PasswordOrSaltCollectionsAreNullOrEmpty(
+        byte[] password,
+        byte[] salt)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password, salt));
+    }
+
+    [Fact]
+    public void Argon2Core_Hash_Should_Return_SaltTooShortResult_When_SaltStringIsTooShort()
+    {
+        // Arrange
+        string password = "test";
+        string salt = "tst";
+
+        // Act
+        var result = Argon2Core.Hash(password, salt);
+
+        Assert.NotNull(result);
+        Assert.Equal(Argon2Result.SaltTooShort, result.Status);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(-999)]
+    public void Argon2Errors_GetErrorMessage_Should_Throw_When_InputEnumerationIsInvalid(
+        int error)
+    {
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Argon2Errors.GetErrorMessage((Argon2Result) error));
+    }
+
+    [Theory]
+    [InlineData(Argon2Result.Ok)]
+    [InlineData(Argon2Result.VerifyMismatch)]
+    [InlineData(Argon2Result.FreeMemoryCbkNull)]
+    [InlineData(Argon2Result.MemoryTooLittle)]
+    public void Argon2Errors_GetErrorMessage_Should_Return_NonNullOrEmptyString_When_InputEnumerationIsValid(
+        Argon2Result error)
+    {
+        // Act
+        var result = Argon2Errors.GetErrorMessage(error);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+    }
+
+    [Fact]
+    public void Argon2Context_CreateReasonableContext_Should_Return_NonNullResult_When_Called()
+    {
+        // Act
+        var result = Argon2Context.CreateReasonableContext();
+
+        // Assert
+        Assert.NotNull(result);
+    }
+
+    [Theory]
+    [InlineData(999)]
+    [InlineData(-1)]
+    public void Argon2PlatformUtilities_GetPlatformArchitecture_Should_Throw_When_InputEnumerationIsInvalid(
+        int osArchCode)
+    {
+        // Assert
+        Assert.Throws<Exception>(() =>
+            Argon2PlatformUtilities.GetPlatformArchitecture((Architecture) osArchCode));
     }
 }
