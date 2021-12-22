@@ -13,7 +13,6 @@ name: "CodeQL"
 
 on:
   schedule:
-    branches: [ dev ]
     - cron: '32 13 * * 5'
 
 jobs:
