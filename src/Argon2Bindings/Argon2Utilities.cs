@@ -53,7 +53,7 @@ public static class Argon2Utilities
         ValidateCollection(outputBytes, nameof(outputBytes));
 
         return encodeHash
-            ? Encoding.UTF8.GetString(outputBytes)
+            ? Encoding.UTF8.GetString(outputBytes).TrimEnd('\0')
             : Convert.ToBase64String(outputBytes);
     }
 
