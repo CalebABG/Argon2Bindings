@@ -54,7 +54,7 @@ public static class Argon2Core
         try
         {
             passwordBufferPointer = GetPointerToBytes(passwordBytes);
-            encodedHashBufferPointer = GetPointerToBytes(encodedHashBytes, true);
+            encodedHashBufferPointer = GetPointerToBytes(encodedHashBytes);
 
             var status = Argon2Library.Argon2Verify(
                 encodedHashBufferPointer,

@@ -67,19 +67,14 @@ public static class Argon2Utilities
     }
 
     internal static IntPtr GetPointerToBytes(
-        byte[] array,
-        bool addNullTerminator = false)
+        byte[] array)
     {
-        int bytesToAllocate = addNullTerminator
-            ? array.Length + 1
-            : array.Length;
+        int bytesToAllocate = array.Length + 1;
         
         IntPtr ptr = Marshal.AllocHGlobal(bytesToAllocate);
         Marshal.Copy(array, 0, ptr, array.Length);
-        
-        if (addNullTerminator)
-            Marshal.WriteByte(ptr, array.Length, 0x0);
-        
+        Marshal.WriteByte(ptr, array.Length, 0x0);
+
         return ptr;
     }
 
