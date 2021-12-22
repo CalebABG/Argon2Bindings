@@ -45,7 +45,7 @@ internal static class Argon2DynamicBinding
     internal static string GetMappingMethod(Type type)
     {
         if (type is null)
-            throw new ArgumentNullException("Type cannot be null", nameof(type));
+            throw new ArgumentNullException(nameof(type), "Type cannot be null");
 
         var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
         if (attribute is null)
