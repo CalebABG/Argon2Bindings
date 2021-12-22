@@ -1,0 +1,30 @@
+name: Argon2Bindings .NET Build
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    if: "!contains(toJSON(github.event.commits.*.message), '[no-ci]')"
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    
+    - name: Restore
+      run: dotnet restore *.sln
+    
+    - name: Build
+      run: dotnet build --no-restore *.sln
+    
+    - name: Run Test Suite
+      run: dotnet test --no-build --verbosity normal *.sln
