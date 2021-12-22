@@ -184,7 +184,6 @@ public static class Argon2Core
             if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
-            /* Todo: TrimRight null-terminator byte (\x00) */
             outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
         }
         catch (Exception e)
@@ -305,7 +304,6 @@ public static class Argon2Core
             if (result is not Argon2Result.Ok)
                 throw new Exception(Argon2Errors.GetErrorMessage(result));
 
-            /* Todo: TrimRight null-terminator byte (\x00) */
             outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
         }
         catch (Exception e)
