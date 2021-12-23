@@ -30,8 +30,8 @@ public static class Argon2Core
         string encodedHash,
         Argon2Type type = Argon2Defaults.DefaultType)
     {
-        ValidateString(password, nameof(password));
-        ValidateString(encodedHash, nameof(encodedHash));
+        ValidateStringNotNullOrEmpty(password, nameof(password));
+        ValidateStringNotNullOrEmpty(encodedHash, nameof(encodedHash));
 
         bool error = false;
 
@@ -90,8 +90,8 @@ public static class Argon2Core
         Argon2Context? context = null,
         bool encodeHash = true)
     {
-        ValidateString(salt, nameof(salt));
-        ValidateString(password, nameof(password));
+        ValidateStringNotNullOrEmpty(salt, nameof(salt));
+        ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);
@@ -208,8 +208,8 @@ public static class Argon2Core
         string salt,
         Argon2Context? context = null)
     {
-        ValidateString(salt, nameof(salt));
-        ValidateString(password, nameof(password));
+        ValidateStringNotNullOrEmpty(salt, nameof(salt));
+        ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var saltBytes = Encoding.UTF8.GetBytes(salt);

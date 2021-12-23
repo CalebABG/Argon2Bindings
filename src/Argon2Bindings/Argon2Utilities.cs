@@ -3,7 +3,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
-using Argon2Bindings.Enums;
 
 namespace Argon2Bindings;
 
@@ -21,21 +20,31 @@ public static class Argon2Utilities
         return output.Replace("-", separator);
     }
 
-    internal static void ValidateString(
+    internal static void ValidateStringNotNullOrEmpty(
         string input,
         string paramName)
     {
         if (string.IsNullOrEmpty(input))
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
+    
+    internal static void ValidateStringNotNullOrWhiteSpace(
+        string input,
+        string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+    }
 
-    internal static void ValidateEnum(Type enumType, object value)
+    internal static void ValidateEnum(
+        Type enumType, 
+        object value)
     {
         if (enumType == null) throw new ArgumentNullException(nameof(enumType));
         if (value == null) throw new ArgumentNullException(nameof(value));
 
         if (!Enum.IsDefined(enumType, value))
-            throw new InvalidEnumArgumentException(nameof(value), (int) value, enumType);
+            throw new InvalidEnumArgumentException($"{nameof(value)} : {(int) value} is an invalid value for enum type {enumType}");
     }
 
     internal static void ValidateCollection(
@@ -100,27 +109,19 @@ public static class Argon2Utilities
     /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
     private static void WriteLine(
         string text,
-        ConsoleColor? color = null)
+        ConsoleColor color = ConsoleColor.White)
     {
-        if (!color.HasValue)
+        var oldColor = Console.ForegroundColor;
+
+        if (oldColor == color)
         {
             Console.WriteLine(text);
         }
         else
         {
-            var oldColor = Console.ForegroundColor;
-            var newColor = color.GetValueOrDefault();
-
-            if (oldColor == newColor)
-            {
-                Console.WriteLine(text);
-            }
-            else
-            {
-                Console.ForegroundColor = newColor;
-                Console.WriteLine(text);
-                Console.ForegroundColor = oldColor;
-            }
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ForegroundColor = oldColor;
         }
     }
 }

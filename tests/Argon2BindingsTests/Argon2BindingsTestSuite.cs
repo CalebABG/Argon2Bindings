@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Argon2Bindings;
+using Argon2Bindings.Attributes;
 using Argon2Bindings.Enums;
 using Xunit;
 
@@ -16,25 +17,49 @@ public class Argon2BindingsTestSuite
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateString_Should_Throw_When_InputIsNullOrEmpty(
+    public void Argon2Utilities_ValidateStringNotNullOrEmpty_Should_Throw_When_InputIsNullOrEmpty(
         string input)
     {
         // Assert
         Assert.Throws<ArgumentException>(() =>
-            Argon2Utilities.ValidateString(input, nameof(input)));
+            Argon2Utilities.ValidateStringNotNullOrEmpty(input, nameof(input)));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateString_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
+    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
         string param)
     {
         // Arrange
         string input = "test";
 
         // Act
-        Argon2Utilities.ValidateString(input, param);
+        Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, param);
+    }
+    
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_Should_Throw_When_InputIsNullOrWhiteSpace(
+        string input)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() =>
+            Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, nameof(input)));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Argon2Utilities_ValidateStringNotNullOrEmpty_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
+        string param)
+    {
+        // Arrange
+        string input = "test";
+
+        // Act
+        Argon2Utilities.ValidateStringNotNullOrEmpty(input, param);
     }
 
     [Theory]
@@ -166,7 +191,7 @@ public class Argon2BindingsTestSuite
     [InlineData(typeof(Argon2Flag), (Argon2Flag) (-1))]
     [InlineData(typeof(Argon2Flag), (Argon2Flag) (1 << 4))]
     [InlineData(typeof(Argon2Type), (Argon2Type) (-1))]
-    [InlineData(typeof(Argon2Type), (Argon2Type) 999)]
+    [InlineData(typeof(Argon2Type), (Argon2Type) 777)]
     [InlineData(typeof(Argon2Version), (Argon2Version) 0xF)]
     [InlineData(typeof(Argon2Version), (Argon2Version) 0xFF)]
     public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputIsInvalidForEnumType(
@@ -384,7 +409,7 @@ public class Argon2BindingsTestSuite
 
     [Theory]
     [InlineData(1)]
-    [InlineData(-999)]
+    [InlineData(-777)]
     public void Argon2Errors_GetErrorMessage_Should_Throw_When_InputEnumerationIsInvalid(
         int error)
     {
@@ -410,17 +435,17 @@ public class Argon2BindingsTestSuite
     }
 
     [Fact]
-    public void Argon2Context_CreateReasonableContext_Should_Return_NonNullResult_When_Called()
+    public void Argon2Context_CreateReasonableContext_Should_Return_NewInstanceWithDifferentConfigurationFromDefault_When_Called()
     {
         // Act
         var result = Argon2Context.CreateReasonableContext();
 
         // Assert
-        Assert.NotNull(result);
+        Assert.NotEqual(Argon2Defaults.DefaultMemoryCost, result.MemoryCost);
     }
 
     [Theory]
-    [InlineData(999)]
+    [InlineData(777)]
     [InlineData(-1)]
     public void Argon2PlatformUtilities_GetPlatformArchitecture_Should_Throw_When_InputEnumerationIsInvalid(
         int osArchCode)
@@ -428,5 +453,93 @@ public class Argon2BindingsTestSuite
         // Assert
         Assert.Throws<Exception>(() =>
             Argon2PlatformUtilities.GetPlatformArchitecture((Architecture) osArchCode));
+    }
+    
+    [Theory]
+    [InlineData(Architecture.X86)]
+    [InlineData(Architecture.X64)]
+    [InlineData(Architecture.Arm)]
+    [InlineData(Architecture.Arm64)]
+    public void Argon2PlatformUtilities_GetPlatformArchitecture_ShouldNot_Throw_When_InputEnumerationIsValid(
+        Architecture architecture)
+    {
+        // Act
+        var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture(architecture);
+        
+        // Assert
+        Assert.NotNull(platformArch);
+        Assert.NotEmpty(platformArch);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("\n")]
+    [InlineData("\t")]
+    [InlineData("\r")]
+    public void Argon2MappingMethodAttribute_Constructor_Should_Throw_When_InputMethodNameIsNullOrWhiteSpace(
+        string methodName)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() =>
+            new Argon2MappingMethodAttribute(methodName));
+    }
+    
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("\n")]
+    [InlineData("\t")]
+    [InlineData("\r")]
+    public void Argon2ApiBrokenOnPlatformAttribute_Constructor_Should_Throw_When_InputPlatformNameIsNullOrWhiteSpace(
+        string platformName)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() =>
+            new Argon2ApiBrokenOnPlatformAttribute(platformName, RuntimeInformation.OSArchitecture));
+    }
+    
+    [Theory]
+    [InlineData(-777)]
+    [InlineData(777)]
+    public void Argon2ApiBrokenOnPlatformAttribute_Constructor_Should_Throw_When_InputArchitectureEnumerationIsInvalid(
+        int architecture)
+    {
+        // Assert
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            new Argon2ApiBrokenOnPlatformAttribute(nameof(OSPlatform.Windows), (Architecture)architecture));
+    }
+    
+    [Theory]
+    [InlineData(nameof(OSPlatform.Windows), Architecture.X86)]
+    [InlineData(nameof(OSPlatform.OSX), Architecture.Arm64)]
+    [InlineData(nameof(OSPlatform.Linux), Architecture.X64)]
+    public void Argon2ApiBrokenOnPlatformAttribute_Constructor_ShouldNot_Throw_When_ParametersAreValid(
+        string platformName,
+        Architecture architecture)
+    {
+        // Act
+        var attrib = new Argon2ApiBrokenOnPlatformAttribute(platformName, architecture);
+        
+        // Assert
+        Assert.NotNull(attrib);
+    }
+
+    [Fact]
+    public void Argon2DynamicBinding_GetMappingMethod_Should_Throw_When_InputTypeIsNull()
+    {
+        // Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            Argon2DynamicBinding.GetMappingMethod(null!));
+    }
+    
+    [Fact]
+    public void Argon2DynamicBinding_GetMappingMethod_Should_Throw_When_InputTypeDoesNotHaveMappingMethodAttribute()
+    {
+        // Assert
+        Assert.Throws<Exception>(() =>
+            Argon2DynamicBinding.GetMappingMethod(typeof(Argon2Library)));
     }
 }

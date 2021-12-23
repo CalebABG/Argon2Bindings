@@ -1,4 +1,5 @@
 ﻿using System;
+using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings.Attributes;
 
@@ -23,8 +24,7 @@ internal class Argon2MappingMethodAttribute : Attribute
 
     public Argon2MappingMethodAttribute(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Method name cannot be null or empty.", nameof(name));
+        ValidateStringNotNullOrWhiteSpace(name, nameof(name));
 
         Name = name;
     }
