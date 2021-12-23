@@ -27,7 +27,7 @@ public static class Argon2Utilities
         if (string.IsNullOrEmpty(input))
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
-    
+
     internal static void ValidateStringNotNullOrWhiteSpace(
         string input,
         string paramName)
@@ -37,14 +37,14 @@ public static class Argon2Utilities
     }
 
     internal static void ValidateEnum(
-        Type enumType, 
+        Type enumType,
         object value)
     {
         if (enumType == null) throw new ArgumentNullException(nameof(enumType));
         if (value == null) throw new ArgumentNullException(nameof(value));
 
         if (!Enum.IsDefined(enumType, value))
-            throw new InvalidEnumArgumentException($"{nameof(value)} : {(int) value} is an invalid value for enum type {enumType}");
+            throw new InvalidEnumArgumentException($"{nameof(value)} : {(int)value} is an invalid value for enum type {enumType}");
     }
 
     internal static void ValidateCollection(
@@ -103,7 +103,7 @@ public static class Argon2Utilities
         byte[] array)
     {
         int bytesToAllocate = array.Length + 1;
-        
+
         IntPtr ptr = Marshal.AllocHGlobal(bytesToAllocate);
         Marshal.Copy(array, 0, ptr, array.Length);
         Marshal.WriteByte(ptr, array.Length, 0x0);

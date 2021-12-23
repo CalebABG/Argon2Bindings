@@ -44,7 +44,7 @@ public static class Argon2PlatformUtilities
     {
         return GetPlatformArchitecture(RuntimeInformation.OSArchitecture);
     }
-    
+
     internal static string GetPlatformArchitecture(
         Architecture architecture)
     {

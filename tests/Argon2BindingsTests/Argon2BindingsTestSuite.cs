@@ -37,7 +37,7 @@ public class Argon2BindingsTestSuite
         // Act
         Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, param);
     }
-    
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -80,7 +80,7 @@ public class Argon2BindingsTestSuite
         string param)
     {
         // Arrange
-        byte[] input = {0x1, 0x2};
+        byte[] input = { 0x1, 0x2 };
 
         // Act
         Argon2Utilities.ValidateCollection(input, param);
@@ -116,7 +116,7 @@ public class Argon2BindingsTestSuite
     public void Argon2Utilities_ContextDataValid_Should_Return_True_When_InputIsValid()
     {
         // Arrange
-        byte[] input = {0x1, 0x2, 0x3, 0x4};
+        byte[] input = { 0x1, 0x2, 0x3, 0x4 };
 
         // Act
         var result = Argon2Utilities.ContextDataValid(input);
@@ -152,7 +152,7 @@ public class Argon2BindingsTestSuite
     public void Argon2Utilities_ToHexString_Should_Return_ValidHexString_When_InputIsValid()
     {
         // Arrange
-        byte[] input = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
+        byte[] input = { 0x1, 0x1, 0x1, 0x1, 0x1, 0x1 };
 
         // Act
         string result = input.ToHexString();
@@ -173,8 +173,8 @@ public class Argon2BindingsTestSuite
     }
 
     [Theory]
-    [InlineData(new byte[] {0x61, 0x62, 0x63, 0x64}, true, "abcd")]
-    [InlineData(new byte[] {0x61, 0x62, 0x63, 0x64}, false, "YWJjZA==")]
+    [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, true, "abcd")]
+    [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, false, "YWJjZA==")]
     public void Argon2Utilities_GetEncodedString_Should_Return_ValidEncodedString_When_InputIsNotNullOrEmpty(
         byte[] input,
         bool encodeHash,
@@ -188,12 +188,12 @@ public class Argon2BindingsTestSuite
     }
 
     [Theory]
-    [InlineData(typeof(Argon2Flag), (Argon2Flag) (-1))]
-    [InlineData(typeof(Argon2Flag), (Argon2Flag) (1 << 4))]
-    [InlineData(typeof(Argon2Type), (Argon2Type) (-1))]
-    [InlineData(typeof(Argon2Type), (Argon2Type) 777)]
-    [InlineData(typeof(Argon2Version), (Argon2Version) 0xF)]
-    [InlineData(typeof(Argon2Version), (Argon2Version) 0xFF)]
+    [InlineData(typeof(Argon2Flag), (Argon2Flag)(-1))]
+    [InlineData(typeof(Argon2Flag), (Argon2Flag)(1 << 4))]
+    [InlineData(typeof(Argon2Type), (Argon2Type)(-1))]
+    [InlineData(typeof(Argon2Type), (Argon2Type)777)]
+    [InlineData(typeof(Argon2Version), (Argon2Version)0xF)]
+    [InlineData(typeof(Argon2Version), (Argon2Version)0xFF)]
     public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputIsInvalidForEnumType(
         Type enumType,
         object value)
@@ -204,7 +204,7 @@ public class Argon2BindingsTestSuite
     }
 
     [Theory]
-    [InlineData(null, (Argon2Flag) (-1))]
+    [InlineData(null, (Argon2Flag)(-1))]
     [InlineData(typeof(Argon2Flag), null)]
     [InlineData(null, null)]
     public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputParametersAreNull(
@@ -236,42 +236,42 @@ public class Argon2BindingsTestSuite
         // Arrange
         var password = "test";
         var encodedHash = "$argon2i$v=19$m=2048,t=3,p=1$dGVzdGluZzQ1Ng$VaMcEYLV/tlKirCtI1MOF5UfaD6BCQvbTNggdHDVLNo";
-        
+
         // Act
         var result = Argon2Core.Verify(password, encodedHash);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.True(result.Success);
     }
-    
+
     [Fact]
     public void Argon2Core_Verify_Should_Return_False_When_InvalidPasswordProvided()
     {
         // Arrange
         var password = "testing1234";
         var encodedHash = "$argon2i$v=19$m=2048,t=3,p=1$dGVzdGluZzQ1Ng$VaMcEYLV/tlKirCtI1MOF5UfaD6BCQvbTNggdHDVLNo";
-        
+
         // Act
         var result = Argon2Core.Verify(password, encodedHash);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.False(result.Success);
     }
-    
+
     [Fact]
     public void Argon2Core_Verify_Should_Return_FalseWithError_When_EncodedHashIsInvalid()
     {
         // Arrange
         var password = "test";
-        
+
         // Salt removed
         var encodedHash = "$argon2i$v=19$m=2048,t=3,p=1$VaMcEYLV/tlKirCtI1MOF5UfaD6BCQvbTNggdHDVLNo";
-        
+
         // Act
         var result = Argon2Core.Verify(password, encodedHash);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -285,7 +285,7 @@ public class Argon2BindingsTestSuite
         string password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ArgumentException>(() =>
             Argon2Core.Hash(password));
     }
 
@@ -296,7 +296,7 @@ public class Argon2BindingsTestSuite
         byte[] password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ArgumentException>(() =>
             Argon2Core.Hash(password));
     }
 
@@ -324,7 +324,7 @@ public class Argon2BindingsTestSuite
     {
         // Arrange
         var context = new Argon2Context();
-        
+
         // Act
         var result = Argon2Core.Hash(password, salt, context);
 
@@ -332,7 +332,7 @@ public class Argon2BindingsTestSuite
         Assert.NotNull(result);
         Assert.Equal(expectedEncodedHash, result.EncodedHash);
     }
-    
+
     [Theory]
     [InlineData("test", "testing456", "40466673a1b16ff19366744ae0db8bac2fa65e2595a6c8e712108bcf62f66467")]
     [InlineData("testing123", "testing6", "6b50b0efc71314d6f69164066e97182884a28e2dc6e2769d555c364e76d89735")]
@@ -343,7 +343,7 @@ public class Argon2BindingsTestSuite
     {
         // Arrange
         var context = new Argon2Context();
-        
+
         // Act
         var result = Argon2Core.Hash(password, salt, context, false);
 
@@ -351,15 +351,15 @@ public class Argon2BindingsTestSuite
         Assert.NotNull(result);
         Assert.Equal(expectedRawHashHex.ToUpper(), result.RawHash.ToHexString());
     }
-    
+
     [Fact]
     public void Argon2Core_Hash_Should_Return_ErrorResult_When_InvalidArgon2TypeSetInContext()
     {
         // Arrange
         var password = "testing";
         var salt = "testing1234";
-        var context = new Argon2Context { Type = (Argon2Type) (-1) };
-        
+        var context = new Argon2Context { Type = (Argon2Type)(-1) };
+
         // Act
         var result = Argon2Core.Hash(password, salt, context, false);
 
@@ -367,7 +367,7 @@ public class Argon2BindingsTestSuite
         Assert.NotNull(result);
         Assert.Equal(Argon2Result.IncorrectType, result.Status);
     }
-    
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -375,21 +375,21 @@ public class Argon2BindingsTestSuite
         string password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ArgumentException>(() =>
             Argon2Core.ContextHash(password));
     }
-    
+
     [Theory]
     [InlineData(null)]
-    [InlineData(new byte[]{ })]
+    [InlineData(new byte[] { })]
     public void Argon2Core_ContextHash_Should_Throw_When_PasswordCollectionIsNullOrEmpty(
         byte[] password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ArgumentException>(() =>
             Argon2Core.ContextHash(password));
     }
-    
+
     [Theory]
     [InlineData("test", "testing123", "1f07729a6e5ae8b4032d6a187a7b30292653491c5e6fea5eca8deb73dabe5704")]
     public void Argon2Core_ContextHash_Should_Return_ValidHash_When_ValidParametersProvided_Using_DefaultContext(
@@ -399,7 +399,7 @@ public class Argon2BindingsTestSuite
     {
         // Arrange
         var context = new Argon2Context();
-        
+
         // Act
         var result = Argon2Core.ContextHash(password, salt, context);
 
@@ -416,7 +416,7 @@ public class Argon2BindingsTestSuite
     {
         // Assert
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            Argon2Errors.GetErrorMessage((Argon2Result) error));
+            Argon2Errors.GetErrorMessage((Argon2Result)error));
     }
 
     [Theory]
@@ -453,9 +453,9 @@ public class Argon2BindingsTestSuite
     {
         // Assert
         Assert.Throws<Exception>(() =>
-            Argon2PlatformUtilities.GetPlatformArchitecture((Architecture) osArchCode));
+            Argon2PlatformUtilities.GetPlatformArchitecture((Architecture)osArchCode));
     }
-    
+
     [Theory]
     [InlineData(Architecture.X86)]
     [InlineData(Architecture.X64)]
@@ -466,7 +466,7 @@ public class Argon2BindingsTestSuite
     {
         // Act
         var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture(architecture);
-        
+
         // Assert
         Assert.NotNull(platformArch);
         Assert.NotEmpty(platformArch);
@@ -486,7 +486,7 @@ public class Argon2BindingsTestSuite
         Assert.Throws<ArgumentException>(() =>
             new Argon2MappingMethodAttribute(methodName));
     }
-    
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -501,7 +501,7 @@ public class Argon2BindingsTestSuite
         Assert.Throws<ArgumentException>(() =>
             new Argon2ApiBrokenOnPlatformAttribute(platformName, RuntimeInformation.OSArchitecture));
     }
-    
+
     [Theory]
     [InlineData(-777)]
     [InlineData(777)]
@@ -512,7 +512,7 @@ public class Argon2BindingsTestSuite
         Assert.Throws<InvalidEnumArgumentException>(() =>
             new Argon2ApiBrokenOnPlatformAttribute(nameof(OSPlatform.Windows), (Architecture)architecture));
     }
-    
+
     [Theory]
     [InlineData(nameof(OSPlatform.Windows), Architecture.X86)]
     [InlineData(nameof(OSPlatform.OSX), Architecture.Arm64)]
@@ -523,7 +523,7 @@ public class Argon2BindingsTestSuite
     {
         // Act
         var attrib = new Argon2ApiBrokenOnPlatformAttribute(platformName, architecture);
-        
+
         // Assert
         Assert.NotNull(attrib);
     }
@@ -535,7 +535,7 @@ public class Argon2BindingsTestSuite
         Assert.Throws<ArgumentNullException>(() =>
             Argon2DynamicBinding.GetMappingMethod(null!));
     }
-    
+
     [Fact]
     public void Argon2DynamicBinding_GetMappingMethod_Should_Throw_When_InputTypeDoesNotHaveMappingMethodAttribute()
     {
