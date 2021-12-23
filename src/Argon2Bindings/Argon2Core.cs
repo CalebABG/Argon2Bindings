@@ -7,8 +7,6 @@ using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings;
 
-/* Todo: Add argon2 C lib comments */
-/* Todo: Add Unit tests */
 /* Todo: Add Benchmark tests */
 /* Todo: Check/add tests for memory leaks */
 /* Todo: Look into optimizing */
