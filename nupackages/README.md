@@ -1,0 +1,1 @@
+﻿## This folder is for building and testing of `local` nuget packages for the bindings project.

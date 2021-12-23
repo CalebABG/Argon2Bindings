@@ -9,11 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Argon2Bindings" Version="1.0.0" />
-    </ItemGroup>
-
-    <!--<ItemGroup>
         <ProjectReference Include="..\Argon2Bindings\Argon2Bindings.csproj" />
-    </ItemGroup>-->
+    </ItemGroup>
 
 </Project>
