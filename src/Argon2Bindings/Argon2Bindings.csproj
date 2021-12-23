@@ -6,6 +6,11 @@
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Title>C# Argon2 Bindings</Title>
+        <Authors>CalebABG</Authors>
+        <Description>A C# Argon2 Binding Library</Description>
+        <RepositoryUrl>https://github.com/CalebABG/Argon2Bindings</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -20,7 +25,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest">
+            <Pack>true</Pack>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </Content>
     </ItemGroup>
 
 </Project>
