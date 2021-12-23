@@ -380,6 +380,17 @@ public class Argon2BindingsTestSuite
     }
     
     [Theory]
+    [InlineData(null)]
+    [InlineData(new byte[]{ })]
+    public void Argon2Core_ContextHash_Should_Throw_When_PasswordCollectionIsNullOrEmpty(
+        byte[] password)
+    {
+        // Assert
+        Assert.Throws<ArgumentException>(() => 
+            Argon2Core.ContextHash(password));
+    }
+    
+    [Theory]
     [InlineData("test", "testing123", "1f07729a6e5ae8b4032d6a187a7b30292653491c5e6fea5eca8deb73dabe5704")]
     public void Argon2Core_ContextHash_Should_Return_ValidHash_When_ValidParametersProvided_Using_DefaultContext(
         string password,
