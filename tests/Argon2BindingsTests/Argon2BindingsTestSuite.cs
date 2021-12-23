@@ -279,31 +279,25 @@ public class Argon2BindingsTestSuite
     }
 
     [Theory]
-    [InlineData(null, "test1234")]
-    [InlineData("", "test1234")]
-    [InlineData("test1234", null)]
-    [InlineData("test1234", "")]
-    [InlineData(null, null)]
-    [InlineData("", "")]
-    public void Argon2Core_Hash_Should_Throw_When_PasswordOrSaltStringsAreNullOrEmpty(
-        string password,
-        string salt)
+    [InlineData(null)]
+    [InlineData("")]
+    public void Argon2Core_Hash_Should_Throw_When_PasswordStringIsNullOrEmpty(
+        string password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password, salt));
+        Assert.Throws<ArgumentException>(() => 
+            Argon2Core.Hash(password));
     }
 
     [Theory]
-    [InlineData(null, new byte[] {0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34})]
-    [InlineData(new byte[] { }, new byte[] {0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34})]
-    [InlineData(new byte[] {0x74, 0x65, 0x73, 0x74}, null)]
-    [InlineData(new byte[] {0x74, 0x65, 0x73, 0x74}, new byte[] { })]
-    public void Argon2Core_Hash_Should_Throw_When_PasswordOrSaltCollectionsAreNullOrEmpty(
-        byte[] password,
-        byte[] salt)
+    [InlineData(null)]
+    [InlineData(new byte[] { })]
+    public void Argon2Core_Hash_Should_Throw_When_PasswordCollectionsIsNullOrEmpty(
+        byte[] password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password, salt));
+        Assert.Throws<ArgumentException>(() => 
+            Argon2Core.Hash(password));
     }
 
     [Fact]
@@ -375,18 +369,14 @@ public class Argon2BindingsTestSuite
     }
     
     [Theory]
-    [InlineData(null, "test1234")]
-    [InlineData("", "test1234")]
-    [InlineData("test1234", null)]
-    [InlineData("test1234", "")]
-    [InlineData(null, null)]
-    [InlineData("", "")]
-    public void Argon2Core_ContextHash_Should_Throw_When_PasswordOrSaltStringsAreNullOrEmpty(
-        string password,
-        string salt)
+    [InlineData(null)]
+    [InlineData("")]
+    public void Argon2Core_ContextHash_Should_Throw_When_PasswordStringIsNullOrEmpty(
+        string password)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Core.ContextHash(password, salt));
+        Assert.Throws<ArgumentException>(() => 
+            Argon2Core.ContextHash(password));
     }
     
     [Theory]
