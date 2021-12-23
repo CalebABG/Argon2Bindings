@@ -86,15 +86,14 @@ public static class Argon2Core
     /// <inheritdoc cref="Hash(byte[],byte[],Argon2Context?,bool)" />
     public static Argon2HashResult Hash(
         string password,
-        string salt,
+        string? salt = null,
         Argon2Context? context = null,
         bool encodeHash = true)
     {
-        ValidateStringNotNullOrEmpty(salt, nameof(salt));
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
+        var saltBytes = GetSaltBytes(salt, context);
         var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
 
         return Hash(passwordBytes, saltBytes, context, encodeHash);
     }
@@ -119,12 +118,13 @@ public static class Argon2Core
     /// <returns>A result object with the outcome.</returns>
     public static Argon2HashResult Hash(
         byte[] password,
-        byte[] salt,
+        byte[]? salt = null,
         Argon2Context? context = null,
         bool encodeHash = true)
     {
-        ValidateCollection(salt, nameof(salt));
         ValidateCollection(password, nameof(password));
+
+        salt ??= GetSaltBytes(context);
 
         var ctx = context ?? new();
 
@@ -205,14 +205,13 @@ public static class Argon2Core
     /// <inheritdoc cref="ContextHash(byte[],byte[],Argon2Context?)"/>
     public static Argon2HashResult ContextHash(
         string password,
-        string salt,
+        string? salt = null,
         Argon2Context? context = null)
     {
-        ValidateStringNotNullOrEmpty(salt, nameof(salt));
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
+        var saltBytes = GetSaltBytes(salt, context);
         var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
 
         return ContextHash(passwordBytes, saltBytes, context);
     }
@@ -228,11 +227,12 @@ public static class Argon2Core
     /// <returns>A result object with the outcome.</returns>
     public static Argon2HashResult ContextHash(
         byte[] password,
-        byte[] salt,
+        byte[]? salt = null,
         Argon2Context? context = null)
     {
-        ValidateCollection(salt, nameof(salt));
         ValidateCollection(password, nameof(password));
+
+        salt ??= GetSaltBytes(context);
 
         var ctx = context ?? new();
 

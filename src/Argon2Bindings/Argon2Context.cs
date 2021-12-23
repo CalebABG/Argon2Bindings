@@ -29,6 +29,11 @@ public struct Argon2Context
     public uint DegreeOfParallelism = DefaultDegreeOfParallelism;
 
     /// <summary>
+    /// The desired length of the salt in bytes
+    /// </summary>
+    public uint SaltLength = DefaultSaltLength;
+
+    /// <summary>
     /// The desired length of the hash in bytes
     /// </summary>
     public uint HashLength = DefaultHashLength;

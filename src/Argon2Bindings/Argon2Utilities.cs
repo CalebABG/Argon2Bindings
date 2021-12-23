@@ -2,6 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Argon2Bindings;
@@ -53,6 +54,30 @@ public static class Argon2Utilities
     {
         if (collection is null || collection.Count < 1)
             throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
+    }
+
+    public static byte[] GenerateSalt(
+        uint saltLength = Argon2Defaults.DefaultSaltLength)
+    {
+        byte[] salt = new byte[saltLength];
+        RandomNumberGenerator.Fill(salt);
+        return salt;
+    }
+
+    internal static byte[] GetSaltBytes(
+        Argon2Context? context)
+    {
+        uint saltLen = context?.SaltLength ?? Argon2Defaults.DefaultSaltLength;
+        return GenerateSalt(saltLen);
+    }
+
+    internal static byte[] GetSaltBytes(
+        string? salt,
+        Argon2Context? context)
+    {
+        return !string.IsNullOrWhiteSpace(salt)
+            ? Encoding.UTF8.GetBytes(salt)
+            : GetSaltBytes(context);
     }
 
     internal static string GetEncodedString(

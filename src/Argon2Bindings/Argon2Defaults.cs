@@ -14,6 +14,7 @@ public static class Argon2Defaults
     public const uint DefaultTimeCost = 3;
     public const uint DefaultMemoryCost = 1 << 12;
     public const uint DefaultDegreeOfParallelism = 1;
+    public const uint DefaultSaltLength = 16;
     public const uint DefaultHashLength = 32;
     public const Argon2Type DefaultType = Argon2I;
     public const Argon2Version DefaultVersion = Argon2VersionNumber;
