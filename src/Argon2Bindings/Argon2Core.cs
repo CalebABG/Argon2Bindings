@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using Argon2Bindings.Enums;
 using Argon2Bindings.Results;
 using Argon2Bindings.Structures;

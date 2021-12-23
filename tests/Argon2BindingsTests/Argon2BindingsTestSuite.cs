@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Argon2Bindings;
 using Argon2Bindings.Attributes;
 using Argon2Bindings.Enums;
+using Argon2Bindings.Results;
 using Xunit;
 
 namespace Argon2BindingsTests;
@@ -270,7 +271,25 @@ public class Argon2BindingsTestSuite
         var encodedHash = "$argon2i$v=19$m=2048,t=3,p=1$VaMcEYLV/tlKirCtI1MOF5UfaD6BCQvbTNggdHDVLNo";
 
         // Act
-        var result = Argon2Core.Verify(password, encodedHash);
+        Argon2VerifyResult result = Argon2Core.Verify(password, encodedHash);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.NotEmpty(result.Error!);
+    }
+    
+    [Fact]
+    public void Argon2Core_Verify_Should_Return_FalseWithError_When_TypeIsInvalid()
+    {
+        // Arrange
+        var password = "test";
+
+        // Salt removed
+        var encodedHash = "$argon2i$v=19$m=2048,t=3,p=1$VaMcEYLV/tlKirCtI1MOF5UfaD6BCQvbTNggdHDVLNo";
+
+        // Act
+        Argon2VerifyResult result = Argon2Core.Verify(password, encodedHash, (Argon2Type)(-1));
 
         // Assert
         Assert.NotNull(result);
@@ -388,6 +407,20 @@ public class Argon2BindingsTestSuite
         // Assert
         Assert.Throws<ArgumentException>(() =>
             Argon2Core.ContextHash(password));
+    }
+
+    [Fact]
+    public void Argon2Core_ContextHash_Should_Return_ErrorResult_When_InvalidContextProvided()
+    {
+        // Arrange
+        var context = new Argon2Context { Type = (Argon2Type) (-1) };
+        
+        // Act
+        Argon2HashResult result = Argon2Core.ContextHash("test", context: context);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotEqual(Argon2Result.Ok, result.Status);
     }
 
     [Theory]
