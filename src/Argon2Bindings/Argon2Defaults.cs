@@ -1,4 +1,5 @@
-﻿using Argon2Bindings.Enums;
+﻿using System.Text;
+using Argon2Bindings.Enums;
 using static Argon2Bindings.Enums.Argon2Type;
 using static Argon2Bindings.Enums.Argon2Version;
 using static Argon2Bindings.Enums.Argon2Flag;
@@ -19,4 +20,5 @@ public static class Argon2Defaults
     public const Argon2Type DefaultType = Argon2I;
     public const Argon2Version DefaultVersion = Argon2VersionNumber;
     public const Argon2Flag DefaultFlag = Default;
+    public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 }

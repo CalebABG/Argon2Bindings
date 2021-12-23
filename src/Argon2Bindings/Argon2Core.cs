@@ -37,8 +37,8 @@ public static class Argon2Core
 
         Argon2VerifyResult verifyResult = new(false);
 
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var encodedHashBytes = Encoding.UTF8.GetBytes(encodedHash);
+        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
+        var encodedHashBytes = Argon2Defaults.DefaultEncoding.GetBytes(encodedHash);
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
 
@@ -93,7 +93,7 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var saltBytes = GetSaltBytes(salt, context);
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
 
         return Hash(passwordBytes, saltBytes, context, encodeHash);
     }
@@ -211,7 +211,7 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var saltBytes = GetSaltBytes(salt, context);
-        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
 
         return ContextHash(passwordBytes, saltBytes, context);
     }

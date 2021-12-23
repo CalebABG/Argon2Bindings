@@ -3,7 +3,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Argon2Bindings;
 
@@ -76,7 +75,7 @@ public static class Argon2Utilities
         Argon2Context? context)
     {
         return !string.IsNullOrWhiteSpace(salt)
-            ? Encoding.UTF8.GetBytes(salt)
+            ? Argon2Defaults.DefaultEncoding.GetBytes(salt)
             : GetSaltBytes(context);
     }
 
@@ -87,7 +86,7 @@ public static class Argon2Utilities
         ValidateCollection(outputBytes, nameof(outputBytes));
 
         return encodeHash
-            ? Encoding.UTF8.GetString(outputBytes).TrimEnd('\0')
+            ? Argon2Defaults.DefaultEncoding.GetString(outputBytes).TrimEnd('\0')
             : Convert.ToBase64String(outputBytes);
     }
 
