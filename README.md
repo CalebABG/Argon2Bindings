@@ -21,18 +21,6 @@ Checkout this handy writeup for how to compile the Argon2 source code for your p
 
 - [How to compile Argon2 source](docs/CompilingArgon2Source.md)
 
-### Resources
-
-- [GCC online documentation](https://gcc.gnu.org/onlinedocs/)
-- [GCC and Makefiles](https://youtu.be/OnEF1MexJlI)
-- [Differences between windows build files](https://github.com/P-H-C/phc-winner-argon2/issues/258)
-- [Understanding and Using Makefile Flags](https://earthly.dev/blog/make-flags/)
-- [.NET Runtime Identififers](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)
-- [.NET Platform Invoke (P/Invoke)](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke)
-- [.NET Native interoperability best practices](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/best-practices)
-- [Mono Interop with Native Libraries](https://www.mono-project.com/docs/advanced/pinvoke/)
-- [Cross compiling for arm or aarch64 on Debian or Ubuntu](https://jensd.be/1126/linux/cross-compiling-for-arm-or-aarch64-on-debian-or-ubuntu)
-
 ## Building / Running
 
 Head over to this doc for how to build and run this projects solution
@@ -47,3 +35,15 @@ available / usable Nuget package for the library.
 
 Depending on the functionality and development of this project, this repo may be scrapped and rebuilt, where the new
 project may have a Nuget package released.
+
+### Resources
+
+- [GCC online documentation](https://gcc.gnu.org/onlinedocs/)
+- [GCC and Makefiles](https://youtu.be/OnEF1MexJlI)
+- [Differences between windows build files](https://github.com/P-H-C/phc-winner-argon2/issues/258)
+- [Understanding and Using Makefile Flags](https://earthly.dev/blog/make-flags/)
+- [.NET Runtime Identififers](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog)
+- [.NET Platform Invoke (P/Invoke)](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke)
+- [.NET Native interoperability best practices](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/best-practices)
+- [Mono Interop with Native Libraries](https://www.mono-project.com/docs/advanced/pinvoke/)
+- [Cross compiling for arm or aarch64 on Debian or Ubuntu](https://jensd.be/1126/linux/cross-compiling-for-arm-or-aarch64-on-debian-or-ubuntu)
