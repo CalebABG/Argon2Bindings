@@ -97,13 +97,13 @@ internal struct Argon2MarshalContext
     /// Pointer to memory allocator
     /// </summary>
     [MarshalAs(UnmanagedType.FunctionPtr)]
-    public MemoryAllocator? AllocateCbk;
+    public Argon2MemoryAllocator? AllocateCbk;
 
     /// <summary>
     /// Pointer to memory de-allocator
     /// </summary>
     [MarshalAs(UnmanagedType.FunctionPtr)]
-    public MemoryDeallocator? FreeCbk;
+    public Argon2MemoryDeallocator? FreeCbk;
 
     /// <summary>
     /// Field clearing flags
@@ -113,7 +113,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory allocator 
     /// </summary>
-    public unsafe delegate int MemoryAllocator(
+    public unsafe delegate int Argon2MemoryAllocator(
         byte** memory,
         nuint bytes_to_allocate
     );
@@ -121,7 +121,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory de-allocator
     /// </summary>
-    public unsafe delegate void MemoryDeallocator(
+    public unsafe delegate void Argon2MemoryDeallocator(
         byte* memory,
         nuint bytes_to_allocate
     );
