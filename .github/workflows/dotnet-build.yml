@@ -8,23 +8,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
-    if: "!contains(toJSON(github.event.commits.*.message), '[no-ci]')"
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        dotnet: [ '2.1.x', '3.1.x', '5.0.x', '6.0.x' ]
+
+    if: "contains(toJSON(github.event.commits.*.message), '[ci-build]')"
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
-    
+        dotnet-version: ${{ matrix.dotnet }}
+
     - name: Restore
       run: dotnet restore *.sln
-    
+
     - name: Build
-      run: dotnet build --no-restore *.sln
-    
+      run: dotnet build --configuration Release --no-restore *.sln
+
     - name: Run Test Suite
       run: dotnet test --no-build --verbosity normal *.sln
