@@ -26,10 +26,10 @@ jobs:
         dotnet-version: ${{ matrix.dotnet }}
 
     - name: Restore
-      run: dotnet restore *.sln
+      run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore *.sln
+      run: dotnet build --configuration Release --no-restore
 
     - name: Run Test Suite
-      run: dotnet test --no-build --verbosity normal *.sln
+      run: dotnet test --no-build --verbosity normal
