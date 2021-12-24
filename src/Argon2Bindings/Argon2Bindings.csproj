@@ -7,10 +7,14 @@
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Title>C# Argon2 Bindings</Title>
-        <Authors>CalebABG</Authors>
         <Description>A C# Argon2 Binding Library</Description>
+        <Authors>CalebABG</Authors>
+        <Version>0.0.1-preview</Version>
         <RepositoryUrl>https://github.com/CalebABG/Argon2Bindings</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
+        <PackageProjectUrl>https://github.com/CalebABG/Argon2Bindings</PackageProjectUrl>
+        <PackageOutputPath>$(SolutionDir)\nupackages</PackageOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <PropertyGroup>
