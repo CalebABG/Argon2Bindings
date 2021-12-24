@@ -12,6 +12,7 @@ namespace Argon2Bindings;
 /* Todo: Look into optimizing */
 /* Todo: Add Windows x86 + x64 toolchains to Docker binary compilation automation */
 /* Todo: Consolidate or unify logic in `Hash` and `ContextHash` methods */
+/* Todo: Create dotnet CLI tool for replacing scripts (use dotnet command line parser nuget) */
 
 public static class Argon2Core
 {
