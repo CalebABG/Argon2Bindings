@@ -13,7 +13,7 @@
         <RepositoryUrl>https://github.com/CalebABG/Argon2Bindings</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageProjectUrl>https://github.com/CalebABG/Argon2Bindings</PackageProjectUrl>
-        <PackageOutputPath>$(SolutionDir)\nupackages</PackageOutputPath>
+        <PackageOutputPath>$(SolutionDir)nupackages</PackageOutputPath>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
