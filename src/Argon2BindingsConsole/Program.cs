@@ -20,7 +20,12 @@ public static class Program
 
     private static void PrintContextHash()
     {
+        var stopwatch = Stopwatch.StartNew();
+
         var result = Argon2Core.ContextHash(Password, Salt, Context);
+        stopwatch.Stop();
+
+        Console.WriteLine($"\nHash Time: {stopwatch.ElapsedMilliseconds}ms");
         Console.WriteLine(result);
     }
 
