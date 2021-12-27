@@ -24,11 +24,8 @@ internal static class Argon2DynamicBinding
     private const string Argon2BinaryName = "libargon2";
     private const string Argon2BinariesFolder = "argon2binaries";
 
-    private const MethodAttributes MethodAttribs = MethodAttributes.FamANDAssem |
-                                                   MethodAttributes.Family |
-                                                   MethodAttributes.Public |
+    private const MethodAttributes MethodAttribs = MethodAttributes.Public |
                                                    MethodAttributes.Static |
-                                                   MethodAttributes.HideBySig |
                                                    MethodAttributes.PinvokeImpl;
 
     /// <summary>
@@ -118,11 +115,9 @@ internal static class Argon2DynamicBinding
         string typeName,
         IReadOnlyList<Type> delegateTypes)
     {
-        AssemblyBuilder assemblyBuilder = AssemblyBuilder
-            .DefineDynamicAssembly(new AssemblyName
-            {
-                Name = assemblyName
-            }, AssemblyBuilderAccess.Run);
+        AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName(assemblyName),
+            AssemblyBuilderAccess.Run);
 
         TypeBuilder typeBuilder = assemblyBuilder
             .DefineDynamicModule(moduleName)
@@ -136,9 +131,9 @@ internal static class Argon2DynamicBinding
 
             string mappingMethodName = GetMappingMethod(delegateType);
 
-            MethodInfo method = delegateType.GetMethod("Invoke")!;
+            MethodInfo delegateMethod = delegateType.GetMethod("Invoke")!;
 
-            Type[] methodParameterTypes = method.GetParameters()
+            Type[] methodParameterTypes = delegateMethod.GetParameters()
                 .Select(t => t.ParameterType)
                 .ToArray();
 
@@ -147,16 +142,16 @@ internal static class Argon2DynamicBinding
                 dllPath,
                 MethodAttribs,
                 CallingConventions.Standard,
-                method.ReturnType,
+                delegateMethod.ReturnType,
                 methodParameterTypes,
                 CallingConvention.Cdecl,
                 CharSet.Auto
             );
 
-            for (var j = 0; j < methodParameterTypes.Length; ++j)
-                methodBuilder.DefineParameter(j + 1, ParameterAttributes.None, methodParameterTypes[j].Name);
+            var implFlags = methodBuilder.GetMethodImplementationFlags() |
+                            MethodImplAttributes.PreserveSig;
 
-            methodBuilder.SetImplementationFlags(MethodImplAttributes.PreserveSig);
+            methodBuilder.SetImplementationFlags(implFlags);
         }
 
         Type dynamicType = typeBuilder.CreateType();
