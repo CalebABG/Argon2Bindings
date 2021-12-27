@@ -278,7 +278,7 @@ public class Argon2BindingsTestSuite
         Assert.False(result.Success);
         Assert.NotEmpty(result.Error!);
     }
-    
+
     [Fact]
     public void Argon2Core_Verify_Should_Return_FalseWithError_When_TypeIsInvalid()
     {
@@ -413,11 +413,11 @@ public class Argon2BindingsTestSuite
     public void Argon2Core_ContextHash_Should_Return_ErrorResult_When_InvalidContextProvided()
     {
         // Arrange
-        var context = new Argon2Context { Type = (Argon2Type) (-1) };
-        
+        var context = new Argon2Context { Type = (Argon2Type)(-1) };
+
         // Act
         Argon2HashResult result = Argon2Core.ContextHash("test", context: context);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.NotEqual(Argon2Result.Ok, result.Status);
