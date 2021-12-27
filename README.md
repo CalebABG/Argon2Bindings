@@ -37,7 +37,7 @@ Depending on the functionality and development of this project, this repo may be
 project may have a Nuget package released.
 
 ### Resources
-
+- [Argon2 Hash Generator & Verifier](https://argon2.online/)
 - [GCC online documentation](https://gcc.gnu.org/onlinedocs/)
 - [GCC and Makefiles](https://youtu.be/OnEF1MexJlI)
 - [Differences between windows build files](https://github.com/P-H-C/phc-winner-argon2/issues/258)
