@@ -130,6 +130,12 @@ public static class Argon2Utilities
         WriteLine(text, ConsoleColor.Red);
     }
 
+    public static void WriteError(
+        Exception e)
+    {
+        WriteLine($"{e.Message}\n{e.StackTrace}", ConsoleColor.Red);
+    }
+
     /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
     private static void WriteLine(
         string text,

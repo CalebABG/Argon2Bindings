@@ -71,7 +71,7 @@ public static class Argon2Core
         {
             error = true;
             FreeManagedPointers();
-            WriteError($"{e.Message}\n {e.StackTrace}");
+            WriteError(e);
         }
         finally
         {
@@ -188,7 +188,7 @@ public static class Argon2Core
         {
             error = true;
             FreeManagedPointers();
-            WriteError($"{e.Message}\n {e.StackTrace}");
+            WriteError(e);
         }
         finally
         {
@@ -308,7 +308,7 @@ public static class Argon2Core
         {
             error = true;
             FreeManagedPointers();
-            WriteError($"{e.Message}\n {e.StackTrace}");
+            WriteError(e);
         }
         finally
         {
