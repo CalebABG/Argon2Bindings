@@ -97,6 +97,7 @@ internal static class Argon2DynamicBinding
     /// Builds a <see cref="Type"/> from a collection of delegates.
     /// This type contains PInvoke methods built from the provided collection of delegates,
     /// which can be called to invoke native argon2 C library functions.
+    /// Reference: <see href="https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310" />
     /// </summary>
     /// <param name="assemblyName">The name of the assembly</param>
     /// <param name="moduleName">The name of the module</param>
@@ -108,7 +109,6 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws when the dynamic type is null or other exceptions are thrown through reflection.
     /// </exception>
-    /* Reference: https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310 */
     private static Type CreateDynamicType(
         string assemblyName,
         string moduleName,
