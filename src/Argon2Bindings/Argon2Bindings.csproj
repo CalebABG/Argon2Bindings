@@ -6,6 +6,10 @@
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <!-- Todo: Actually fix/use proper pack structure
+        https://docs.microsoft.com/en-us/nuget/create-packages/supporting-multiple-target-frameworks#framework-version-folder-structure
+         -->
+        <NoWarn>NU5100</NoWarn>
         <Title>C# Argon2 Bindings</Title>
         <Description>A C# Argon2 Binding Library</Description>
         <Authors>CalebABG</Authors>
