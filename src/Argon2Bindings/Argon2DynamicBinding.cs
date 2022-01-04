@@ -179,9 +179,13 @@ internal static class Argon2DynamicBinding
         var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture();
         var (platformName, platformBinaryExtension) = Argon2PlatformUtilities.GetPlatformNameAndBinaryExtension();
         var platformBinaryFolder = $"{platformName}-{platformArch}";
+        var platformBinaryFile = $"{Argon2BinaryName}.{platformBinaryExtension}";
 
-        var partialPath = Path.Combine(currentDomainBaseDirectory, Argon2BinariesFolder,
-            platformBinaryFolder, $"{Argon2BinaryName}.{platformBinaryExtension}");
+        var partialPath = Path.Combine(
+            currentDomainBaseDirectory,
+            Argon2BinariesFolder,
+            platformBinaryFolder,
+            platformBinaryFile);
 
         var fullPath = Path.GetFullPath(partialPath);
         return fullPath;
