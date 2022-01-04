@@ -97,7 +97,9 @@ internal static class Argon2DynamicBinding
     /// Builds a <see cref="Type"/> from a collection of delegates.
     /// This type contains PInvoke methods built from the provided collection of delegates,
     /// which can be called to invoke native argon2 C library functions.
-    /// Reference: <see href="https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310" />
+    /// References:
+    /// 1. <see href="https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310" />
+    /// 2. <see href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.modulebuilder.definepinvokemethod?view=netstandard-2.1" />
     /// </summary>
     /// <param name="assemblyName">The name of the assembly</param>
     /// <param name="moduleName">The name of the module</param>
