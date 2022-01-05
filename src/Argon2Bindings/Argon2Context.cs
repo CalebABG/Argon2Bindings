@@ -86,6 +86,7 @@ public struct Argon2Context
     {
         return new()
         {
+            DegreeOfParallelism = 4,
             MemoryCost = 1 << 16,
             Type = type,
         };
