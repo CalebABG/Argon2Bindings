@@ -2,21 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <OutputType>Library</OutputType>
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
+        <ImplicitUsings>enable</ImplicitUsings>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <!-- Todo: Actually fix/use proper pack structure
-        https://docs.microsoft.com/en-us/nuget/create-packages/supporting-multiple-target-frameworks#framework-version-folder-structure
-         -->
-        <NoWarn>NU5100</NoWarn>
         <Title>C# Argon2 Bindings</Title>
         <Description>A C# Argon2 Binding Library</Description>
         <Authors>CalebABG</Authors>
         <Version>0.0.1-preview</Version>
         <RepositoryUrl>https://github.com/CalebABG/Argon2Bindings</RepositoryUrl>
-        <RepositoryType>Git</RepositoryType>
         <PackageProjectUrl>https://github.com/CalebABG/Argon2Bindings</PackageProjectUrl>
         <PackageOutputPath>$(SolutionDir)nupackages</PackageOutputPath>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -28,16 +22,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>$(AssemblyName)Tests</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName)Tests" />
 
-    <ItemGroup>
-        <Content Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest">
+        <None Include="$(Argon2BinariesFolder)\**" CopyToOutputDirectory="PreserveNewest">
             <Pack>true</Pack>
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-        </Content>
+            <PackagePath>lib\$(TargetFramework)\$(Argon2BinariesFolder)</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>
