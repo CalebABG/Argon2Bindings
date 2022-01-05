@@ -5,6 +5,7 @@
         <OutputType>Library</OutputType>
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <!-- Todo: Actually fix/use proper pack structure
         https://docs.microsoft.com/en-us/nuget/create-packages/supporting-multiple-target-frameworks#framework-version-folder-structure

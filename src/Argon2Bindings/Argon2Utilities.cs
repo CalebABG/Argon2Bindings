@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Text;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -18,6 +18,14 @@ public static class Argon2Utilities
     {
         var output = BitConverter.ToString(bytes);
         return output.Replace("-", separator);
+    }
+    
+    public static byte[] ToBytes(
+        this string str, 
+        Encoding? encoding = null)
+    {
+        encoding ??= Argon2Defaults.DefaultEncoding;
+        return encoding.GetBytes(str);
     }
 
     internal static void ValidateStringNotNullOrEmpty(

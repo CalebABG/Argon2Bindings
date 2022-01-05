@@ -1,5 +1,4 @@
-﻿using System;
-using static Argon2Bindings.Argon2Utilities;
+﻿using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings.Attributes;
 

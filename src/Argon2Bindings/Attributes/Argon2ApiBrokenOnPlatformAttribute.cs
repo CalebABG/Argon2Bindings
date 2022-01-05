@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings.Attributes;
