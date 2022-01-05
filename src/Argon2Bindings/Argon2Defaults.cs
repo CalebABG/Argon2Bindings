@@ -19,6 +19,6 @@ public static class Argon2Defaults
     public const uint DefaultHashLength = 32;
     public const Argon2Type DefaultType = Argon2I;
     public const Argon2Version DefaultVersion = Argon2VersionNumber;
-    public const Argon2Flag DefaultFlag = Default;
+    public const Argon2Flag DefaultFlag = ClearPassword | ClearSecret;
     public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 }

@@ -7,6 +7,7 @@ namespace Argon2Bindings.Enums;
 /// preprocessor defined flags.
 /// </remarks>
 /// </summary>
+[Flags]
 public enum Argon2Flag
 {
     Default = 0,
