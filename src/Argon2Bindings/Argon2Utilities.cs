@@ -16,14 +16,20 @@ public static class Argon2Utilities
         this byte[] bytes,
         string separator = "")
     {
+        if (bytes is null)
+            throw new ArgumentNullException(nameof(bytes));
+
         var output = BitConverter.ToString(bytes);
         return output.Replace("-", separator);
     }
-    
+
     public static byte[] ToBytes(
-        this string str, 
+        this string str,
         Encoding? encoding = null)
     {
+        if (str is null)
+            throw new ArgumentNullException(nameof(str));
+
         encoding ??= Argon2Defaults.DefaultEncoding;
         return encoding.GetBytes(str);
     }
