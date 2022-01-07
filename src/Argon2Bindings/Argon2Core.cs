@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Argon2Bindings.Enums;
+﻿using Argon2Bindings.Enums;
 using Argon2Bindings.Results;
 using Argon2Bindings.Structures;
 using static Argon2Bindings.Argon2Utilities;
@@ -30,8 +29,6 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
         ValidateStringNotNullOrEmpty(encodedHash, nameof(encodedHash));
 
-        bool error = false;
-
         Argon2VerifyResult verifyResult = new(false);
 
         var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
@@ -39,42 +36,30 @@ public static class Argon2Core
 
         nuint passwordLength = Convert.ToUInt32(passwordBytes.Length);
 
-        IntPtr passwordBufferPointer = default,
-            encodedHashBufferPointer = default;
-
-        void FreeManagedPointers()
-        {
-            SafelyFreePointer(passwordBufferPointer);
-            SafelyFreePointer(encodedHashBufferPointer);
-        }
-
         try
         {
-            passwordBufferPointer = GetPointerToBytes(passwordBytes);
-            encodedHashBufferPointer = GetPointerToBytes(encodedHashBytes);
-
-            var status = Argon2Library.Argon2Verify(
-                encodedHashBufferPointer,
-                passwordBufferPointer,
-                passwordLength,
-                type);
-
-            verifyResult = status switch
+            unsafe
             {
-                Argon2Result.Ok => new(true),
-                Argon2Result.VerifyMismatch => new(false),
-                _ => new(false, Argon2Errors.GetErrorMessage(status))
-            };
+                fixed (byte* passPtr = passwordBytes, encodedPtr = encodedHashBytes)
+                {
+                    var status = Argon2Library.Argon2Verify(
+                        encodedPtr,
+                        passPtr,
+                        passwordLength,
+                        type);
+
+                    verifyResult = status switch
+                    {
+                        Argon2Result.Ok => new(true),
+                        Argon2Result.VerifyMismatch => new(false),
+                        _ => new(false, Argon2Errors.GetErrorMessage(status))
+                    };
+                }
+            }
         }
         catch (Exception e)
         {
-            error = true;
-            FreeManagedPointers();
             WriteError(e);
-        }
-        finally
-        {
-            if (!error) FreeManagedPointers();
         }
 
         return verifyResult;
@@ -142,56 +127,45 @@ public static class Argon2Core
                 ctx.Type)
             : ctx.HashLength;
 
-        IntPtr passPtr = default,
-            saltPtr = default,
-            bufferPointer = default;
-
-        void FreeManagedPointers()
-        {
-            SafelyFreePointer(saltPtr);
-            SafelyFreePointer(passPtr);
-            SafelyFreePointer(bufferPointer);
-        }
-
         try
         {
-            passPtr = GetPointerToBytes(password);
-            saltPtr = GetPointerToBytes(salt);
-            bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
+            unsafe
+            {
+                byte[] buffer = new byte[Convert.ToInt32(bufferLength)];
 
-            var hashPtr = encodeHash ? IntPtr.Zero : bufferPointer;
-            var encodePtr = encodeHash ? bufferPointer : IntPtr.Zero;
-            var encodeLen = encodeHash ? bufferLength : 0;
+                fixed (byte* passPtr = password, saltPtr = salt, bufferPtr = buffer)
+                {
+                    var hashPtr = encodeHash ? null : bufferPtr;
 
-            result = Argon2Library.Argon2Hash(
-                ctx.TimeCost,
-                ctx.MemoryCost,
-                ctx.DegreeOfParallelism,
-                passPtr,
-                passwordLength,
-                saltPtr,
-                saltLength,
-                hashPtr,
-                ctx.HashLength,
-                encodePtr,
-                encodeLen,
-                ctx.Type,
-                ctx.Version);
+                    var encodePtr = encodeHash ? bufferPtr : null;
+                    var encodeLen = encodeHash ? bufferLength : 0;
 
-            if (result is not Argon2Result.Ok)
-                throw new Exception(Argon2Errors.GetErrorMessage(result));
+                    result = Argon2Library.Argon2Hash(
+                        ctx.TimeCost,
+                        ctx.MemoryCost,
+                        ctx.DegreeOfParallelism,
+                        passPtr,
+                        passwordLength,
+                        saltPtr,
+                        saltLength,
+                        hashPtr,
+                        ctx.HashLength,
+                        (char*)encodePtr,
+                        encodeLen,
+                        ctx.Type,
+                        ctx.Version);
 
-            outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
+                    if (result is not Argon2Result.Ok)
+                        throw new Exception(Argon2Errors.GetErrorMessage(result));
+
+                    outputBytes = buffer;
+                }
+            }
         }
         catch (Exception e)
         {
             error = true;
-            FreeManagedPointers();
             WriteError(e);
-        }
-        finally
-        {
-            if (!error) FreeManagedPointers();
         }
 
         var encodedForm = !error ? GetEncodedString(outputBytes, encodeHash) : "";
@@ -238,80 +212,60 @@ public static class Argon2Core
 
         byte[] outputBytes = Array.Empty<byte>();
 
-        nuint passwordLength = Convert.ToUInt32(password.Length);
-        nuint saltLength = Convert.ToUInt32(salt.Length);
         nuint bufferLength = ctx.HashLength;
 
-        IntPtr passPtr = default,
-            saltPtr = default,
-            secretPointer = default,
-            associatedDataPointer = default,
-            bufferPointer = default;
-
-        void FreeManagedPointers()
-        {
-            SafelyFreePointer(passPtr);
-            SafelyFreePointer(saltPtr);
-            SafelyFreePointer(secretPointer);
-            SafelyFreePointer(associatedDataPointer);
-            SafelyFreePointer(bufferPointer);
-        }
+        nuint saltLength = Convert.ToUInt32(salt.Length);
+        nuint passwordLength = Convert.ToUInt32(password.Length);
 
         try
         {
-            saltPtr = GetPointerToBytes(salt);
-            passPtr = GetPointerToBytes(password);
+            unsafe
+            {
+                byte[] buffer = new byte[Convert.ToInt32(bufferLength)];
 
-            secretPointer = ContextDataValid(ctx.Secret)
-                ? GetPointerToBytes(ctx.Secret!)
-                : IntPtr.Zero;
+                fixed (byte* passPtr = password,
+                       saltPtr = salt,
+                       bufferPtr = buffer,
+                       secretPtr = ctx.Secret,
+                       associatedPtr = ctx.AssociatedData)
+                {
+                    nuint secretBufferLen = secretPtr == null
+                        ? 0
+                        : Convert.ToUInt32(ctx.Secret!.Length);
 
-            nuint secretBufferLen = secretPointer == IntPtr.Zero
-                ? 0
-                : Convert.ToUInt32(ctx.Secret!.Length);
+                    nuint associatedDataBufferLen = associatedPtr == null
+                        ? 0
+                        : Convert.ToUInt32(ctx.AssociatedData!.Length);
 
-            associatedDataPointer = ContextDataValid(ctx.AssociatedData)
-                ? GetPointerToBytes(ctx.AssociatedData!)
-                : IntPtr.Zero;
+                    var marshalContext = Argon2MarshalContext.Create(
+                        bufferPtr,
+                        (uint)bufferLength,
+                        passPtr,
+                        (uint)passwordLength,
+                        saltPtr,
+                        (uint)saltLength,
+                        secretPtr,
+                        (uint)secretBufferLen,
+                        associatedPtr,
+                        (uint)associatedDataBufferLen,
+                        ctx);
 
-            nuint associatedDataBufferLen = associatedDataPointer == IntPtr.Zero
-                ? 0
-                : Convert.ToUInt32(ctx.AssociatedData!.Length);
+                    result = Argon2Library.Argon2ContextHash(
+                        ref marshalContext,
+                        ctx.Type
+                    );
 
-            bufferPointer = Marshal.AllocHGlobal(Convert.ToInt32(bufferLength));
+                    if (result is not Argon2Result.Ok)
+                        throw new Exception(Argon2Errors.GetErrorMessage(result));
 
-            var marshalContext = Argon2MarshalContext.Create(
-                bufferPointer,
-                (uint)bufferLength,
-                passPtr,
-                (uint)passwordLength,
-                saltPtr,
-                (uint)saltLength,
-                secretPointer,
-                (uint)secretBufferLen,
-                associatedDataPointer,
-                (uint)associatedDataBufferLen,
-                ctx);
-
-            result = Argon2Library.Argon2ContextHash(
-                ref marshalContext,
-                ctx.Type
-            );
-
-            if (result is not Argon2Result.Ok)
-                throw new Exception(Argon2Errors.GetErrorMessage(result));
-
-            outputBytes = GetBytesFromPointer(bufferPointer, Convert.ToInt32(bufferLength));
+                    outputBytes = buffer;
+                }
+            }
         }
         catch (Exception e)
         {
             error = true;
-            FreeManagedPointers();
             WriteError(e);
-        }
-        finally
-        {
-            if (!error) FreeManagedPointers();
         }
 
         var encodedForm = !error ? GetEncodedString(outputBytes, false) : "";

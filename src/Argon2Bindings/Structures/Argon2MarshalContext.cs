@@ -15,12 +15,12 @@ namespace Argon2Bindings.Structures;
 /// </remarks>
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-internal struct Argon2MarshalContext
+internal unsafe struct Argon2MarshalContext
 {
     /// <summary>
     /// Output buffer pointer
     /// </summary>
-    public IntPtr Out;
+    public byte* Out;
 
     /// <summary>
     /// Output buffer length
@@ -30,7 +30,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Password buffer pointer
     /// </summary>
-    public IntPtr PasswordPtr;
+    public byte* PasswordPtr;
 
     /// <summary>
     /// Password buffer length
@@ -40,7 +40,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Salt buffer pointer
     /// </summary>
-    public IntPtr SaltPtr;
+    public byte* SaltPtr;
 
     /// <summary>
     /// Salt buffer length
@@ -50,7 +50,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Secret buffer pointer
     /// </summary>
-    public IntPtr SecretPtr;
+    public byte* SecretPtr;
 
     /// <summary>
     /// Secret buffer length
@@ -60,7 +60,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Associated data buffer pointer
     /// </summary>
-    public IntPtr AssociatedDataPtr;
+    public byte* AssociatedDataPtr;
 
     /// <summary>
     /// Associated data buffer length
@@ -112,7 +112,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory allocator 
     /// </summary>
-    public unsafe delegate int Argon2MemoryAllocator(
+    public delegate int Argon2MemoryAllocator(
         byte** memory,
         nuint bytes_to_allocate
     );
@@ -120,7 +120,7 @@ internal struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory de-allocator
     /// </summary>
-    public unsafe delegate void Argon2MemoryDeallocator(
+    public delegate void Argon2MemoryDeallocator(
         byte* memory,
         nuint bytes_to_allocate
     );
@@ -143,15 +143,15 @@ internal struct Argon2MarshalContext
     /// <param name="context">The context to use</param>
     /// <returns></returns>
     public static Argon2MarshalContext Create(
-        IntPtr hashBufferPtr,
+        byte* hashBufferPtr,
         uint hashBufferLen,
-        IntPtr passwordBufferPtr,
+        byte* passwordBufferPtr,
         uint passwordBufferLen,
-        IntPtr saltBufferPtr,
+        byte* saltBufferPtr,
         uint saltBufferLen,
-        IntPtr secretBufferPtr,
+        byte* secretBufferPtr,
         uint secretBufferLen,
-        IntPtr associatedDataBufferPtr,
+        byte* associatedDataBufferPtr,
         uint associatedDataBufferLen,
         Argon2Context context)
     {

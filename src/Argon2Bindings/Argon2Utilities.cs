@@ -104,38 +104,10 @@ public static class Argon2Utilities
             : Convert.ToBase64String(outputBytes);
     }
 
-    internal static byte[] GetBytesFromPointer(
-        IntPtr ptr,
-        int length)
-    {
-        byte[] outBytes = new byte[length];
-        Marshal.Copy(ptr, outBytes, 0, length);
-        return outBytes;
-    }
-
-    internal static IntPtr GetPointerToBytes(
-        byte[] array)
-    {
-        int bytesToAllocate = array.Length + 1;
-
-        IntPtr ptr = Marshal.AllocHGlobal(bytesToAllocate);
-        Marshal.Copy(array, 0, ptr, array.Length);
-        Marshal.WriteByte(ptr, array.Length, 0x0);
-
-        return ptr;
-    }
-
     internal static bool ContextDataValid(
         byte[]? data)
     {
         return data is not null && data.Length > 0;
-    }
-
-    internal static void SafelyFreePointer(
-        IntPtr pointer)
-    {
-        if (pointer == IntPtr.Zero) return;
-        Marshal.FreeHGlobal(pointer);
     }
 
     public static void WriteError(
