@@ -9,7 +9,18 @@
 /// </summary>
 public enum Argon2Type
 {
+    /// <summary>
+    /// Data Dependent
+    /// </summary>
     Argon2D = 0,
+
+    /// <summary>
+    /// Data Independent
+    /// </summary>
     Argon2I = 1,
+
+    /// <summary>
+    /// Hybrid Mode
+    /// </summary>
     Argon2Id = 2
 }

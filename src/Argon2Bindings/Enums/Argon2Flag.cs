@@ -10,7 +10,18 @@ namespace Argon2Bindings.Enums;
 [Flags]
 public enum Argon2Flag
 {
+    /// <summary>
+    /// No wipe
+    /// </summary>
     Default = 0,
+
+    /// <summary>
+    /// Securely wipe password
+    /// </summary>
     ClearPassword = 1 << 0,
+
+    /// <summary>
+    /// Securely wipe secret
+    /// </summary>
     ClearSecret = 1 << 1
 }

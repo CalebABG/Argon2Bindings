@@ -49,7 +49,7 @@ public class Argon2Context
     public Argon2Version Version = DefaultVersion;
 
     /// <summary>
-    /// The field clearing flags
+    /// Flag which determines which fields are securely wiped
     /// </summary>
     public Argon2Flag Flags = DefaultFlag;
 
