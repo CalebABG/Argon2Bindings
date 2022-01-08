@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Argon2BindingsAutomation", 
 		src\Argon2BindingsAutomation\README.md = src\Argon2BindingsAutomation\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argon2BindingsBenchmarks", "tests\Argon2BindingsBenchmarks\Argon2BindingsBenchmarks.csproj", "{3120F95B-75CE-4491-A77B-6D0331415CB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{996441DB-CD4E-4B5E-BDD9-15B6DAA34328}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{996441DB-CD4E-4B5E-BDD9-15B6DAA34328}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{996441DB-CD4E-4B5E-BDD9-15B6DAA34328}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3120F95B-75CE-4491-A77B-6D0331415CB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3120F95B-75CE-4491-A77B-6D0331415CB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3120F95B-75CE-4491-A77B-6D0331415CB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3120F95B-75CE-4491-A77B-6D0331415CB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C8000D19-71FC-4091-9550-5CCD79909CE9} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
@@ -62,5 +68,6 @@ Global
 		{5E98D2DA-BFE3-484A-8402-6FCA69CAB998} = {39745D41-74B0-46EE-91B1-EE849AF09786}
 		{9D296329-56E9-44BE-B805-113CCD857550} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
 		{996441DB-CD4E-4B5E-BDD9-15B6DAA34328} = {5B9B4FE8-B378-47FA-A610-D1CD4C5EBB93}
+		{3120F95B-75CE-4491-A77B-6D0331415CB2} = {39745D41-74B0-46EE-91B1-EE849AF09786}
 	EndGlobalSection
 EndGlobal
