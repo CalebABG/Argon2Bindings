@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Collections;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Argon2Bindings;
