@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Argon2Bindings.Structures;
+namespace Argon2Bindings;
 
 /// <summary>
 /// Structure which holds all context parameters for an argon2

@@ -8,7 +8,7 @@ namespace Argon2Bindings;
 /// hashing method.
 /// <remarks>
 /// This structure is used as a data class for the
-/// <see cref="Argon2Bindings.Structures.Argon2MarshalContext"/>.
+/// <see cref="Argon2MarshalContext"/>.
 /// </remarks>
 /// </summary>
 public class Argon2Context
