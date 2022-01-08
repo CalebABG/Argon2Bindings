@@ -111,12 +111,6 @@ public static class Argon2Utilities
     }
 
     public static void WriteError(
-        string text)
-    {
-        WriteLine(text, ConsoleColor.Red);
-    }
-
-    public static void WriteError(
         Exception e)
     {
         WriteLine($"{e.Message}\n{e.StackTrace}", ConsoleColor.Red);

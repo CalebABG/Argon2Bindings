@@ -31,7 +31,6 @@ public class Argon2CoreTests
         var result = Argon2Core.Verify(password, encodedHash);
 
         // Assert
-        Assert.NotNull(result);
         Assert.True(result.Success);
     }
 
@@ -46,7 +45,6 @@ public class Argon2CoreTests
         var result = Argon2Core.Verify(password, encodedHash);
 
         // Assert
-        Assert.NotNull(result);
         Assert.False(result.Success);
     }
 
@@ -63,7 +61,6 @@ public class Argon2CoreTests
         Argon2VerifyResult result = Argon2Core.Verify(password, encodedHash);
 
         // Assert
-        Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.NotEmpty(result.Error!);
     }
@@ -81,7 +78,6 @@ public class Argon2CoreTests
         Argon2VerifyResult result = Argon2Core.Verify(password, encodedHash, (Argon2Type)(-1));
 
         // Assert
-        Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.NotEmpty(result.Error!);
     }
@@ -116,7 +112,6 @@ public class Argon2CoreTests
         // Act
         var result = Argon2Core.Hash(password, salt);
 
-        Assert.NotNull(result);
         Assert.Equal(Argon2Result.SaltTooShort, result.Status);
     }
 
@@ -137,7 +132,6 @@ public class Argon2CoreTests
         var result = Argon2Core.Hash(password, salt, context);
 
         // Assert
-        Assert.NotNull(result);
         Assert.Equal(expectedEncodedHash, result.EncodedHash);
     }
 
@@ -156,7 +150,6 @@ public class Argon2CoreTests
         var result = Argon2Core.Hash(password, salt, context, false);
 
         // Assert
-        Assert.NotNull(result);
         Assert.Equal(expectedRawHashHex.ToUpper(), result.RawHash.ToHexString());
     }
 
@@ -172,7 +165,6 @@ public class Argon2CoreTests
         var result = Argon2Core.Hash(password, salt, context, false);
 
         // Assert
-        Assert.NotNull(result);
         Assert.Equal(Argon2Result.IncorrectType, result.Status);
     }
 
@@ -206,7 +198,6 @@ public class Argon2CoreTests
         Argon2HashResult result = Argon2Core.ContextHash("test", context: context);
 
         // Assert
-        Assert.NotNull(result);
         Assert.NotEqual(Argon2Result.Ok, result.Status);
     }
 
@@ -224,7 +215,6 @@ public class Argon2CoreTests
         var result = Argon2Core.ContextHash(password, salt, context);
 
         // Assert
-        Assert.NotNull(result);
         Assert.Equal(expectedHash.ToUpper(), result.RawHash.ToHexString());
     }
 }

@@ -25,7 +25,7 @@ public static class Program
         var result = Argon2Core.ContextHash(Password, Salt, Context);
         stopwatch.Stop();
 
-        Console.WriteLine($"\nHash Time: {stopwatch.ElapsedMilliseconds}ms");
+        PrintTime(stopwatch);
         Console.WriteLine(result);
     }
 
@@ -35,14 +35,14 @@ public static class Program
         var hash = Argon2Core.Hash(Password, Salt, Context);
 
         stopwatch.Stop();
-        Console.WriteLine($"\nHash Time: {stopwatch.ElapsedMilliseconds}ms");
+        PrintTime(stopwatch);
         Console.WriteLine(hash);
 
         stopwatch.Restart();
         var verify = Argon2Core.Verify(Password, hash.EncodedHash, Context.Type);
 
         stopwatch.Stop();
-        Console.WriteLine($"\nVerify Time: {stopwatch.ElapsedMilliseconds}ms");
+        PrintTime(stopwatch);
         Console.WriteLine(verify);
     }
 
@@ -92,4 +92,7 @@ public static class Program
                           $"Total Raw Hash Failures:\t{rawHashFailures}\n" +
                           $"Total Encoded Hash Failures:\t{encodedHashFailures}");
     }
+
+    private static void PrintTime(Stopwatch stopwatch, string text = "Took:")
+        => Console.WriteLine($"\n{text} {stopwatch.ElapsedMilliseconds / 1000.0}s");
 }
