@@ -1,16 +1,20 @@
 ﻿using Argon2Bindings;
 using Argon2Bindings.Enums;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
+#if WINDOWS
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
+#endif
 
 namespace Argon2BindingsBenchmarks;
 
 public static class Program
 {
     [ShortRunJob]
+#if WINDOWS
     [NativeMemoryProfiler]
+#endif
     [MemoryDiagnoser]
     public class Argon2BindingsBenchmarker
     {
