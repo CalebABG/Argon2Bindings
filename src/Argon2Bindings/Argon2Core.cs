@@ -17,6 +17,10 @@ public static class Argon2Core
     /// <param name="encodedHash">The encoded argon2 hash</param>
     /// <param name="type">The argon2 variant used</param>
     /// <returns>A result object with the outcome.</returns>
+    /// <exception cref="ArgumentException">
+    /// Throws if either <paramref name="password"/> or <paramref name="encodedHash"/> 
+    /// are null or empty.
+    /// </exception>
     public static Argon2VerifyResult Verify(
         string password,
         string encodedHash,
@@ -25,8 +29,8 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
         ValidateStringNotNullOrEmpty(encodedHash, nameof(encodedHash));
 
-        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
-        var encodedHashBytes = Argon2Defaults.DefaultEncoding.GetBytes(encodedHash);
+        var passwordBytes = GetStringBytes(password);
+        var encodedHashBytes = GetStringBytes(encodedHash);
 
         nuint passLen = Convert.ToUInt32(passwordBytes.Length);
 
@@ -69,7 +73,7 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var saltBytes = GetSaltBytes(salt, context);
-        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
+        var passwordBytes = GetStringBytes(password);
 
         return Hash(passwordBytes, saltBytes, context, encodeHash);
     }
@@ -92,6 +96,9 @@ public static class Argon2Core
     /// use either of the <b>ContextHash</b> methods.
     /// </remarks>
     /// <returns>A result object with the outcome.</returns>
+    /// <exception cref="ArgumentException">
+    /// Throws if <paramref name="password"/> is null or empty.
+    /// </exception>
     public static Argon2HashResult Hash(
         byte[] password,
         byte[]? salt = null,
@@ -170,20 +177,23 @@ public static class Argon2Core
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
         var saltBytes = GetSaltBytes(salt, context);
-        var passwordBytes = Argon2Defaults.DefaultEncoding.GetBytes(password);
+        var passwordBytes = GetStringBytes(password);
 
         return ContextHash(passwordBytes, saltBytes, context);
     }
 
     /// <summary>
     /// Hashes a password with salt and using the given
-    /// context input parameters, optionally using a secret
-    /// and associated data byte arrays. 
+    /// context input parameters, optionally using a secret key
+    /// and associated data.
     /// </summary>
     /// <param name="password">The password to hash</param>
     /// <param name="salt">The salt to use</param>
     /// <param name="context">The context to use</param>
     /// <returns>A result object with the outcome.</returns>
+    /// <exception cref="ArgumentException">
+    /// Throws if <paramref name="password"/> is null or empty.
+    /// </exception>
     public static Argon2HashResult ContextHash(
         byte[] password,
         byte[]? salt = null,

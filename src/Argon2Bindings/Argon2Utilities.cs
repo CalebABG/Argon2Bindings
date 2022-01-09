@@ -88,8 +88,14 @@ public static class Argon2Utilities
         Argon2Context? context)
     {
         return !string.IsNullOrWhiteSpace(salt)
-            ? Argon2Defaults.DefaultEncoding.GetBytes(salt)
+            ? GetStringBytes(salt)
             : GetSaltBytes(context);
+    }
+
+    internal static byte[] GetStringBytes(
+        string str)
+    {
+        return Argon2Defaults.DefaultEncoding.GetBytes(str);
     }
 
     internal static string GetEncodedString(
