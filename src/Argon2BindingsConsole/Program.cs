@@ -13,9 +13,9 @@ public static class Program
 
     public static void Main(string[] args)
     {
+        PrintHash();
         // PrintContextHash();
-        // PrintHashAndVerify();
-        PrintTabularHashResults();
+        // PrintTabularHashResults();
     }
 
     private static void PrintContextHash()
@@ -29,7 +29,7 @@ public static class Program
         Console.WriteLine(result);
     }
 
-    private static void PrintHashAndVerify()
+    private static void PrintHash()
     {
         var stopwatch = Stopwatch.StartNew();
         var hash = Argon2Core.Hash(Password, Salt, Context);
@@ -37,13 +37,6 @@ public static class Program
         stopwatch.Stop();
         PrintTime(stopwatch);
         Console.WriteLine(hash);
-
-        stopwatch.Restart();
-        var verify = Argon2Core.Verify(Password, hash.EncodedHash, Context.Type);
-
-        stopwatch.Stop();
-        PrintTime(stopwatch);
-        Console.WriteLine(verify);
     }
 
     private static void PrintTabularHashResults()
