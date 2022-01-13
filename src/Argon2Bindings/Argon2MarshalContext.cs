@@ -112,7 +112,8 @@ internal unsafe struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory allocator 
     /// </summary>
-    public delegate int Argon2MemoryAllocator(
+    public delegate int Argon2MemoryAllocator
+    (
         byte** memory,
         nuint bytes_to_allocate
     );
@@ -120,7 +121,8 @@ internal unsafe struct Argon2MarshalContext
     /// <summary>
     /// Mapping delegate to argon2 function pointer for memory de-allocator
     /// </summary>
-    public delegate void Argon2MemoryDeallocator(
+    public delegate void Argon2MemoryDeallocator
+    (
         byte* memory,
         nuint bytes_to_allocate
     );
@@ -142,7 +144,8 @@ internal unsafe struct Argon2MarshalContext
     /// <param name="associatedDataBufferLen">The length of the associated data in bytes</param>
     /// <param name="context">The context to use</param>
     /// <returns></returns>
-    public static Argon2MarshalContext Create(
+    public static Argon2MarshalContext Create
+    (
         byte* hashBufferPtr,
         uint hashBufferLen,
         byte* passwordBufferPtr,
@@ -153,7 +156,8 @@ internal unsafe struct Argon2MarshalContext
         uint secretBufferLen,
         byte* associatedDataBufferPtr,
         uint associatedDataBufferLen,
-        Argon2Context context)
+        Argon2Context context
+    )
     {
         return new()
         {

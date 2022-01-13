@@ -8,6 +8,12 @@ namespace Argon2Bindings;
 /// </summary>
 public static class Argon2PlatformUtilities
 {
+    public record struct Argon2PlatformInfo
+    (
+        string PlatformName,
+        string PlatformBinaryExtension
+    );
+
     /// <summary>
     /// Gets the target platform's name and argon2 binary extension.
     /// </summary>
@@ -19,11 +25,16 @@ public static class Argon2PlatformUtilities
     /// Throws if the target platform is not Windows, Mac OS, or Linux. <br/>
     /// More platforms may be supported in the future.
     /// </exception>
-    public static (string PlatformName, string PlatformBinaryExtension) GetPlatformNameAndBinaryExtension()
+    public static Argon2PlatformInfo GetPlatformNameAndBinaryExtension()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return ("win", "dll");
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return ("osx", "dylib");
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return ("linux", "so");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return new("win", "dll");
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return new("osx", "dylib");
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            return new("linux", "so");
 
         throw new Exception("Platform not currently supported");
     }
@@ -44,8 +55,10 @@ public static class Argon2PlatformUtilities
         return GetPlatformArchitecture(RuntimeInformation.OSArchitecture);
     }
 
-    internal static string GetPlatformArchitecture(
-        Architecture architecture)
+    internal static string GetPlatformArchitecture
+    (
+        Architecture architecture
+    )
     {
         return architecture switch
         {

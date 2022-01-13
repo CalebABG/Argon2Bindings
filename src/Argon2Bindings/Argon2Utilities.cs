@@ -11,9 +11,11 @@ namespace Argon2Bindings;
 /// </summary>
 public static class Argon2Utilities
 {
-    public static string ToHexString(
+    public static string ToHexString
+    (
         this byte[] bytes,
-        string separator = "")
+        string separator = ""
+    )
     {
         if (bytes is null)
             throw new ArgumentNullException(nameof(bytes));
@@ -22,9 +24,11 @@ public static class Argon2Utilities
         return output.Replace("-", separator);
     }
 
-    public static byte[] ToBytes(
+    public static byte[] ToBytes
+    (
         this string str,
-        Encoding? encoding = null)
+        Encoding? encoding = null
+    )
     {
         if (str is null)
             throw new ArgumentNullException(nameof(str));
@@ -33,74 +37,93 @@ public static class Argon2Utilities
         return encoding.GetBytes(str);
     }
 
-    internal static void ValidateStringNotNullOrEmpty(
+    internal static void ValidateStringNotNullOrEmpty
+    (
         string input,
-        string paramName)
+        string paramName
+    )
     {
         if (string.IsNullOrEmpty(input))
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
 
-    internal static void ValidateStringNotNullOrWhiteSpace(
+    internal static void ValidateStringNotNullOrWhiteSpace
+    (
         string input,
-        string paramName)
+        string paramName
+    )
     {
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("Value cannot be null or whitespace.", paramName);
     }
 
-    internal static void ValidateEnum(
+    internal static void ValidateEnum
+    (
         Type enumType,
-        object value)
+        object value
+    )
     {
         if (enumType == null) throw new ArgumentNullException(nameof(enumType));
         if (value == null) throw new ArgumentNullException(nameof(value));
 
         if (!Enum.IsDefined(enumType, value))
-            throw new InvalidEnumArgumentException($"{nameof(value)} : {(int)value} is an invalid value for enum type {enumType}");
+            throw new InvalidEnumArgumentException(
+                $"{nameof(value)} : {(int)value} is an invalid value for enum type {enumType}");
     }
 
-    internal static void ValidateCollection(
+    internal static void ValidateCollection
+    (
         ICollection collection,
-        string paramName)
+        string paramName
+    )
     {
         if (collection is null || collection.Count < 1)
             throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
     }
 
-    public static byte[] GenerateSalt(
-        uint saltLength = Argon2Defaults.DefaultSaltLength)
+    public static byte[] GenerateSalt
+    (
+        uint saltLength = Argon2Defaults.DefaultSaltLength
+    )
     {
         byte[] salt = new byte[saltLength];
         RandomNumberGenerator.Fill(salt);
         return salt;
     }
 
-    internal static byte[] GetSaltBytes(
-        Argon2Context? context)
+    internal static byte[] GetSaltBytes
+    (
+        Argon2Context? context
+    )
     {
         uint saltLen = context?.SaltLength ?? Argon2Defaults.DefaultSaltLength;
         return GenerateSalt(saltLen);
     }
 
-    internal static byte[] GetSaltBytes(
+    internal static byte[] GetSaltBytes
+    (
         string? salt,
-        Argon2Context? context)
+        Argon2Context? context
+    )
     {
         return !string.IsNullOrWhiteSpace(salt)
             ? GetStringBytes(salt)
             : GetSaltBytes(context);
     }
 
-    internal static byte[] GetStringBytes(
-        string str)
+    internal static byte[] GetStringBytes
+    (
+        string str
+    )
     {
         return Argon2Defaults.DefaultEncoding.GetBytes(str);
     }
 
-    internal static string GetEncodedString(
+    internal static string GetEncodedString
+    (
         byte[] outputBytes,
-        bool encodeHash)
+        bool encodeHash
+    )
     {
         ValidateCollection(outputBytes, nameof(outputBytes));
 
@@ -109,22 +132,28 @@ public static class Argon2Utilities
             : Convert.ToBase64String(outputBytes);
     }
 
-    internal static bool ContextDataValid(
-        byte[]? data)
+    internal static bool ContextDataValid
+    (
+        byte[]? data
+    )
     {
         return data is not null && data.Length > 0;
     }
 
-    public static void WriteError(
-        Exception e)
+    public static void WriteError
+    (
+        Exception e
+    )
     {
         WriteLine($"{e.Message}\n{e.StackTrace}", ConsoleColor.Red);
     }
 
     /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
-    private static void WriteLine(
+    private static void WriteLine
+    (
         string text,
-        ConsoleColor color = ConsoleColor.White)
+        ConsoleColor color = ConsoleColor.White
+    )
     {
         var oldColor = Console.ForegroundColor;
 

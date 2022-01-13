@@ -21,10 +21,12 @@ public static class Argon2Core
     /// Throws if either <paramref name="password"/> or <paramref name="encodedHash"/> 
     /// are null or empty.
     /// </exception>
-    public static Argon2VerifyResult Verify(
+    public static Argon2VerifyResult Verify
+    (
         string password,
         string encodedHash,
-        Argon2Type type = Argon2Defaults.DefaultType)
+        Argon2Type type = Argon2Defaults.DefaultType
+    )
     {
         ValidateStringNotNullOrEmpty(password, nameof(password));
         ValidateStringNotNullOrEmpty(encodedHash, nameof(encodedHash));
@@ -64,11 +66,13 @@ public static class Argon2Core
     }
 
     /// <inheritdoc cref="Hash(byte[],byte[],Argon2Context?,bool)" />
-    public static Argon2HashResult Hash(
+    public static Argon2HashResult Hash
+    (
         string password,
         string? salt = null,
         Argon2Context? context = null,
-        bool encodeHash = true)
+        bool encodeHash = true
+    )
     {
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
@@ -99,11 +103,13 @@ public static class Argon2Core
     /// <exception cref="ArgumentException">
     /// Throws if <paramref name="password"/> is null or empty.
     /// </exception>
-    public static Argon2HashResult Hash(
+    public static Argon2HashResult Hash
+    (
         byte[] password,
         byte[]? salt = null,
         Argon2Context? context = null,
-        bool encodeHash = true)
+        bool encodeHash = true
+    )
     {
         ValidateCollection(password, nameof(password));
 
@@ -169,10 +175,12 @@ public static class Argon2Core
     }
 
     /// <inheritdoc cref="ContextHash(byte[],byte[],Argon2Context?)"/>
-    public static Argon2HashResult ContextHash(
+    public static Argon2HashResult ContextHash
+    (
         string password,
         string? salt = null,
-        Argon2Context? context = null)
+        Argon2Context? context = null
+    )
     {
         ValidateStringNotNullOrEmpty(password, nameof(password));
 
@@ -194,10 +202,12 @@ public static class Argon2Core
     /// <exception cref="ArgumentException">
     /// Throws if <paramref name="password"/> is null or empty.
     /// </exception>
-    public static Argon2HashResult ContextHash(
+    public static Argon2HashResult ContextHash
+    (
         byte[] password,
         byte[]? salt = null,
-        Argon2Context? context = null)
+        Argon2Context? context = null
+    )
     {
         ValidateCollection(password, nameof(password));
 
@@ -269,13 +279,15 @@ public static class Argon2Core
     /// <returns>
     /// The length of the encoded hash in bytes.
     /// </returns>
-    public static nuint GetEncodedHashLength(
+    public static nuint GetEncodedHashLength
+    (
         uint timeCost,
         uint memoryCost,
         uint degreeOfParallelism,
         uint saltLength,
         uint hashLength,
-        Argon2Type type)
+        Argon2Type type
+    )
     {
         var length = Argon2Library.Argon2GetEncodedHashLength(
             timeCost,

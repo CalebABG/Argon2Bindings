@@ -56,7 +56,10 @@ public static class Argon2Errors
     /// <exception cref="ArgumentOutOfRangeException">
     /// Occurs when an invalid or out-of-range result value is passed
     /// </exception>
-    public static string GetErrorMessage(Argon2Result result)
+    public static string GetErrorMessage
+    (
+        Argon2Result result
+    )
     {
         return ResultMap.TryGetValue(result, out var errorMessage)
             ? errorMessage

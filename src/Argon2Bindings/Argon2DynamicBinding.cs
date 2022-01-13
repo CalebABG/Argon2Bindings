@@ -35,7 +35,10 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws if the provided type is null or if the provided delegate's method name is null or empty.
     /// </exception>
-    internal static string GetMappingMethod(Type type)
+    internal static string GetMappingMethod
+    (
+        Type type
+    )
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type), "Type cannot be null");
@@ -63,8 +66,10 @@ internal static class Argon2DynamicBinding
     /// Throws when the delegate specified is not annotated with a mapping name or the mapping 
     /// name is null or empty.
     /// </exception>
-    internal static TDelegate GetDelegate<TDelegate>(Type type)
-        where TDelegate : Delegate
+    internal static TDelegate GetDelegate<TDelegate>
+    (
+        Type type
+    ) where TDelegate : Delegate
     {
         var delegateType = typeof(TDelegate);
         var mappingMethodName = GetMappingMethod(delegateType);
@@ -80,7 +85,10 @@ internal static class Argon2DynamicBinding
     /// <returns>
     /// The dynamically created type with PInvoke methods built from the provided delegates.
     /// </returns>
-    internal static Type CreateDynamicType(IReadOnlyList<Type> delegateTypes)
+    internal static Type CreateDynamicType
+    (
+        IReadOnlyList<Type> delegateTypes
+    )
     {
         return CreateDynamicType(
             AssemblyName,
@@ -107,15 +115,19 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws when the dynamic type is null or other exceptions are thrown through reflection.
     /// </exception>
-    private static Type CreateDynamicType(
+    private static Type CreateDynamicType
+    (
         string assemblyName,
         string moduleName,
         string typeName,
-        IReadOnlyList<Type> delegateTypes)
+        IReadOnlyList<Type> delegateTypes
+    )
     {
-        AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+        AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly
+        (
             new AssemblyName(assemblyName),
-            AssemblyBuilderAccess.Run);
+            AssemblyBuilderAccess.Run
+        );
 
         TypeBuilder typeBuilder = assemblyBuilder
             .DefineDynamicModule(moduleName)
@@ -135,7 +147,8 @@ internal static class Argon2DynamicBinding
                 .Select(t => t.ParameterType)
                 .ToArray();
 
-            MethodBuilder methodBuilder = typeBuilder.DefinePInvokeMethod(
+            MethodBuilder methodBuilder = typeBuilder.DefinePInvokeMethod
+            (
                 mappingMethodName,
                 dllPath,
                 MethodAttribs,
@@ -173,9 +186,9 @@ internal static class Argon2DynamicBinding
         var currentDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
         var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture();
-        var (platformName, platformBinaryExtension) = Argon2PlatformUtilities.GetPlatformNameAndBinaryExtension();
-        var platformBinaryFolder = $"{platformName}-{platformArch}";
-        var platformBinaryFile = $"{Argon2BinaryName}.{platformBinaryExtension}";
+        var platformInfo = Argon2PlatformUtilities.GetPlatformNameAndBinaryExtension();
+        var platformBinaryFolder = $"{platformInfo.PlatformName}-{platformArch}";
+        var platformBinaryFile = $"{Argon2BinaryName}.{platformInfo.PlatformBinaryExtension}";
 
         var partialPath = Path.Combine(
             currentDomainBaseDirectory,

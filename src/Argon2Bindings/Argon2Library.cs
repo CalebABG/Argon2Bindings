@@ -15,7 +15,8 @@ internal static class Argon2Library
     /// </returns>
     /// </summary>
     [Argon2MappingMethod("argon2_ctx")]
-    internal delegate Argon2Result Argon2ContextHashDelegate(
+    internal delegate Argon2Result Argon2ContextHashDelegate
+    (
         ref Argon2MarshalContext context,
         Argon2Type type
     );
@@ -45,7 +46,8 @@ internal static class Argon2Library
     /// </returns>
     /// </summary>
     [Argon2MappingMethod("argon2_hash")]
-    internal unsafe delegate Argon2Result Argon2HashDelegate(
+    internal unsafe delegate Argon2Result Argon2HashDelegate
+    (
         uint t_cost,
         uint m_cost,
         uint parallelism,
@@ -70,7 +72,8 @@ internal static class Argon2Library
     /// </returns>
     /// </summary>
     [Argon2MappingMethod("argon2_encodedlen")]
-    internal delegate nuint Argon2GetEncodedHashLengthDelegate(
+    internal delegate nuint Argon2GetEncodedHashLengthDelegate
+    (
         uint t_cost,
         uint m_cost,
         uint parallelism,
@@ -93,7 +96,8 @@ internal static class Argon2Library
     /// </returns>
     /// </summary>
     [Argon2MappingMethod("argon2_verify")]
-    internal unsafe delegate Argon2Result Argon2VerifyDelegate(
+    internal unsafe delegate Argon2Result Argon2VerifyDelegate
+    (
         void* encoded,
         void* pwd,
         nuint pwdlen,

@@ -81,8 +81,10 @@ public class Argon2Context
     /// <returns>
     /// A new context instance with reasonable parameters set.
     /// </returns>
-    public static Argon2Context CreateReasonableContext(
-        Argon2Type type = DefaultType)
+    public static Argon2Context CreateReasonableContext
+    (
+        Argon2Type type = DefaultType
+    )
     {
         return new()
         {
