@@ -58,7 +58,7 @@ internal static class Argon2DynamicBinding
     /// </remarks>
     /// </summary>
     /// <typeparam name="TDelegate">The delegate type to create</typeparam>
-    /// <param name="type">The type which holds the</param>
+    /// <param name="type">The type which holds the methods</param>
     /// <returns>
     /// The delegate which corresponds to the PInvoke method contained in the type provided.
     /// </returns>
@@ -185,16 +185,17 @@ internal static class Argon2DynamicBinding
     {
         var currentDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-        var platformArch = Argon2PlatformUtilities.GetPlatformArchitecture();
-        var platformInfo = Argon2PlatformUtilities.GetPlatformNameAndBinaryExtension();
-        var platformBinaryFolder = $"{platformInfo.PlatformName}-{platformArch}";
+        var platformInfo = Argon2PlatformUtilities.GetPlatformInfo();
+        var platformBinaryFolder = $"{platformInfo.PlatformName}-{platformInfo.PlatformArchitecture}";
         var platformBinaryFile = $"{Argon2BinaryName}.{platformInfo.PlatformBinaryExtension}";
 
-        var partialPath = Path.Combine(
+        var partialPath = Path.Combine
+        (
             currentDomainBaseDirectory,
             Argon2BinariesFolder,
             platformBinaryFolder,
-            platformBinaryFile);
+            platformBinaryFile
+        );
 
         var fullPath = Path.GetFullPath(partialPath);
         return fullPath;

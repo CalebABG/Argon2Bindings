@@ -8,10 +8,23 @@ namespace Argon2Bindings;
 /// </summary>
 public static class Argon2PlatformUtilities
 {
+    /// <summary>
+    /// Structure to hold platform information.
+    /// </summary>
+    /// <param name="PlatformName">
+    /// The name of the platform
+    /// </param>
+    /// <param name="PlatformBinaryExtension">
+    /// The binary extension type for the platform
+    /// </param>
+    /// <param name="PlatformArchitecture">
+    /// The cpu architecture of the platform
+    /// </param>
     public record struct Argon2PlatformInfo
     (
         string PlatformName,
-        string PlatformBinaryExtension
+        string PlatformBinaryExtension,
+        string PlatformArchitecture
     );
 
     /// <summary>
@@ -25,16 +38,18 @@ public static class Argon2PlatformUtilities
     /// Throws if the target platform is not Windows, Mac OS, or Linux. <br/>
     /// More platforms may be supported in the future.
     /// </exception>
-    public static Argon2PlatformInfo GetPlatformNameAndBinaryExtension()
+    public static Argon2PlatformInfo GetPlatformInfo()
     {
+        string platformArch = GetPlatformArchitecture();
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return new("win", "dll");
+            return new("win", "dll", platformArch);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return new("osx", "dylib");
+            return new("osx", "dylib", platformArch);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            return new("linux", "so");
+            return new("linux", "so", platformArch);
 
         throw new Exception("Platform not currently supported");
     }
