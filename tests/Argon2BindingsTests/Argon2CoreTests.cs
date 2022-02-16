@@ -12,9 +12,11 @@ public class Argon2CoreTests
     [InlineData("", "test")]
     [InlineData("test", null)]
     [InlineData("test", "")]
-    public void Argon2Core_Verify_Should_Throw_When_PasswordOrEncodedHashIsNullOrEmpty(
+    public void Argon2Core_Verify_Should_Throw_When_PasswordOrEncodedHashIsNullOrEmpty
+    (
         string password,
-        string encodedHash)
+        string encodedHash
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Core.Verify(password, encodedHash));
@@ -85,8 +87,10 @@ public class Argon2CoreTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Core_Hash_Should_Throw_When_PasswordStringIsNullOrEmpty(
-        string password)
+    public void Argon2Core_Hash_Should_Throw_When_PasswordStringIsNullOrEmpty
+    (
+        string password
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password));
@@ -95,8 +99,10 @@ public class Argon2CoreTests
     [Theory]
     [InlineData(null)]
     [InlineData(new byte[] { })]
-    public void Argon2Core_Hash_Should_Throw_When_PasswordCollectionsIsNullOrEmpty(
-        byte[] password)
+    public void Argon2Core_Hash_Should_Throw_When_PasswordCollectionsIsNullOrEmpty
+    (
+        byte[] password
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Core.Hash(password));
@@ -120,10 +126,12 @@ public class Argon2CoreTests
         "$argon2i$v=19$m=4096,t=3,p=1$dGVzdDEyMzQ$mz9PE6IpsqOkYnbENJtM7XWf01XTOBmf5MBkg1IN/Pw")]
     [InlineData("test123", "testing123",
         "$argon2i$v=19$m=4096,t=3,p=1$dGVzdGluZzEyMw$kOLXgBFKUW5B5jPZY+Ra+uJr4k/h+s742dEQeqJ1xuI")]
-    public void Argon2Core_Hash_Should_Return_ValidEncodedHash_When_ValidParametersProvided_Using_DefaultContext(
+    public void Argon2Core_Hash_Should_Return_ValidEncodedHash_When_ValidParametersProvided_Using_DefaultContext
+    (
         string password,
         string salt,
-        string expectedEncodedHash)
+        string expectedEncodedHash
+    )
     {
         // Arrange
         var context = new Argon2Context();
@@ -138,10 +146,12 @@ public class Argon2CoreTests
     [Theory]
     [InlineData("test", "testing456", "40466673a1b16ff19366744ae0db8bac2fa65e2595a6c8e712108bcf62f66467")]
     [InlineData("testing123", "testing6", "6b50b0efc71314d6f69164066e97182884a28e2dc6e2769d555c364e76d89735")]
-    public void Argon2Core_Hash_Should_Return_ValidRawHash_When_ValidParametersProvided_Using_DefaultContext(
+    public void Argon2Core_Hash_Should_Return_ValidRawHash_When_ValidParametersProvided_Using_DefaultContext
+    (
         string password,
         string salt,
-        string expectedRawHashHex)
+        string expectedRawHashHex
+    )
     {
         // Arrange
         var context = new Argon2Context();
@@ -171,8 +181,10 @@ public class Argon2CoreTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Core_ContextHash_Should_Throw_When_PasswordStringIsNullOrEmpty(
-        string password)
+    public void Argon2Core_ContextHash_Should_Throw_When_PasswordStringIsNullOrEmpty
+    (
+        string password
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Core.ContextHash(password));
@@ -181,8 +193,10 @@ public class Argon2CoreTests
     [Theory]
     [InlineData(null)]
     [InlineData(new byte[] { })]
-    public void Argon2Core_ContextHash_Should_Throw_When_PasswordCollectionIsNullOrEmpty(
-        byte[] password)
+    public void Argon2Core_ContextHash_Should_Throw_When_PasswordCollectionIsNullOrEmpty
+    (
+        byte[] password
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Core.ContextHash(password));
@@ -203,10 +217,12 @@ public class Argon2CoreTests
 
     [Theory]
     [InlineData("test", "testing123", "1f07729a6e5ae8b4032d6a187a7b30292653491c5e6fea5eca8deb73dabe5704")]
-    public void Argon2Core_ContextHash_Should_Return_ValidHash_When_ValidParametersProvided_Using_DefaultContext(
+    public void Argon2Core_ContextHash_Should_Return_ValidHash_When_ValidParametersProvided_Using_DefaultContext
+    (
         string password,
         string salt,
-        string expectedHash)
+        string expectedHash
+    )
     {
         // Arrange
         var context = new Argon2Context();

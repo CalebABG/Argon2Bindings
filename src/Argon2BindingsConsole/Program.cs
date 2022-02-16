@@ -87,5 +87,7 @@ public static class Program
     }
 
     private static void PrintTime(Stopwatch stopwatch, string text = "Took:")
-        => Console.WriteLine($"\n{text} {stopwatch.ElapsedMilliseconds / 1000.0}s");
+    {
+        Console.WriteLine($"\n{text} {stopwatch.ElapsedMilliseconds / 1000.0}s");
+    }
 }

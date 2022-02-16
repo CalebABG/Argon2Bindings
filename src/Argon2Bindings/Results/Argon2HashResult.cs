@@ -16,10 +16,12 @@ public readonly struct Argon2HashResult
     public byte[] RawHash { get; }
     public string EncodedHash { get; }
 
-    public Argon2HashResult(
+    public Argon2HashResult
+    (
         Argon2Result status,
         byte[] rawHash,
-        string encodedHash)
+        string encodedHash
+    )
     {
         Status = status;
         RawHash = rawHash;

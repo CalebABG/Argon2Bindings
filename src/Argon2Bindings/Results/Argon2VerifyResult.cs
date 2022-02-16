@@ -9,9 +9,11 @@ public readonly struct Argon2VerifyResult
     public bool Success { get; }
     public string? Error { get; }
 
-    public Argon2VerifyResult(
+    public Argon2VerifyResult
+    (
         bool success,
-        string? error = "")
+        string? error = ""
+    )
     {
         Success = success;
         Error = error;

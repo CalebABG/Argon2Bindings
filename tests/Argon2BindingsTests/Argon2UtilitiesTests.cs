@@ -10,8 +10,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrEmpty_Should_Throw_When_InputIsNullOrEmpty(
-        string input)
+    public void Argon2Utilities_ValidateStringNotNullOrEmpty_Should_Throw_When_InputIsNullOrEmpty
+    (
+        string input
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrEmpty(input, nameof(input)));
@@ -20,8 +22,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
-        string param)
+    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
+    (
+        string param
+    )
     {
         // Arrange
         string input = "test";
@@ -33,8 +37,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_Should_Throw_When_InputIsNullOrWhiteSpace(
-        string input)
+    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_Should_Throw_When_InputIsNullOrWhiteSpace
+    (
+        string input
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, nameof(input)));
@@ -43,8 +49,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrEmpty_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
-        string param)
+    public void Argon2Utilities_ValidateStringNotNullOrEmpty_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
+    (
+        string param
+    )
     {
         // Arrange
         string input = "test";
@@ -56,8 +64,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData(new byte[] { })]
-    public void Argon2Utilities_ValidateCollection_Should_Throw_When_InputIsNullOrEmpty(
-        byte[] input)
+    public void Argon2Utilities_ValidateCollection_Should_Throw_When_InputIsNullOrEmpty
+    (
+        byte[] input
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateCollection(input, nameof(input)));
@@ -66,8 +76,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Argon2Utilities_ValidateCollection_ShouldNot_Throw_When_ParamNameIsNullOrEmpty(
-        string param)
+    public void Argon2Utilities_ValidateCollection_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
+    (
+        string param
+    )
     {
         // Arrange
         byte[] input = { 0x1, 0x2 };
@@ -154,8 +166,10 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData(new byte[] { })]
-    public void Argon2Utilities_GetEncodedString_Should_Throw_When_InputIsNullOrEmpty(
-        byte[] input)
+    public void Argon2Utilities_GetEncodedString_Should_Throw_When_InputIsNullOrEmpty
+    (
+        byte[] input
+    )
     {
         // Assert
         Assert.Throws<ArgumentException>(() => Argon2Utilities.GetEncodedString(input, true));
@@ -164,10 +178,12 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, true, "abcd")]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, false, "YWJjZA==")]
-    public void Argon2Utilities_GetEncodedString_Should_Return_ValidEncodedString_When_InputIsNotNullOrEmpty(
+    public void Argon2Utilities_GetEncodedString_Should_Return_ValidEncodedString_When_InputIsNotNullOrEmpty
+    (
         byte[] input,
         bool encodeHash,
-        string expected)
+        string expected
+    )
     {
         // Act
         string result = Argon2Utilities.GetEncodedString(input, encodeHash);
@@ -183,9 +199,11 @@ public class Argon2UtilitiesTests
     [InlineData(typeof(Argon2Type), (Argon2Type)777)]
     [InlineData(typeof(Argon2Version), (Argon2Version)0xF)]
     [InlineData(typeof(Argon2Version), (Argon2Version)0xFF)]
-    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputIsInvalidForEnumType(
+    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputIsInvalidForEnumType
+    (
         Type enumType,
-        object value)
+        object value
+    )
     {
         // Assert
         Assert.Throws<InvalidEnumArgumentException>(() => Argon2Utilities.ValidateEnum(enumType, value));
@@ -195,9 +213,11 @@ public class Argon2UtilitiesTests
     [InlineData(null, (Argon2Flag)(-1))]
     [InlineData(typeof(Argon2Flag), null)]
     [InlineData(null, null)]
-    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputParametersAreNull(
+    public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputParametersAreNull
+    (
         Type enumType,
-        object value)
+        object value
+    )
     {
         // Assert
         Assert.Throws<ArgumentNullException>(() => Argon2Utilities.ValidateEnum(enumType, value));

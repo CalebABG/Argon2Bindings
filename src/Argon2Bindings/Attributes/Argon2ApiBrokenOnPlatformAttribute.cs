@@ -13,9 +13,11 @@ internal class Argon2ApiBrokenOnPlatformAttribute : Attribute
     public readonly string Platform;
     public readonly Architecture Architecture;
 
-    public Argon2ApiBrokenOnPlatformAttribute(
+    public Argon2ApiBrokenOnPlatformAttribute
+    (
         string platform,
-        Architecture architecture)
+        Architecture architecture
+    )
     {
         ValidateStringNotNullOrWhiteSpace(platform, nameof(platform));
         ValidateEnum(typeof(Architecture), architecture);

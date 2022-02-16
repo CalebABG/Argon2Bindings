@@ -9,8 +9,10 @@ public class Argon2ErrorsTests
     [Theory]
     [InlineData(1)]
     [InlineData(-777)]
-    public void Argon2Errors_GetErrorMessage_Should_Throw_When_InputEnumerationIsInvalid(
-        int error)
+    public void Argon2Errors_GetErrorMessage_Should_Throw_When_InputEnumerationIsInvalid
+    (
+        int error
+    )
     {
         // Assert
         Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -22,8 +24,10 @@ public class Argon2ErrorsTests
     [InlineData(Argon2Result.VerifyMismatch)]
     [InlineData(Argon2Result.FreeMemoryCbkNull)]
     [InlineData(Argon2Result.MemoryTooLittle)]
-    public void Argon2Errors_GetErrorMessage_Should_Return_NonNullOrEmptyString_When_InputEnumerationIsValid(
-        Argon2Result error)
+    public void Argon2Errors_GetErrorMessage_Should_Return_NonNullOrEmptyString_When_InputEnumerationIsValid
+    (
+        Argon2Result error
+    )
     {
         // Act
         var result = Argon2Errors.GetErrorMessage(error);
