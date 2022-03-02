@@ -16,7 +16,7 @@ public static class Program
     [NativeMemoryProfiler]
 #endif
     [MemoryDiagnoser]
-    public class Argon2BindingsBenchmarker
+    public class Argon2BindingsBenchmark
     {
         private const string Salt = "testing123";
         private const string Password = "test";
@@ -61,6 +61,6 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        Summary? summary = BenchmarkRunner.Run<Argon2BindingsBenchmarker>();
+        BenchmarkRunner.Run<Argon2BindingsBenchmark>();
     }
 }
