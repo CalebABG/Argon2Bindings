@@ -345,3 +345,6 @@ SqlQueries/
 
 # Platform binaries (win,osx,linux)
 src/Argon2BindingsAutomation/output/**/
+
+# NuGet package output
+nupackages
