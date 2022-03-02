@@ -12,11 +12,11 @@ namespace Argon2Bindings.Results;
 /// specified to hashing method.
 public readonly struct Argon2HashResult
 {
-    public Argon2Result Status { get; }
-    public byte[] RawHash { get; }
-    public string EncodedHash { get; }
+    public readonly Argon2Result Status;
+    public readonly byte[] RawHash;
+    public readonly string EncodedHash;
 
-    public Argon2HashResult
+    private Argon2HashResult
     (
         Argon2Result status,
         byte[] rawHash,
@@ -26,6 +26,24 @@ public readonly struct Argon2HashResult
         Status = status;
         RawHash = rawHash;
         EncodedHash = encodedHash;
+    }
+
+    public static Argon2HashResult FromSuccess
+    (
+        Argon2Result status,
+        byte[] rawHash,
+        string encodedHash
+    )
+    {
+        return new(status, rawHash, encodedHash);
+    }
+
+    public static Argon2HashResult FromError
+    (
+        Argon2Result status
+    )
+    {
+        return new(status, Array.Empty<byte>(), string.Empty);
     }
 
     public override string ToString()

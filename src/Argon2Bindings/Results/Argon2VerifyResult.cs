@@ -6,17 +6,38 @@ namespace Argon2Bindings.Results;
 /// </summary>
 public readonly struct Argon2VerifyResult
 {
-    public bool Success { get; }
-    public string? Error { get; }
+    public readonly bool Success;
+    public readonly string Error = "";
 
-    public Argon2VerifyResult
+    private Argon2VerifyResult
     (
         bool success,
-        string? error = ""
+        string error = ""
     )
     {
         Success = success;
         Error = error;
+    }
+
+    public static Argon2VerifyResult FromSuccess()
+    {
+        return new(true);
+    }
+
+    public static Argon2VerifyResult FromError
+    (
+        string error = ""
+    )
+    {
+        return new(false, error);
+    }
+
+    public static Argon2VerifyResult FromError
+    (
+        Exception exception
+    )
+    {
+        return FromError($"{exception.Message}\n{exception.StackTrace}");
     }
 
     public override string ToString()

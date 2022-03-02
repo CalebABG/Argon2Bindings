@@ -11,6 +11,18 @@ namespace Argon2Bindings;
 /// </summary>
 public static class Argon2Utilities
 {
+    /// <summary>
+    /// Returns the hex string representation of the
+    /// provided array of bytes.
+    /// </summary>
+    /// <param name="bytes">The array of bytes</param>
+    /// <param name="separator">The separator to use</param>
+    /// <returns>
+    /// Returns a hex string of the provided bytes.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Throws when the input byte array is null.
+    /// </exception>
     public static string ToHexString
     (
         this byte[] bytes,
@@ -20,23 +32,39 @@ public static class Argon2Utilities
         if (bytes is null)
             throw new ArgumentNullException(nameof(bytes));
 
-        var output = BitConverter.ToString(bytes);
-        return output.Replace("-", separator);
+        return BitConverter
+            .ToString(bytes)
+            .Replace("-", separator);
     }
 
+    /// <summary>
+    /// Returns the bytes of the string using the provided encoding.
+    /// </summary>
+    /// <param name="str">The string to get the bytes from</param>
+    /// <param name="encoding">The encoding to use</param>
+    /// <returns>
+    /// Returns the bytes of the string using the encoding if provided,
+    /// otherwise the default encoding is used. <see cref="Argon2Defaults.DefaultEncoding"/>
+    /// </returns>
     public static byte[] ToBytes
     (
         this string str,
         Encoding? encoding = null
     )
     {
-        if (str is null)
-            throw new ArgumentNullException(nameof(str));
-
+        ValidateStringNotNullOrEmpty(str, nameof(str));
         encoding ??= Argon2Defaults.DefaultEncoding;
         return encoding.GetBytes(str);
     }
 
+    /// <summary>
+    /// Checks that the input is not null or empty.
+    /// </summary>
+    /// <param name="input">the string to validate</param>
+    /// <param name="paramName">the name of the input parameter</param>
+    /// <exception cref="ArgumentException">
+    /// Throws if the <paramref name="input"/> is null or empty.
+    /// </exception>
     internal static void ValidateStringNotNullOrEmpty
     (
         string input,
@@ -47,6 +75,16 @@ public static class Argon2Utilities
             throw new ArgumentException("Value cannot be null or an empty.", paramName);
     }
 
+    /// <summary>
+    /// Checks that the input is not null, empty
+    /// or consists of only whitespace.
+    /// </summary>
+    /// <param name="input">the string to validate</param>
+    /// <param name="paramName">the name of the input parameter</param>
+    /// <exception cref="ArgumentException">
+    /// Throws if the <paramref name="input"/> is null,
+    /// empty, or whitespace.
+    /// </exception>
     internal static void ValidateStringNotNullOrWhiteSpace
     (
         string input,
@@ -57,6 +95,19 @@ public static class Argon2Utilities
             throw new ArgumentException("Value cannot be null or whitespace.", paramName);
     }
 
+    /// <summary>
+    /// Checks that the enum value provided is a valid option
+    /// within the Enum type.
+    /// </summary>
+    /// <param name="enumType">The type of Enum</param>
+    /// <param name="value">The Enum value to validate</param>
+    /// <exception cref="ArgumentNullException">
+    /// Throws if either <paramref name="enumType"/> or <paramref name="value"/>
+    /// are null.
+    /// </exception>
+    /// <exception cref="InvalidEnumArgumentException">
+    /// Throws if <paramref name="value"/> is not a valid option within the Enum type provided.
+    /// </exception>
     internal static void ValidateEnum
     (
         Type enumType,
@@ -67,13 +118,22 @@ public static class Argon2Utilities
         if (value == null) throw new ArgumentNullException(nameof(value));
 
         if (!Enum.IsDefined(enumType, value))
-            throw new InvalidEnumArgumentException(
-                $"{nameof(value)} : {(int)value} is an invalid value for enum type {enumType}");
+            throw new InvalidEnumArgumentException($"{nameof(value)} : {(int)value}" +
+                                                   $" is an invalid value for enum type {enumType}");
     }
 
+    /// <summary>
+    /// Checks that the collection is not null
+    /// or empty.
+    /// </summary>
+    /// <param name="collection">The collection to validate</param>
+    /// <param name="paramName">the name of the input parameter</param>
+    /// <exception cref="ArgumentException">
+    /// Throws when the collection is null or empty.
+    /// </exception>
     internal static void ValidateCollection
     (
-        ICollection collection,
+        ICollection? collection,
         string paramName
     )
     {
@@ -81,6 +141,13 @@ public static class Argon2Utilities
             throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
     }
 
+    /// <summary>
+    /// Generates a salt as a collection of bytes using
+    /// a cryptographic random number generator.
+    /// </summary>
+    /// <param name="saltLength">The length of the salt in bytes</param>
+    /// <returns>Returns an array of cryptographically generated random bytes.</returns>
+    /// <seealso cref="RandomNumberGenerator"/>
     public static byte[] GenerateSalt
     (
         uint saltLength = Argon2Defaults.DefaultSaltLength
@@ -91,15 +158,36 @@ public static class Argon2Utilities
         return salt;
     }
 
+    /// <summary>
+    /// Generates the salt bytes from provided context.
+    /// <remarks>
+    /// If the context is not null, the salt length from the context
+    /// is used to generate the salt. Otherwise the default salt length is
+    /// used to generate the salt <see cref="Argon2Defaults.DefaultSaltLength"/>.
+    /// </remarks>
+    /// </summary>
+    /// <param name="context">The context to get the salt from</param>
+    /// <returns>Returns the salt as an array of bytes.</returns>
+    /// 
     internal static byte[] GetSaltBytes
     (
         Argon2Context? context
     )
     {
-        uint saltLen = context?.SaltLength ?? Argon2Defaults.DefaultSaltLength;
-        return GenerateSalt(saltLen);
+        return GenerateSalt(context?.SaltLength ?? Argon2Defaults.DefaultSaltLength);
     }
 
+    /// <summary>
+    /// Gets the salt bytes from the input or the
+    /// <see cref="Argon2Context"/>.
+    /// <remarks>
+    /// If the input is not null or whitespace, gets the bytes from the input.
+    /// Otherwise the context is used to generate the salt bytes. 
+    /// </remarks>
+    /// </summary>
+    /// <param name="salt">The string to get the salt from</param>
+    /// <param name="context">The context to get the salt from</param>
+    /// <returns>Returns the salt as an array of bytes.</returns>
     internal static byte[] GetSaltBytes
     (
         string? salt,
@@ -111,6 +199,14 @@ public static class Argon2Utilities
             : GetSaltBytes(context);
     }
 
+    /// <summary>
+    /// Gets the bytes of the provided string using the
+    /// default encoding <see cref="Argon2Defaults.DefaultEncoding"/>.
+    /// </summary>
+    /// <param name="str">The string to get the bytes from</param>
+    /// <returns>
+    /// Returns the bytes of the string using the default encoding.
+    /// </returns>
     internal static byte[] GetStringBytes
     (
         string str
@@ -119,28 +215,40 @@ public static class Argon2Utilities
         return Argon2Defaults.DefaultEncoding.GetBytes(str);
     }
 
-    internal static string GetEncodedString
+    /// <summary>
+    /// Gets the string representation of the provided bytes.
+    /// <remarks>
+    /// If <paramref name="encode"/> is set to true, the default
+    /// encoding is used to get the string (<see cref="Argon2Defaults.DefaultEncoding"/>).
+    /// Otherwise, Base64 is used to get the string from the bytes.
+    /// </remarks>
+    /// </summary>
+    /// <param name="bytes">The array of bytes</param>
+    /// <param name="encode">Whether to encode</param>
+    /// <returns>
+    /// Returns the string representation of the array of bytes.
+    /// </returns>
+    internal static string GetString
     (
-        byte[] outputBytes,
-        bool encodeHash
+        byte[] bytes,
+        bool encode
     )
     {
-        ValidateCollection(outputBytes, nameof(outputBytes));
+        ValidateCollection(bytes, nameof(bytes));
 
-        return encodeHash
-            ? Argon2Defaults.DefaultEncoding.GetString(outputBytes).TrimEnd('\0')
-            : Convert.ToBase64String(outputBytes);
+        return encode
+            ? Argon2Defaults.DefaultEncoding.GetString(bytes).TrimEnd('\0')
+            : Convert.ToBase64String(bytes);
     }
 
-    internal static bool ContextDataValid
-    (
-        byte[]? data
-    )
-    {
-        return data is not null && data.Length > 0;
-    }
-
-    public static void WriteError
+    /// <summary>
+    /// Method to write an error to the console.
+    /// <remarks>
+    /// Writes the error to the console in <see cref="ConsoleColor.Red"/>
+    /// </remarks>
+    /// </summary>
+    /// <param name="e">The exception to use</param>
+    internal static void WriteError
     (
         Exception e
     )
@@ -148,7 +256,12 @@ public static class Argon2Utilities
         WriteLine($"{e.Message}\n{e.StackTrace}", ConsoleColor.Red);
     }
 
-    /* Ref comment: https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper */
+    /// <summary>
+    /// Method to write a line to the console in the provided color.
+    /// </summary>
+    /// <param name="text">The text to write</param>
+    /// <param name="color">The color to use</param>
+    /// Adapted from: <seealso href="https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper"/>
     private static void WriteLine
     (
         string text,
@@ -156,7 +269,6 @@ public static class Argon2Utilities
     )
     {
         var oldColor = Console.ForegroundColor;
-
         if (oldColor == color)
         {
             Console.WriteLine(text);

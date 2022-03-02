@@ -9,13 +9,13 @@ public class Argon2DynamicBindingTests
     public void Argon2DynamicBinding_GetMappingMethod_Should_Throw_When_InputTypeIsNull()
     {
         // Assert
-        Assert.Throws<ArgumentNullException>(() => Argon2DynamicBinding.GetMappingMethod(null!));
+        Assert.Throws<ArgumentNullException>(() => Argon2DynamicBinding.GetMappingMethodName(null!));
     }
 
     [Fact]
     public void Argon2DynamicBinding_GetMappingMethod_Should_Throw_When_InputTypeDoesNotHaveMappingMethodAttribute()
     {
         // Assert
-        Assert.Throws<Exception>(() => Argon2DynamicBinding.GetMappingMethod(typeof(Argon2Library)));
+        Assert.Throws<Exception>(() => Argon2DynamicBinding.GetMappingMethodName(typeof(Argon2Library)));
     }
 }

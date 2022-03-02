@@ -35,7 +35,7 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws if the provided type is null or if the provided delegate's method name is null or empty.
     /// </exception>
-    internal static string GetMappingMethod
+    internal static string GetMappingMethodName
     (
         Type type
     )
@@ -45,7 +45,7 @@ internal static class Argon2DynamicBinding
 
         var attribute = type.GetCustomAttribute<Argon2MappingMethodAttribute>();
         if (attribute is null)
-            throw new Exception("Delegate not given a method name to map to argon2 C library");
+            throw new Exception("Delegate not given a method name to map to argon2 C library method");
 
         return attribute.Name;
     }
@@ -72,8 +72,7 @@ internal static class Argon2DynamicBinding
     ) where TDelegate : Delegate
     {
         var delegateType = typeof(TDelegate);
-        var mappingMethodName = GetMappingMethod(delegateType);
-        return (TDelegate)Delegate.CreateDelegate(delegateType, type.GetMethod(mappingMethodName)!);
+        return (TDelegate)Delegate.CreateDelegate(delegateType, type.GetMethod(GetMappingMethodName(delegateType))!);
     }
 
     /// <summary>
@@ -90,11 +89,13 @@ internal static class Argon2DynamicBinding
         IReadOnlyList<Type> delegateTypes
     )
     {
-        return CreateDynamicType(
+        return CreateDynamicType
+        (
             AssemblyName,
             ModuleName,
             TypeName,
-            delegateTypes);
+            delegateTypes
+        );
     }
 
     /// <summary>
@@ -135,11 +136,9 @@ internal static class Argon2DynamicBinding
 
         string dllPath = GetDynamicDllPath();
 
-        for (var i = 0; i < delegateTypes.Count; ++i)
+        foreach (Type delegateType in delegateTypes)
         {
-            Type delegateType = delegateTypes[i];
-
-            string mappingMethodName = GetMappingMethod(delegateType);
+            string mappingMethodName = GetMappingMethodName(delegateType);
 
             MethodInfo delegateMethod = delegateType.GetMethod("Invoke")!;
 

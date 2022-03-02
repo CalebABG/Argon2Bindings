@@ -3,6 +3,10 @@ using Argon2Bindings.Attributes;
 
 namespace Argon2Bindings;
 
+/// <summary>
+/// Class which holds the core binding delegates which are mapped to the
+/// core argon2 C library functions.
+/// </summary>
 internal static class Argon2Library
 {
     /// <summary>

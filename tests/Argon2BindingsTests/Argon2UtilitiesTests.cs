@@ -89,45 +89,6 @@ public class Argon2UtilitiesTests
     }
 
     [Fact]
-    public void Argon2Utilities_ContextDataValid_Should_Return_False_When_InputIsNull()
-    {
-        // Arrange
-        byte[] input = default!;
-
-        // Act
-        var result = Argon2Utilities.ContextDataValid(input);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Argon2Utilities_ContextDataValid_Should_Return_False_When_InputIsEmpty()
-    {
-        // Arrange
-        byte[] input = Array.Empty<byte>();
-
-        // Act
-        var result = Argon2Utilities.ContextDataValid(input);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Argon2Utilities_ContextDataValid_Should_Return_True_When_InputIsValid()
-    {
-        // Arrange
-        byte[] input = { 0x1, 0x2, 0x3, 0x4 };
-
-        // Act
-        var result = Argon2Utilities.ContextDataValid(input);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    [Fact]
     public void Argon2Utilities_ToHexString_Should_Throw_When_InputIsNull()
     {
         // Arrange
@@ -166,27 +127,27 @@ public class Argon2UtilitiesTests
     [Theory]
     [InlineData(null)]
     [InlineData(new byte[] { })]
-    public void Argon2Utilities_GetEncodedString_Should_Throw_When_InputIsNullOrEmpty
+    public void Argon2Utilities_GetString_Should_Throw_When_InputIsNullOrEmpty
     (
         byte[] input
     )
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Utilities.GetEncodedString(input, true));
+        Assert.Throws<ArgumentException>(() => Argon2Utilities.GetString(input, encode: true));
     }
 
     [Theory]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, true, "abcd")]
     [InlineData(new byte[] { 0x61, 0x62, 0x63, 0x64 }, false, "YWJjZA==")]
-    public void Argon2Utilities_GetEncodedString_Should_Return_ValidEncodedString_When_InputIsNotNullOrEmpty
+    public void Argon2Utilities_GetString_Should_Return_ValidEncodedString_When_InputIsNotNullOrEmpty
     (
         byte[] input,
-        bool encodeHash,
+        bool encode,
         string expected
     )
     {
         // Act
-        string result = Argon2Utilities.GetEncodedString(input, encodeHash);
+        string result = Argon2Utilities.GetString(input, encode);
 
         // Assert
         Assert.Equal(expected, result);

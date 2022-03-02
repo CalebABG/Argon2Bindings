@@ -70,6 +70,7 @@ public static class Argon2PlatformUtilities
         return GetPlatformArchitecture(RuntimeInformation.OSArchitecture);
     }
 
+    /// <inheritdoc cref="GetPlatformArchitecture"/>
     internal static string GetPlatformArchitecture
     (
         Architecture architecture

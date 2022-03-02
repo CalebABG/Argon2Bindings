@@ -66,7 +66,7 @@ public class Argon2Context
     /// (Optional) The associated data used to provide additional
     /// data during hashing.
     /// <remarks>
-    /// If provided it will be used as any additional data, similar
+    /// If provided, it will be used as additional data, similar
     /// to <see cref="Secret"/>, but works differently. <see cref="Secret"/> should
     /// be a cryptographically secure random key only usable during <b>Hashing</b>.
     /// </remarks> 
