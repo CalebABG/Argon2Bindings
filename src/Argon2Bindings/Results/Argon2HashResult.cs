@@ -10,7 +10,7 @@ namespace Argon2Bindings.Results;
 /// when <b>raw</b> hashing is specified to hashing
 /// method, or the argon2 <b>encoded</b> hash format when encoded is
 /// specified to hashing method.
-public readonly struct Argon2HashResult
+public readonly record struct Argon2HashResult
 {
     public readonly Argon2Result Status;
     public readonly byte[] RawHash;
@@ -44,12 +44,5 @@ public readonly struct Argon2HashResult
     )
     {
         return new(status, Array.Empty<byte>(), string.Empty);
-    }
-
-    public override string ToString()
-    {
-        return $"{nameof(Argon2HashResult)} {{ {nameof(Status)}: {Status}, " +
-               $"{nameof(RawHash)}: {RawHash.ToHexString()}, " +
-               $"{nameof(EncodedHash)}: {EncodedHash} }}";
     }
 }

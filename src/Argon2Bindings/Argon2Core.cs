@@ -57,12 +57,7 @@ public static class Argon2Core
                         type
                     );
 
-                    return status switch
-                    {
-                        Argon2Result.Ok => Argon2VerifyResult.FromSuccess(),
-                        Argon2Result.VerifyMismatch => Argon2VerifyResult.FromError(),
-                        _ => Argon2VerifyResult.FromError(Argon2Errors.GetErrorMessage(status))
-                    };
+                    return Argon2VerifyResult.FromStatus(status);
                 }
             }
         }
