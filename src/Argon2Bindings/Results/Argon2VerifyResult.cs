@@ -39,7 +39,7 @@ public readonly record struct Argon2VerifyResult
         Argon2Result status
     )
     {
-        return status == Argon2Result.Ok 
+        return status == Argon2Result.Ok
             ? FromSuccess()
             : FromError(Argon2Errors.GetErrorMessage(status));
     }

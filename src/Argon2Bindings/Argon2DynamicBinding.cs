@@ -72,7 +72,11 @@ internal static class Argon2DynamicBinding
     ) where TDelegate : Delegate
     {
         var delegateType = typeof(TDelegate);
-        return (TDelegate)Delegate.CreateDelegate(delegateType, type.GetMethod(GetMappingMethodName(delegateType))!);
+        return (TDelegate)Delegate.CreateDelegate
+        (
+            delegateType,
+            type.GetMethod(GetMappingMethodName(delegateType))!
+        );
     }
 
     /// <summary>
