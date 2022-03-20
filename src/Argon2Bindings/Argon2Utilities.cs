@@ -243,20 +243,38 @@ public static class Argon2Utilities
             : Convert.ToBase64String(bytes);
     }
 
-    // Todo: Exception formatting class
+    /// <summary>
+    /// Method to get exception details.
+    /// </summary>
+    /// <param name="exception">the exception to get details from</param>
+    /// <returns>The details of the throw exception</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Throws if the provided exception is null.
+    /// </exception>
+    internal static string GetExceptionString
+    (
+        Exception exception
+    )
+    {
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));
+
+        return exception.ToString();
+    }
+
     /// <summary>
     /// Method to write an error to the console.
     /// <remarks>
     /// Writes the error to the console in <see cref="ConsoleColor.Red"/>
     /// </remarks>
     /// </summary>
-    /// <param name="e">The exception to use</param>
+    /// <param name="exception">The exception to use</param>
     internal static void WriteError
     (
-        Exception e
+        Exception exception
     )
     {
-        WriteLine($"{e.Message}\n{e.StackTrace}", ConsoleColor.Red);
+        WriteColorfulLine(GetExceptionString(exception), ConsoleColor.Red);
     }
 
     /// <summary>
@@ -265,7 +283,7 @@ public static class Argon2Utilities
     /// <param name="text">The text to write</param>
     /// <param name="color">The color to use</param>
     /// Adapted from: <seealso href="https://weblog.west-wind.com/posts/2020/Jul/10/A-NET-Console-Color-Helper"/>
-    private static void WriteLine
+    private static void WriteColorfulLine
     (
         string text,
         ConsoleColor color = ConsoleColor.White

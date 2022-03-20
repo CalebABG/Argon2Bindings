@@ -1,4 +1,6 @@
 using Argon2Bindings.Enums;
+using static Argon2Bindings.Argon2Errors;
+using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings.Results;
 
@@ -41,7 +43,7 @@ public readonly record struct Argon2VerifyResult
     {
         return status == Argon2Result.Ok
             ? FromSuccess()
-            : FromError(Argon2Errors.GetErrorMessage(status));
+            : FromError(GetErrorMessage(status));
     }
 
     public static Argon2VerifyResult FromError
@@ -49,6 +51,6 @@ public readonly record struct Argon2VerifyResult
         Exception exception
     )
     {
-        return FromError($"{exception.Message}\n{exception.StackTrace}");
+        return FromError(GetExceptionString(exception));
     }
 }
