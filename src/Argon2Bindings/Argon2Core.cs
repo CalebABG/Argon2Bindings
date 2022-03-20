@@ -149,9 +149,9 @@ public static class Argon2Core
                     // If encoding, use buffer for encoding and set encoding length.
                     // Otherwise use buffer for raw hash and set encoding ptr to 
                     // null and encoding length to 0.
-                    var hashPtr = encode ? null : bufferPtr;
-                    var encodePtr = encode ? bufferPtr : null;
-                    var encodeLen = encode ? bufferLength : 0;
+                    byte* hashPtr = encode ? null : bufferPtr;
+                    byte* encodePtr = encode ? bufferPtr : null;
+                    nuint encodeLen = encode ? bufferLength : 0;
 
                     result = Argon2Library.Argon2Hash
                     (
@@ -252,8 +252,8 @@ public static class Argon2Core
                     associatedPtr = context.AssociatedData
                 )
                 {
-                    nuint secretBufferLen = secretPtr == null ? 0 : Convert.ToUInt32(context.Secret!.Length);
-                    nuint associatedDataBufferLen = associatedPtr == null ? 0 : Convert.ToUInt32(context.AssociatedData!.Length);
+                    nuint secretBufferLen = GetBufferLength(secretPtr, context.Secret!);
+                    nuint associatedDataBufferLen = GetBufferLength(associatedPtr, context.AssociatedData!);
 
                     var marshalContext = Argon2MarshalContext.Create
                     (
@@ -314,7 +314,7 @@ public static class Argon2Core
         Argon2Type type
     )
     {
-        var length = Argon2Library.Argon2GetEncodedHashLength
+        return Argon2Library.Argon2GetEncodedHashLength
         (
             timeCost,
             memoryCost,
@@ -323,7 +323,5 @@ public static class Argon2Core
             hashLength,
             type
         );
-
-        return length;
     }
 }

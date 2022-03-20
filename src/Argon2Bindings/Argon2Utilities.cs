@@ -217,6 +217,27 @@ public static class Argon2Utilities
     {
         return Argon2Defaults.DefaultEncoding.GetBytes(str);
     }
+    
+    /// <summary>
+    /// Gets the length of the data buffer for the
+    /// provided buffer pointer.
+    /// </summary>
+    /// <param name="bufferPtr">the pointer to the buffer</param>
+    /// <param name="buffer">the data buffer to be used</param>
+    /// <returns>
+    /// The length of the data buffer if the buffer pointer is not null,
+    /// otherwise returns 0.
+    /// </returns>
+    internal static unsafe nuint GetBufferLength
+    (
+        byte* bufferPtr,
+        byte[] buffer
+    )
+    {
+        return bufferPtr == null
+            ? 0
+            : Convert.ToUInt32(buffer.Length);
+    }
 
     /// <summary>
     /// Gets the string representation of the provided bytes.
