@@ -4,10 +4,6 @@ using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings;
 
-/* Todo: Add Windows x86 + x64 toolchains to Docker binary compilation automation */
-/* Todo: Consolidate or unify logic in `Hash` and `ContextHash` methods */
-/* Todo: Create dotnet CLI tool for replacing scripts (use dotnet command line parser nuget) */
-
 /// <summary>
 /// Class which provides the core argon2 hashing methods.
 /// </summary>
