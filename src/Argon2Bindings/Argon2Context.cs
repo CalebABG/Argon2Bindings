@@ -11,7 +11,7 @@ namespace Argon2Bindings;
 /// <see cref="Argon2MarshalContext"/>.
 /// </remarks>
 /// </summary>
-public class Argon2Context
+public record Argon2Context
 {
     /// <summary>
     /// The number of iterations
