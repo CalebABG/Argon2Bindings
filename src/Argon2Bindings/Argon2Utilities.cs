@@ -217,7 +217,7 @@ public static class Argon2Utilities
     {
         return Argon2Defaults.DefaultEncoding.GetBytes(str);
     }
-    
+
     /// <summary>
     /// Gets the length of the data buffer for the
     /// provided buffer pointer.

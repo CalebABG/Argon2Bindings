@@ -170,8 +170,7 @@ public static class Argon2Core
                         context.Version
                     );
 
-                    if (result is not Argon2Result.Ok)
-                        throw new Exception(Argon2Errors.GetErrorMessage(result));
+                    Argon2Errors.ThrowIfNotEqual(result, Argon2Result.Ok);
 
                     return Argon2HashResult.FromSuccess
                     (
@@ -272,8 +271,7 @@ public static class Argon2Core
 
                     result = Argon2Library.Argon2ContextHash(ref marshalContext, context.Type);
 
-                    if (result is not Argon2Result.Ok)
-                        throw new Exception(Argon2Errors.GetErrorMessage(result));
+                    Argon2Errors.ThrowIfNotEqual(result, Argon2Result.Ok);
 
                     return Argon2HashResult.FromSuccess
                     (

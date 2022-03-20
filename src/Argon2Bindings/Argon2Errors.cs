@@ -65,4 +65,23 @@ public static class Argon2Errors
             ? errorMessage
             : throw new ArgumentOutOfRangeException(nameof(result), result, "Unknown error code");
     }
+
+    /// <summary>
+    /// Method which will throw if the provided result
+    /// does not match the expected.
+    /// </summary>
+    /// <param name="result">the result to check</param>
+    /// <param name="expected">the expected value</param>
+    /// <exception cref="Exception">
+    /// Throws if the result does not equal the expected.
+    /// </exception>
+    public static void ThrowIfNotEqual
+    (
+        Argon2Result result,
+        Argon2Result expected
+    )
+    {
+        if (result != expected)
+            throw new Exception(GetErrorMessage(result));
+    }
 }
