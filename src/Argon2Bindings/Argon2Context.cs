@@ -19,7 +19,7 @@ public record Argon2Context
     public uint TimeCost = DefaultTimeCost;
 
     /// <summary>
-    /// The amount of memory to use in kibibytes
+    /// The amount of memory to use in kibibytes (KiB)
     /// </summary>
     public uint MemoryCost = DefaultMemoryCost;
 

@@ -73,7 +73,7 @@ internal unsafe struct Argon2MarshalContext
     public uint TimeCost;
 
     /// <summary>
-    /// Amount of memory to use in kibibytes
+    /// Amount of memory to use in kibibytes (KiB)
     /// </summary>
     public uint MemoryCost;
 

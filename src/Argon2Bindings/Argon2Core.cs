@@ -297,7 +297,7 @@ public static class Argon2Core
     /// input parameters.
     /// </summary>
     /// <param name="timeCost">The number of iterations</param>
-    /// <param name="memoryCost">The amount of memory in kibibytes</param>
+    /// <param name="memoryCost">The amount of memory in kibibytes (KiB)</param>
     /// <param name="degreeOfParallelism">The number of threads and compute lanes</param>
     /// <param name="saltLength">The length of the salt in bytes</param>
     /// <param name="hashLength">The length of the hash in bytes</param>

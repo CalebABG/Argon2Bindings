@@ -18,7 +18,7 @@ public static class Argon2Defaults
     public const uint DefaultTimeCost = 3;
 
     /// <summary>
-    /// The amount of memory to use in kibibytes
+    /// The amount of memory to use in kibibytes (KiB)
     /// </summary>
     public const uint DefaultMemoryCost = 1 << 12;
 

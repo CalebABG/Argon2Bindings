@@ -36,7 +36,7 @@ public static class Argon2Errors
         [Argon2Result.FreeMemoryCbkNull] = "The free memory callback is NULL",
         [Argon2Result.AllocateMemoryCbkNull] = "The allocate memory callback is NULL",
         [Argon2Result.IncorrectParameter] = "Argon2_Context context is NULL",
-        [Argon2Result.IncorrectType] = "There is no such version of Argon2",
+        [Argon2Result.IncorrectType] = "There is no such version of argon2",
         [Argon2Result.OutPtrMismatch] = "Output pointer mismatch",
         [Argon2Result.ThreadsTooFew] = "Not enough threads",
         [Argon2Result.ThreadsTooMany] = "Too many threads",

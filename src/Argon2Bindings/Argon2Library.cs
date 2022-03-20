@@ -32,7 +32,7 @@ internal static class Argon2Library
     /// or a <b>raw</b> hash if specified.
     /// </remarks>
     /// <param name="t_cost">The number of iterations</param>
-    /// <param name="m_cost">The amount of memory to use in kibibytes</param>
+    /// <param name="m_cost">The amount of memory to use in kibibytes (KiB)</param>
     /// <param name="parallelism">The number of threads and compute lanes to use</param>
     /// <param name="pwd">The pointer to the password</param>
     /// <param name="pwdlen">The length of the password in bytes</param>
@@ -66,7 +66,7 @@ internal static class Argon2Library
     /// <summary>
     /// Binding delegate which returns the encoded hash length.
     /// <param name="t_cost">The number of iterations</param>
-    /// <param name="m_cost">The amount of memory in kibibytes</param>
+    /// <param name="m_cost">The amount of memory in kibibytes (KiB)</param>
     /// <param name="parallelism">The number of threads and compute lanes</param>
     /// <param name="saltlen">The length of the salt in bytes</param>
     /// <param name="hashlen">The length of the hash in bytes</param>

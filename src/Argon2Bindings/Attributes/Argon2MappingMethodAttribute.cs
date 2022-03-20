@@ -4,7 +4,7 @@ namespace Argon2Bindings.Attributes;
 
 /// <summary>
 /// Attribute used for specifying which method
-/// in the Argon2 C library to use.
+/// in the argon2 C library to use.
 /// </summary>
 /// <remarks>
 /// This attribute is to be used with / attached to a
