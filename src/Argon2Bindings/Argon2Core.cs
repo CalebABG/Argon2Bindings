@@ -150,6 +150,9 @@ public static class Argon2Core
                     bufferPtr = buffer
                 )
                 {
+                    // If encoding, use buffer for encoding and set encoding length.
+                    // Otherwise use buffer for raw hash and set encoding ptr to 
+                    // null and encoding length to 0.
                     var hashPtr = encode ? null : bufferPtr;
                     var encodePtr = encode ? bufferPtr : null;
                     var encodeLen = encode ? bufferLength : 0;
