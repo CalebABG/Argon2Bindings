@@ -20,7 +20,7 @@ internal class Argon2BindingsBrokenOnPlatformAttribute : Attribute
     )
     {
         ValidateStringNotNullOrWhiteSpace(platform);
-        ValidateEnum(typeof(Architecture), architecture);
+        ValidateEnum<Architecture>(architecture);
         Platform = platform;
         Architecture = architecture;
     }

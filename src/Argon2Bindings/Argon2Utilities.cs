@@ -104,7 +104,6 @@ public static class Argon2Utilities
     /// <exception cref="InvalidEnumArgumentException">
     /// Throws if <paramref name="value"/> is not a valid option within the Enum type provided.
     /// </exception>
-    // Todo: Make helper generic enum method
     internal static void ValidateEnum
     (
         Type enumType,
@@ -117,6 +116,15 @@ public static class Argon2Utilities
         if (!Enum.IsDefined(enumType, value))
             throw new InvalidEnumArgumentException($"{nameof(value)} : {(int)value}" +
                                                    $" is an invalid value for enum type {enumType}");
+    }
+
+    /// <inheritdoc cref="ValidateEnum(Type, object)"/>
+    internal static void ValidateEnum<TEnum>
+    (
+        object value
+    ) where TEnum : Enum
+    {
+        ValidateEnum(typeof(TEnum), value);
     }
 
     /// <summary>
