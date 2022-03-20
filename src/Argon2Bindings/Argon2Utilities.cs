@@ -52,7 +52,7 @@ public static class Argon2Utilities
         Encoding? encoding = null
     )
     {
-        ValidateStringNotNullOrEmpty(str, nameof(str));
+        ValidateStringNotNullOrEmpty(str);
         encoding ??= Argon2Defaults.DefaultEncoding;
         return encoding.GetBytes(str);
     }
@@ -61,18 +61,16 @@ public static class Argon2Utilities
     /// Checks that the input is not null or empty.
     /// </summary>
     /// <param name="input">the string to validate</param>
-    /// <param name="paramName">the name of the input parameter</param>
     /// <exception cref="ArgumentException">
     /// Throws if the <paramref name="input"/> is null or empty.
     /// </exception>
     internal static void ValidateStringNotNullOrEmpty
     (
-        string input,
-        string paramName
+        string input
     )
     {
         if (string.IsNullOrEmpty(input))
-            throw new ArgumentException("Value cannot be null or an empty.", paramName);
+            throw new ArgumentException("Value cannot be null or an empty.", nameof(input));
     }
 
     /// <summary>
@@ -80,19 +78,17 @@ public static class Argon2Utilities
     /// or consists of only whitespace.
     /// </summary>
     /// <param name="input">the string to validate</param>
-    /// <param name="paramName">the name of the input parameter</param>
     /// <exception cref="ArgumentException">
     /// Throws if the <paramref name="input"/> is null,
     /// empty, or whitespace.
     /// </exception>
     internal static void ValidateStringNotNullOrWhiteSpace
     (
-        string input,
-        string paramName
+        string input
     )
     {
         if (string.IsNullOrWhiteSpace(input))
-            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(input));
     }
 
     /// <summary>
@@ -108,6 +104,7 @@ public static class Argon2Utilities
     /// <exception cref="InvalidEnumArgumentException">
     /// Throws if <paramref name="value"/> is not a valid option within the Enum type provided.
     /// </exception>
+    // Todo: Make helper generic enum method
     internal static void ValidateEnum
     (
         Type enumType,
@@ -127,18 +124,16 @@ public static class Argon2Utilities
     /// or empty.
     /// </summary>
     /// <param name="collection">The collection to validate</param>
-    /// <param name="paramName">the name of the input parameter</param>
     /// <exception cref="ArgumentException">
     /// Throws when the collection is null or empty.
     /// </exception>
     internal static void ValidateCollection
     (
-        ICollection? collection,
-        string paramName
+        ICollection collection
     )
     {
         if (collection is null || collection.Count < 1)
-            throw new ArgumentException("Value cannot be null or an empty collection.", paramName);
+            throw new ArgumentException("Value cannot be null or an empty collection.", nameof(collection));
     }
 
     /// <summary>
@@ -234,13 +229,13 @@ public static class Argon2Utilities
         bool encode
     )
     {
-        ValidateCollection(bytes, nameof(bytes));
-
+        ValidateCollection(bytes);
         return encode
             ? Argon2Defaults.DefaultEncoding.GetString(bytes).TrimEnd('\0')
             : Convert.ToBase64String(bytes);
     }
 
+    // Todo: Exception formatting class
     /// <summary>
     /// Method to write an error to the console.
     /// <remarks>

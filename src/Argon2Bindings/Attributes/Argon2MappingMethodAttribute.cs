@@ -23,8 +23,7 @@ internal class Argon2MappingMethodAttribute : Attribute
 
     public Argon2MappingMethodAttribute(string name)
     {
-        ValidateStringNotNullOrWhiteSpace(name, nameof(name));
-
+        ValidateStringNotNullOrWhiteSpace(name);
         Name = name;
     }
 }

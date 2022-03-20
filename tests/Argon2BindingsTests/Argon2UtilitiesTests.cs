@@ -16,22 +16,7 @@ public class Argon2UtilitiesTests
     )
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrEmpty(input, nameof(input)));
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrWhiteSpace_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
-    (
-        string param
-    )
-    {
-        // Arrange
-        string input = "test";
-
-        // Act
-        Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, param);
+        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrEmpty(input));
     }
 
     [Theory]
@@ -43,22 +28,7 @@ public class Argon2UtilitiesTests
     )
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input, nameof(input)));
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Argon2Utilities_ValidateStringNotNullOrEmpty_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
-    (
-        string param
-    )
-    {
-        // Arrange
-        string input = "test";
-
-        // Act
-        Argon2Utilities.ValidateStringNotNullOrEmpty(input, param);
+        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateStringNotNullOrWhiteSpace(input));
     }
 
     [Theory]
@@ -70,22 +40,7 @@ public class Argon2UtilitiesTests
     )
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateCollection(input, nameof(input)));
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Argon2Utilities_ValidateCollection_ShouldNot_Throw_When_ParamNameIsNullOrEmpty
-    (
-        string param
-    )
-    {
-        // Arrange
-        byte[] input = { 0x1, 0x2 };
-
-        // Act
-        Argon2Utilities.ValidateCollection(input, param);
+        Assert.Throws<ArgumentException>(() => Argon2Utilities.ValidateCollection(input));
     }
 
     [Fact]
