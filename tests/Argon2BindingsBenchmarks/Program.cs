@@ -10,6 +10,11 @@ namespace Argon2BindingsBenchmarks;
 
 public static class Program
 {
+    public static void Main(string[] args)
+    {
+        BenchmarkRunner.Run<Argon2BindingsBenchmark>();
+    }
+
     [ShortRunJob]
 #if WINDOWS
     [NativeMemoryProfiler]
@@ -53,10 +58,5 @@ public static class Program
         {
             Argon2Core.Verify(Password, VerifyPasswordHash);
         }
-    }
-
-    public static void Main(string[] args)
-    {
-        BenchmarkRunner.Run<Argon2BindingsBenchmark>();
     }
 }
