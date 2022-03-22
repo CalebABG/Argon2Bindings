@@ -111,13 +111,7 @@ public static class Argon2Core
         nuint saltLength = Convert.ToUInt32(salt.Length);
 
         nuint bufferLength = encode
-            ? GetEncodedHashLength(
-                context.TimeCost,
-                context.MemoryCost,
-                context.DegreeOfParallelism,
-                (uint)saltLength,
-                context.HashLength,
-                context.Type)
+            ? GetEncodedHashLength(context)
             : context.HashLength;
 
         byte[] buffer = new byte[bufferLength];
@@ -285,6 +279,27 @@ public static class Argon2Core
             saltLength,
             hashLength,
             type
+        );
+    }
+
+    /// <summary>
+    /// Computes the encoded hash length based on the context.
+    /// </summary>
+    /// <param name="context">the context to use</param>
+    /// <returns>The computed encoded hash length</returns>
+    private static nuint GetEncodedHashLength
+    (
+        Argon2Context context
+    )
+    {
+        return GetEncodedHashLength
+        (
+            context.TimeCost,
+            context.MemoryCost,
+            context.DegreeOfParallelism,
+            context.SaltLength,
+            context.HashLength,
+            context.Type
         );
     }
 }
