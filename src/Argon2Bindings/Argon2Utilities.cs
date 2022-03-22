@@ -228,7 +228,7 @@ public static class Argon2Utilities
     /// The length of the data buffer if the buffer pointer is not null,
     /// otherwise returns 0.
     /// </returns>
-    internal static unsafe nuint GetBufferLength
+    internal static unsafe uint GetBufferLength
     (
         byte* bufferPtr,
         byte[] buffer
@@ -236,7 +236,7 @@ public static class Argon2Utilities
     {
         return bufferPtr == null
             ? 0
-            : Convert.ToUInt32(buffer.Length);
+            : (uint)buffer.Length;
     }
 
     /// <summary>

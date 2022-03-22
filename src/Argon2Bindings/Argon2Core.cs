@@ -206,9 +206,9 @@ public static class Argon2Core
                 saltPtr,
                 (uint)salt.Length,
                 secretPtr,
-                (uint)GetBufferLength(secretPtr, context.Secret!),
+                GetBufferLength(secretPtr, context.Secret!),
                 associatedPtr,
-                (uint)GetBufferLength(associatedPtr, context.AssociatedData!),
+                GetBufferLength(associatedPtr, context.AssociatedData!),
                 context
             );
 
