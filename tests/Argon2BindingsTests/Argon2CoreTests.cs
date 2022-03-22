@@ -161,13 +161,18 @@ public class Argon2CoreTests
         Assert.Equal(expectedRawHashHex.ToUpper(), result.RawHash.ToHexString());
     }
 
-    [Fact]
-    public void Argon2Core_Hash_Should_Return_ErrorResult_When_InvalidArgon2TypeSetInContext()
+    [Theory]
+    [InlineData(777)]
+    [InlineData(-1)]
+    public void Argon2Core_Hash_Should_Return_ErrorResult_When_InvalidArgon2TypeSetInContext
+    (
+        int type
+    )
     {
         // Arrange
         var password = "testing";
         var salt = "testing1234";
-        var context = new Argon2Context { Type = (Argon2Type)(-1) };
+        var context = new Argon2Context { Type = (Argon2Type)type };
 
         // Act
         var result = Argon2Core.Hash(password, salt, context, false);
@@ -200,11 +205,16 @@ public class Argon2CoreTests
         Assert.Throws<ArgumentException>(() => Argon2Core.ContextHash(password));
     }
 
-    [Fact]
-    public void Argon2Core_ContextHash_Should_Return_ErrorResult_When_InvalidContextProvided()
+    [Theory]
+    [InlineData(777)]
+    [InlineData(-1)]
+    public void Argon2Core_ContextHash_Should_Return_ErrorResult_When_InvalidContextProvided
+    (
+        int type
+    )
     {
         // Arrange
-        var context = new Argon2Context { Type = (Argon2Type)(-1) };
+        var context = new Argon2Context { Type = (Argon2Type)type };
 
         // Act
         Argon2HashResult result = Argon2Core.ContextHash("test", context: context);
