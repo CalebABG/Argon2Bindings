@@ -20,7 +20,7 @@ public static class Argon2Core
     /// Throws if either <paramref name="password"/> or <paramref name="encodedHash"/> 
     /// are null or empty.
     /// </exception>
-    public static Argon2VerifyResult Verify
+    public static unsafe Argon2VerifyResult Verify
     (
         string password,
         string encodedHash,
@@ -35,32 +35,21 @@ public static class Argon2Core
 
         nuint passLen = Convert.ToUInt32(passwordBytes.Length);
 
-        try
+        fixed
+        (
+            byte* passPtr = passwordBytes,
+            encodedPtr = encodedHashBytes
+        )
         {
-            unsafe
-            {
-                fixed
-                (
-                    byte* passPtr = passwordBytes,
-                    encodedPtr = encodedHashBytes
-                )
-                {
-                    var status = Argon2Library.Argon2Verify
-                    (
-                        encodedPtr,
-                        passPtr,
-                        passLen,
-                        type
-                    );
+            var status = Argon2Library.Argon2Verify
+            (
+                encodedPtr,
+                passPtr,
+                passLen,
+                type
+            );
 
-                    return Argon2VerifyResult.FromStatus(status);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            WriteError(e);
-            return Argon2VerifyResult.FromError(e);
+            return Argon2VerifyResult.FromStatus(status);
         }
     }
 
@@ -105,7 +94,7 @@ public static class Argon2Core
     /// <exception cref="ArgumentException">
     /// Throws if <paramref name="password"/> is null or empty.
     /// </exception>
-    public static Argon2HashResult Hash
+    public static unsafe Argon2HashResult Hash
     (
         byte[] password,
         byte[]? salt = null,
@@ -117,8 +106,6 @@ public static class Argon2Core
 
         salt ??= GetSaltBytes(context);
         context ??= new();
-
-        Argon2Result result = Argon2Result.Ok;
 
         nuint passwordLength = Convert.ToUInt32(password.Length);
         nuint saltLength = Convert.ToUInt32(salt.Length);
@@ -133,58 +120,46 @@ public static class Argon2Core
                 context.Type)
             : context.HashLength;
 
-        try
+        byte[] buffer = new byte[bufferLength];
+
+        fixed
+        (
+            byte* passPtr = password,
+            saltPtr = salt,
+            bufferPtr = buffer
+        )
         {
-            unsafe
-            {
-                byte[] buffer = new byte[Convert.ToInt32(bufferLength)];
+            // If encoding, use buffer for encoding and set encoding length.
+            // Otherwise use buffer for raw hash and set encoding ptr to 
+            // null and encoding length to 0.
+            byte* hashPtr = encode ? null : bufferPtr;
+            byte* encodePtr = encode ? bufferPtr : null;
+            nuint encodeLen = encode ? bufferLength : 0;
 
-                fixed
-                (
-                    byte* passPtr = password,
-                    saltPtr = salt,
-                    bufferPtr = buffer
-                )
-                {
-                    // If encoding, use buffer for encoding and set encoding length.
-                    // Otherwise use buffer for raw hash and set encoding ptr to 
-                    // null and encoding length to 0.
-                    byte* hashPtr = encode ? null : bufferPtr;
-                    byte* encodePtr = encode ? bufferPtr : null;
-                    nuint encodeLen = encode ? bufferLength : 0;
+            var result = Argon2Library.Argon2Hash
+            (
+                context.TimeCost,
+                context.MemoryCost,
+                context.DegreeOfParallelism,
+                passPtr,
+                passwordLength,
+                saltPtr,
+                saltLength,
+                hashPtr,
+                context.HashLength,
+                (char*)encodePtr,
+                encodeLen,
+                context.Type,
+                context.Version
+            );
 
-                    result = Argon2Library.Argon2Hash
-                    (
-                        context.TimeCost,
-                        context.MemoryCost,
-                        context.DegreeOfParallelism,
-                        passPtr,
-                        passwordLength,
-                        saltPtr,
-                        saltLength,
-                        hashPtr,
-                        context.HashLength,
-                        (char*)encodePtr,
-                        encodeLen,
-                        context.Type,
-                        context.Version
-                    );
-
-                    Argon2Errors.ThrowIfNotEqual(result, Argon2Result.Ok);
-
-                    return Argon2HashResult.FromSuccess
-                    (
-                        result,
-                        buffer,
-                        GetString(buffer, encode)
-                    );
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            WriteError(e);
-            return Argon2HashResult.FromError(result);
+            return Argon2HashResult.FromCriteria
+            (
+                result,
+                expected: Argon2Result.Ok,
+                buffer,
+                encode
+            );
         }
     }
 
@@ -218,7 +193,7 @@ public static class Argon2Core
     /// <exception cref="ArgumentException">
     /// Throws if <paramref name="password"/> is null or empty.
     /// </exception>
-    public static Argon2HashResult ContextHash
+    public static unsafe Argon2HashResult ContextHash
     (
         byte[] password,
         byte[]? salt = null,
@@ -230,62 +205,52 @@ public static class Argon2Core
         salt ??= GetSaltBytes(context);
         context ??= new();
 
-        Argon2Result result = Argon2Result.Ok;
-
         nuint bufferLength = context.HashLength;
         nuint saltLength = Convert.ToUInt32(salt.Length);
         nuint passwordLength = Convert.ToUInt32(password.Length);
 
-        try
+        byte[] buffer = new byte[bufferLength];
+
+        fixed
+        (
+            byte* passPtr = password,
+            saltPtr = salt,
+            bufferPtr = buffer,
+            secretPtr = context.Secret,
+            associatedPtr = context.AssociatedData
+        )
         {
-            unsafe
-            {
-                byte[] buffer = new byte[Convert.ToInt32(bufferLength)];
+            nuint secretBufferLen = GetBufferLength(secretPtr, context.Secret!);
+            nuint associatedDataBufferLen = GetBufferLength(associatedPtr, context.AssociatedData!);
 
-                fixed
-                (
-                    byte* passPtr = password,
-                    saltPtr = salt,
-                    bufferPtr = buffer,
-                    secretPtr = context.Secret,
-                    associatedPtr = context.AssociatedData
-                )
-                {
-                    nuint secretBufferLen = GetBufferLength(secretPtr, context.Secret!);
-                    nuint associatedDataBufferLen = GetBufferLength(associatedPtr, context.AssociatedData!);
+            var marshalContext = Argon2MarshalContext.Create
+            (
+                bufferPtr,
+                (uint)bufferLength,
+                passPtr,
+                (uint)passwordLength,
+                saltPtr,
+                (uint)saltLength,
+                secretPtr,
+                (uint)secretBufferLen,
+                associatedPtr,
+                (uint)associatedDataBufferLen,
+                context
+            );
 
-                    var marshalContext = Argon2MarshalContext.Create
-                    (
-                        bufferPtr,
-                        (uint)bufferLength,
-                        passPtr,
-                        (uint)passwordLength,
-                        saltPtr,
-                        (uint)saltLength,
-                        secretPtr,
-                        (uint)secretBufferLen,
-                        associatedPtr,
-                        (uint)associatedDataBufferLen,
-                        context
-                    );
+            var result = Argon2Library.Argon2ContextHash
+            (
+                ref marshalContext,
+                context.Type
+            );
 
-                    result = Argon2Library.Argon2ContextHash(ref marshalContext, context.Type);
-
-                    Argon2Errors.ThrowIfNotEqual(result, Argon2Result.Ok);
-
-                    return Argon2HashResult.FromSuccess
-                    (
-                        result,
-                        buffer,
-                        GetString(buffer, encode: false)
-                    );
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            WriteError(e);
-            return Argon2HashResult.FromError(result);
+            return Argon2HashResult.FromCriteria
+            (
+                result,
+                expected: Argon2Result.Ok,
+                buffer,
+                false
+            );
         }
     }
 

@@ -1,4 +1,5 @@
 using Argon2Bindings.Enums;
+using static Argon2Bindings.Argon2Utilities;
 
 namespace Argon2Bindings.Results;
 
@@ -28,21 +29,34 @@ public readonly record struct Argon2HashResult
         EncodedHash = encodedHash;
     }
 
+    public static Argon2HashResult FromCriteria
+    (
+        Argon2Result result,
+        Argon2Result expected,
+        byte[] buffer,
+        bool encode
+    )
+    {
+        return result == expected 
+            ? FromSuccess(result, buffer, GetString(buffer, encode))
+            : FromError(result);
+    }
+
     public static Argon2HashResult FromSuccess
     (
-        Argon2Result status,
+        Argon2Result result,
         byte[] rawHash,
         string encodedHash
     )
     {
-        return new(status, rawHash, encodedHash);
+        return new(result, rawHash, encodedHash);
     }
 
     public static Argon2HashResult FromError
     (
-        Argon2Result status
+        Argon2Result result
     )
     {
-        return new(status, Array.Empty<byte>(), string.Empty);
+        return new(result, Array.Empty<byte>(), string.Empty);
     }
 }
