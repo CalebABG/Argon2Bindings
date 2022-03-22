@@ -20,12 +20,17 @@ public static class Argon2PlatformUtilities
     /// <param name="PlatformArchitecture">
     /// The cpu architecture of the platform
     /// </param>
-    public record struct Argon2PlatformInfo
+    public readonly record struct Argon2PlatformInfo
     (
         string PlatformName,
         string PlatformBinaryExtension,
         string PlatformArchitecture
-    );
+    )
+    {
+        public readonly string PlatformName = PlatformName;
+        public readonly string PlatformBinaryExtension = PlatformBinaryExtension;
+        public readonly string PlatformArchitecture = PlatformArchitecture;
+    }
 
     /// <summary>
     /// Gets the target platform's name and argon2 binary extension.
