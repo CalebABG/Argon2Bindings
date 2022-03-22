@@ -122,10 +122,8 @@ public class Argon2CoreTests
     }
 
     [Theory]
-    [InlineData("test", "test1234",
-        "$argon2i$v=19$m=4096,t=3,p=1$dGVzdDEyMzQ$mz9PE6IpsqOkYnbENJtM7XWf01XTOBmf5MBkg1IN/Pw")]
-    [InlineData("test123", "testing123",
-        "$argon2i$v=19$m=4096,t=3,p=1$dGVzdGluZzEyMw$kOLXgBFKUW5B5jPZY+Ra+uJr4k/h+s742dEQeqJ1xuI")]
+    [InlineData("test", "test1234", "$argon2i$v=19$m=4096,t=3,p=1$dGVzdDEyMzQ$mz9PE6IpsqOkYnbENJtM7XWf01XTOBmf5MBkg1IN/Pw")]
+    [InlineData("test123", "testing123", "$argon2i$v=19$m=4096,t=3,p=1$dGVzdGluZzEyMw$kOLXgBFKUW5B5jPZY+Ra+uJr4k/h+s742dEQeqJ1xuI")]
     public void Argon2Core_Hash_Should_Return_ValidEncodedHash_When_ValidParametersProvided_Using_DefaultContext
     (
         string password,
