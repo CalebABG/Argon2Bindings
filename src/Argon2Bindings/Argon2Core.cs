@@ -74,15 +74,14 @@ public static class Argon2Core
     }
 
     /// <summary>
-    /// Hashes a password with salt and using the given
-    /// context input parameters.
+    /// Hashes a password with a salt using the given
+    /// context parameters.
     /// </summary>
     /// <param name="password">The password to hash</param>
     /// <param name="salt">The salt to use</param>
     /// <param name="context">The context to use</param>
     /// <param name="encode">
-    /// Whether to encode the hash or not.
-    /// If not set explicitly, this parameter defaults to <b>true</b>
+    /// Whether to encode the hash or not. Defaults to <b>true</b>
     /// </param>
     /// <remarks>
     /// The <see cref="Argon2Context.Secret"/> and
@@ -176,8 +175,8 @@ public static class Argon2Core
     }
 
     /// <summary>
-    /// Hashes a password with salt and using the given
-    /// context input parameters, optionally using a secret key
+    /// Hashes a password with a salt and using the given
+    /// context parameters, optionally using a secret key
     /// and associated data.
     /// </summary>
     /// <param name="password">The password to hash</param>

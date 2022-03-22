@@ -79,7 +79,7 @@ public record Argon2Context
     /// </summary>
     /// <param name="type">The argon2 variant to use</param>
     /// <returns>
-    /// A new context instance with reasonable parameters set.
+    /// A new context with reasonable parameters.
     /// </returns>
     public static Argon2Context CreateReasonableContext
     (

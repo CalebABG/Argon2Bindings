@@ -18,7 +18,7 @@ public static class Argon2PlatformUtilities
     /// The binary extension type for the platform
     /// </param>
     /// <param name="PlatformArchitecture">
-    /// The cpu architecture of the platform
+    /// The CPU architecture of the platform
     /// </param>
     public readonly record struct Argon2PlatformInfo
     (

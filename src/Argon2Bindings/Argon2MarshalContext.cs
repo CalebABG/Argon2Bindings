@@ -143,7 +143,7 @@ internal unsafe struct Argon2MarshalContext
     /// <param name="associatedDataBufferPtr">The pointer to the associated data</param>
     /// <param name="associatedDataBufferLen">The length of the associated data in bytes</param>
     /// <param name="context">The context to use</param>
-    /// <returns></returns>
+    /// <returns>A new context with needed parameters set</returns>
     public static Argon2MarshalContext Create
     (
         byte* hashBufferPtr,

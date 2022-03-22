@@ -178,7 +178,7 @@ internal static class Argon2DynamicBinding
 
     /// <summary>
     /// Locates the argon2 binary for the target
-    /// platform + cpu architecture.
+    /// platform and CPU architecture.
     /// </summary>
     /// <returns>
     /// The full path to the correct argon2 binary for the target

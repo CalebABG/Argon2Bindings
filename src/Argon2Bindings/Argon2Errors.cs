@@ -54,7 +54,7 @@ public static class Argon2Errors
     /// <param name="result">The result to get the error message for</param>
     /// <returns>The error message that corresponds to the result</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Occurs when an invalid or out-of-range result value is passed
+    /// Throws when an invalid or out-of-range result value is passed
     /// </exception>
     public static string GetErrorMessage
     (

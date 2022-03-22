@@ -18,7 +18,7 @@ public static class Argon2Utilities
     /// <param name="bytes">The array of bytes</param>
     /// <param name="separator">The separator to use</param>
     /// <returns>
-    /// Returns a hex string of the provided bytes.
+    /// A hex string of the provided bytes.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Throws when the input byte array is null.
@@ -43,7 +43,7 @@ public static class Argon2Utilities
     /// <param name="str">The string to get the bytes from</param>
     /// <param name="encoding">The encoding to use</param>
     /// <returns>
-    /// Returns the bytes of the string using the encoding if provided,
+    /// The bytes of the string using the encoding if provided,
     /// otherwise the default encoding is used. <see cref="Argon2Defaults.DefaultEncoding"/>
     /// </returns>
     public static byte[] ToBytes
@@ -149,7 +149,7 @@ public static class Argon2Utilities
     /// a cryptographic random number generator.
     /// </summary>
     /// <param name="saltLength">The length of the salt in bytes</param>
-    /// <returns>Returns an array of cryptographically generated random bytes.</returns>
+    /// <returns>An array of cryptographically generated random bytes.</returns>
     /// <seealso cref="RandomNumberGenerator"/>
     public static byte[] GenerateSalt
     (
@@ -170,7 +170,7 @@ public static class Argon2Utilities
     /// </remarks>
     /// </summary>
     /// <param name="context">The context to get the salt from</param>
-    /// <returns>Returns the salt as an array of bytes.</returns>
+    /// <returns>The salt as an array of bytes.</returns>
     /// 
     internal static byte[] GetSaltBytes
     (
@@ -190,7 +190,7 @@ public static class Argon2Utilities
     /// </summary>
     /// <param name="salt">The string to get the salt from</param>
     /// <param name="context">The context to get the salt from</param>
-    /// <returns>Returns the salt as an array of bytes.</returns>
+    /// <returns>The salt as an array of bytes.</returns>
     internal static byte[] GetSaltBytes
     (
         string? salt,
@@ -208,7 +208,7 @@ public static class Argon2Utilities
     /// </summary>
     /// <param name="str">The string to get the bytes from</param>
     /// <returns>
-    /// Returns the bytes of the string using the default encoding.
+    /// The bytes of the string using the default encoding.
     /// </returns>
     internal static byte[] GetStringBytes
     (
@@ -250,7 +250,7 @@ public static class Argon2Utilities
     /// <param name="bytes">The array of bytes</param>
     /// <param name="encode">Whether to encode</param>
     /// <returns>
-    /// Returns the string representation of the array of bytes.
+    /// The string representation of the array of bytes.
     /// </returns>
     internal static string GetString
     (
@@ -268,7 +268,7 @@ public static class Argon2Utilities
     /// Method to get exception details.
     /// </summary>
     /// <param name="exception">the exception to get details from</param>
-    /// <returns>The details of the throw exception</returns>
+    /// <returns>The details of the thrown exception</returns>
     /// <exception cref="ArgumentNullException">
     /// Throws if the provided exception is null.
     /// </exception>
