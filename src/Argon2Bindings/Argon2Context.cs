@@ -39,6 +39,12 @@ public record Argon2Context
     public uint HashLength = DefaultHashLength;
 
     /// <summary>
+    /// Whether to encode the output hash.
+    /// Defaults to <b>true</b>
+    /// </summary>
+    public bool EncodeHash = true;
+
+    /// <summary>
     /// The argon2 variant to use
     /// </summary>
     public Argon2Type Type = DefaultType;

@@ -35,10 +35,15 @@ public static class Program
             DegreeOfParallelism = 2,
         };
 
+        private static readonly Argon2Context RawContext = Context with
+        {
+            EncodeHash = false
+        };
+
         [Benchmark]
         public void HashRaw()
         {
-            Argon2Core.Hash(Password, Salt, Context, false);
+            Argon2Core.Hash(Password, Salt, RawContext);
         }
 
         [Benchmark]

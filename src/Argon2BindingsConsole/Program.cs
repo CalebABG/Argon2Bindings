@@ -10,6 +10,7 @@ public static class Program
     private const string Password = "test";
 
     private static readonly Argon2Context Context = new() { };
+    private static readonly Argon2Context RawContext = Context with { EncodeHash = false };
 
     public static void Main(string[] args)
     {
@@ -58,7 +59,7 @@ public static class Program
             var runNum = $"{i + 1}";
 
             hashStopWatch.Start();
-            var rawHashResult = Argon2Core.Hash(Password, Salt, Context, false);
+            var rawHashResult = Argon2Core.Hash(Password, Salt, RawContext);
             hashStopWatch.Stop();
 
             var rawHashTime = hashStopWatch.ElapsedMilliseconds;

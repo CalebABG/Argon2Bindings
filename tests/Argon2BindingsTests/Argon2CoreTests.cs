@@ -152,10 +152,10 @@ public class Argon2CoreTests
     )
     {
         // Arrange
-        var context = new Argon2Context();
+        var context = new Argon2Context { EncodeHash = false };
 
         // Act
-        var result = Argon2Core.Hash(password, salt, context, false);
+        var result = Argon2Core.Hash(password, salt, context);
 
         // Assert
         Assert.Equal(expectedRawHashHex.ToUpper(), result.RawHash.ToHexString());
@@ -172,10 +172,10 @@ public class Argon2CoreTests
         // Arrange
         var password = "testing";
         var salt = "testing1234";
-        var context = new Argon2Context { Type = (Argon2Type)type };
+        var context = new Argon2Context { Type = (Argon2Type)type, EncodeHash = false };
 
         // Act
-        var result = Argon2Core.Hash(password, salt, context, false);
+        var result = Argon2Core.Hash(password, salt, context);
 
         // Assert
         Assert.Equal(Argon2Result.IncorrectType, result.Status);
