@@ -37,7 +37,7 @@ public readonly record struct Argon2HashResult
         bool encode
     )
     {
-        return result == expected 
+        return result == expected
             ? FromSuccess(result, buffer, GetString(buffer, encode))
             : FromError(result);
     }
