@@ -115,7 +115,7 @@ internal unsafe struct Argon2MarshalContext
     public delegate int Argon2MemoryAllocator
     (
         byte** memory,
-        nuint bytes_to_allocate
+        nuint bytesToAllocate
     );
 
     /// <summary>
@@ -124,7 +124,7 @@ internal unsafe struct Argon2MarshalContext
     public delegate void Argon2MemoryDeallocator
     (
         byte* memory,
-        nuint bytes_to_allocate
+        nuint bytesToAllocate
     );
 
     /// <summary>
