@@ -108,31 +108,6 @@ internal static class Argon2Library
         Argon2Type type
     );
 
-    /// <summary>
-    /// Array of delegate types to be passed to 
-    /// <see cref="Argon2DynamicBinding"/> to create
-    /// usable PInvoke methods.
-    /// </summary>
-    private static readonly Type[] DelegateTypes =
-    {
-        typeof(Argon2HashDelegate),
-        typeof(Argon2GetEncodedHashLengthDelegate),
-        typeof(Argon2VerifyDelegate),
-        typeof(Argon2ContextHashDelegate),
-    };
-
-    /// <summary>
-    /// Type which holds the pinvoke methods created from the
-    /// above delegates.
-    /// <remarks>
-    /// This type is created dynamically through reflection and
-    /// uses the delegates above to define PInvoke methods which can be
-    /// used to call the native argon2 C library functions.
-    /// </remarks>
-    /// <seealso cref="Argon2DynamicBinding"/>
-    /// </summary>
-    private static readonly Type DynamicType;
-
     /// <inheritdoc cref="Argon2HashDelegate"/>
     internal static readonly Argon2HashDelegate Argon2Hash;
 
@@ -147,11 +122,20 @@ internal static class Argon2Library
 
     static Argon2Library()
     {
-        DynamicType = Argon2DynamicBinding.CreateDynamicType(DelegateTypes);
+        var dynamicType = Argon2DynamicBinding.CreateDynamicType
+        (
+            new[]
+            {
+                typeof(Argon2HashDelegate),
+                typeof(Argon2GetEncodedHashLengthDelegate),
+                typeof(Argon2VerifyDelegate),
+                typeof(Argon2ContextHashDelegate),
+            }
+        );
 
-        Argon2Hash = Argon2DynamicBinding.GetDelegate<Argon2HashDelegate>(DynamicType);
-        Argon2GetEncodedHashLength = Argon2DynamicBinding.GetDelegate<Argon2GetEncodedHashLengthDelegate>(DynamicType);
-        Argon2Verify = Argon2DynamicBinding.GetDelegate<Argon2VerifyDelegate>(DynamicType);
-        Argon2ContextHash = Argon2DynamicBinding.GetDelegate<Argon2ContextHashDelegate>(DynamicType);
+        Argon2Hash = Argon2DynamicBinding.GetDelegate<Argon2HashDelegate>(dynamicType);
+        Argon2GetEncodedHashLength = Argon2DynamicBinding.GetDelegate<Argon2GetEncodedHashLengthDelegate>(dynamicType);
+        Argon2Verify = Argon2DynamicBinding.GetDelegate<Argon2VerifyDelegate>(dynamicType);
+        Argon2ContextHash = Argon2DynamicBinding.GetDelegate<Argon2ContextHashDelegate>(dynamicType);
     }
 }

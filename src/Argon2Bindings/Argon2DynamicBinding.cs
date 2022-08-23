@@ -13,6 +13,7 @@ namespace Argon2Bindings;
 internal static class Argon2DynamicBinding
 {
     private const string AssemblyPrefix = nameof(Argon2DynamicBinding);
+
     private const string AssemblyName = AssemblyPrefix + "Assembly";
     private const string ModuleName = AssemblyPrefix + "Module";
     private const string TypeName = AssemblyPrefix + "Type";
@@ -90,7 +91,7 @@ internal static class Argon2DynamicBinding
     /// </returns>
     internal static Type CreateDynamicType
     (
-        IReadOnlyList<Type> delegateTypes
+        Type[] delegateTypes
     )
     {
         return CreateDynamicType
@@ -125,7 +126,7 @@ internal static class Argon2DynamicBinding
         string assemblyName,
         string moduleName,
         string typeName,
-        IReadOnlyList<Type> delegateTypes
+        Type[] delegateTypes
     )
     {
         AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly
@@ -162,10 +163,11 @@ internal static class Argon2DynamicBinding
                 CharSet.Auto
             );
 
-            var implFlags = methodBuilder.GetMethodImplementationFlags() |
-                            MethodImplAttributes.PreserveSig;
-
-            methodBuilder.SetImplementationFlags(implFlags);
+            methodBuilder.SetImplementationFlags
+            (
+                methodBuilder.GetMethodImplementationFlags() |
+                MethodImplAttributes.PreserveSig
+            );
         }
 
         Type dynamicType = typeBuilder.CreateType();
@@ -187,8 +189,8 @@ internal static class Argon2DynamicBinding
     private static string GetDynamicDllPath()
     {
         var currentDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
         var platformInfo = Argon2PlatformUtilities.GetPlatformInfo();
+
         var platformBinaryFolder = $"{platformInfo.PlatformName}-{platformInfo.PlatformArchitecture}";
         var platformBinaryFile = $"{Argon2BinaryName}.{platformInfo.PlatformBinaryExtension}";
 
@@ -200,7 +202,6 @@ internal static class Argon2DynamicBinding
             platformBinaryFile
         );
 
-        var fullPath = Path.GetFullPath(partialPath);
-        return fullPath;
+        return Path.GetFullPath(partialPath);
     }
 }

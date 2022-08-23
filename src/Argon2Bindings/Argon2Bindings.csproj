@@ -1,6 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Argon2BindingsNuGetPackageFolderName>nupackages</Argon2BindingsNuGetPackageFolderName>
+        <Argon2BindingsNuGetPackageFolder>$(SolutionDir)$(Argon2BindingsNuGetPackageFolderName)</Argon2BindingsNuGetPackageFolder>
+        <Argon2BinariesFolderName>argon2binaries</Argon2BinariesFolderName>
+        <Argon2BinariesFolder>$(ProjectDir)$(Argon2BinariesFolderName)</Argon2BinariesFolder>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>latestMajor</LangVersion>
         <Nullable>enable</Nullable>
@@ -12,13 +19,8 @@
         <Version>0.0.1-preview</Version>
         <RepositoryUrl>https://github.com/CalebABG/Argon2Bindings</RepositoryUrl>
         <PackageProjectUrl>https://github.com/CalebABG/Argon2Bindings</PackageProjectUrl>
-        <PackageOutputPath>$(SolutionDir)nupackages</PackageOutputPath>
+        <PackageOutputPath>$(Argon2BindingsNuGetPackageFolder)</PackageOutputPath>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <Argon2BinariesFolderName>argon2binaries</Argon2BinariesFolderName>
-        <Argon2BinariesFolder>$(ProjectDir)$(Argon2BinariesFolderName)</Argon2BinariesFolder>
     </PropertyGroup>
 
     <ItemGroup>
