@@ -110,8 +110,8 @@ public static class Argon2Utilities
         object value
     )
     {
-        if (enumType == null) throw new ArgumentNullException(nameof(enumType));
-        if (value == null) throw new ArgumentNullException(nameof(value));
+        if (enumType is null) throw new ArgumentNullException(nameof(enumType));
+        if (value is null) throw new ArgumentNullException(nameof(value));
 
         if (!Enum.IsDefined(enumType, value))
             throw new InvalidEnumArgumentException($"{nameof(value)} : {(int)value}" +
@@ -234,9 +234,7 @@ public static class Argon2Utilities
         byte[] buffer
     )
     {
-        return bufferPtr == null
-            ? 0
-            : (uint)buffer.Length;
+        return bufferPtr is null ? 0 : (uint)buffer.Length;
     }
 
     /// <summary>
