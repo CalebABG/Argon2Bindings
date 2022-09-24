@@ -29,7 +29,7 @@ public readonly record struct Argon2HashResult
         EncodedHash = encodedHash;
     }
 
-    public static Argon2HashResult FromCriteria
+    internal static Argon2HashResult FromCriteria
     (
         Argon2Result result,
         Argon2Result expected,
@@ -42,7 +42,7 @@ public readonly record struct Argon2HashResult
             : FromError(result);
     }
 
-    public static Argon2HashResult FromSuccess
+    internal static Argon2HashResult FromSuccess
     (
         Argon2Result result,
         byte[] rawHash,
@@ -52,7 +52,7 @@ public readonly record struct Argon2HashResult
         return new(result, rawHash, encodedHash);
     }
 
-    public static Argon2HashResult FromError
+    internal static Argon2HashResult FromError
     (
         Argon2Result result
     )

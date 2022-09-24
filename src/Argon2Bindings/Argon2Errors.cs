@@ -75,7 +75,7 @@ public static class Argon2Errors
     /// <exception cref="Exception">
     /// Throws if the result does not equal the expected.
     /// </exception>
-    public static void ThrowIfNotEqual
+    internal static void ThrowIfNotEqual
     (
         Argon2Result result,
         Argon2Result expected

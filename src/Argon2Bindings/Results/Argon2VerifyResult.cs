@@ -23,12 +23,12 @@ public readonly record struct Argon2VerifyResult
         Error = error;
     }
 
-    public static Argon2VerifyResult FromSuccess()
+    internal static Argon2VerifyResult FromSuccess()
     {
         return new(true);
     }
 
-    public static Argon2VerifyResult FromError
+    internal static Argon2VerifyResult FromError
     (
         string error
     )
@@ -36,7 +36,7 @@ public readonly record struct Argon2VerifyResult
         return new(false, error);
     }
 
-    public static Argon2VerifyResult FromStatus
+    internal static Argon2VerifyResult FromStatus
     (
         Argon2Result status
     )
@@ -46,7 +46,7 @@ public readonly record struct Argon2VerifyResult
             : FromError(GetErrorMessage(status));
     }
 
-    public static Argon2VerifyResult FromError
+    internal static Argon2VerifyResult FromError
     (
         Exception exception
     )

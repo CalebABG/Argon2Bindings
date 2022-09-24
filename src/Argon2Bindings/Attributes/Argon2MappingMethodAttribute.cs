@@ -13,7 +13,7 @@ namespace Argon2Bindings.Attributes;
 /// function.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Delegate)]
-internal class Argon2MappingMethodAttribute : Attribute
+internal sealed class Argon2MappingMethodAttribute : Attribute
 {
     /// <summary>
     /// The name of the argon2 C library function

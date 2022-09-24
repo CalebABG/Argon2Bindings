@@ -8,7 +8,7 @@ namespace Argon2Bindings.Attributes;
 /// is broken / non-functional on a particular platform and architecture.
 /// </summary>
 [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-internal class Argon2BindingsBrokenOnPlatformAttribute : Attribute
+internal sealed class Argon2BindingsBrokenOnPlatformAttribute : Attribute
 {
     public readonly string Platform;
     public readonly Architecture Architecture;
