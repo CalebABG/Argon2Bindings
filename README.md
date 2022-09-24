@@ -2,6 +2,9 @@
 
 ## Research & Development
 
+[![Argon2Bindings .NET Build](https://github.com/CalebABG/Argon2Bindings/actions/workflows/dotnet-build.yml/badge.svg?branch=dev)](https://github.com/CalebABG/Argon2Bindings/actions/workflows/dotnet-build.yml)
+[![CodeQL](https://github.com/CalebABG/Argon2Bindings/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/CalebABG/Argon2Bindings/actions/workflows/codeql-analysis.yml)
+
 As the title suggests, this project is very much a `work in progress` (WIP). The project is an attempt to create a
 wrapper library for the [Argon2 C library](https://github.com/P-H-C/phc-winner-argon2).
 
