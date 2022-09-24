@@ -27,7 +27,7 @@ public static class Program
         stopwatch.Stop();
 
         PrintTime(stopwatch);
-        Console.WriteLine(result);
+        Console.WriteLine(result.ToString());
     }
 
     private static void PrintHash()
@@ -37,7 +37,7 @@ public static class Program
 
         stopwatch.Stop();
         PrintTime(stopwatch);
-        Console.WriteLine(hash);
+        Console.WriteLine(hash.ToString());
     }
 
     private static void PrintTabularHashResults()
