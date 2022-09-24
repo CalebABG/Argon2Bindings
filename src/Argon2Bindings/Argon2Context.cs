@@ -57,7 +57,7 @@ public sealed record Argon2Context
     /// <summary>
     /// Flag which determines which fields are securely wiped
     /// </summary>
-    public Argon2Flag Flags = DefaultFlag;
+    public Argon2Flags Flags = DefaultFlags;
 
     /// <summary>
     /// (Optional) The secret data used for keyed-hashing.

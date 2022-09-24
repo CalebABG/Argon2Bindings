@@ -109,8 +109,8 @@ public class Argon2UtilitiesTests
     }
 
     [Theory]
-    [InlineData(typeof(Argon2Flag), (Argon2Flag)(-1))]
-    [InlineData(typeof(Argon2Flag), (Argon2Flag)(1 << 4))]
+    [InlineData(typeof(Argon2Flags), (Argon2Flags)(-1))]
+    [InlineData(typeof(Argon2Flags), (Argon2Flags)(1 << 4))]
     [InlineData(typeof(Argon2Type), (Argon2Type)(-1))]
     [InlineData(typeof(Argon2Type), (Argon2Type)777)]
     [InlineData(typeof(Argon2Version), (Argon2Version)0xF)]
@@ -126,8 +126,8 @@ public class Argon2UtilitiesTests
     }
 
     [Theory]
-    [InlineData(null, (Argon2Flag)(-1))]
-    [InlineData(typeof(Argon2Flag), null)]
+    [InlineData(null, (Argon2Flags)(-1))]
+    [InlineData(typeof(Argon2Flags), null)]
     [InlineData(null, null)]
     public void Argon2Utilities_ValidateEnum_Should_Throw_When_InputParametersAreNull
     (

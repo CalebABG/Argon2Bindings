@@ -2,7 +2,7 @@
 using Argon2Bindings.Enums;
 using static Argon2Bindings.Enums.Argon2Type;
 using static Argon2Bindings.Enums.Argon2Version;
-using static Argon2Bindings.Enums.Argon2Flag;
+using static Argon2Bindings.Enums.Argon2Flags;
 
 namespace Argon2Bindings;
 
@@ -50,7 +50,7 @@ public static class Argon2Defaults
     /// <summary>
     /// Flag which determines which fields are securely wiped
     /// </summary>
-    public const Argon2Flag DefaultFlag = ClearPassword | ClearSecret;
+    public const Argon2Flags DefaultFlags = ClearPassword | ClearSecret;
 
     /// <summary>
     /// The encoding to use for converting strings to byte arrays

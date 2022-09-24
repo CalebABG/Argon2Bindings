@@ -8,7 +8,7 @@ namespace Argon2Bindings.Enums;
 /// </remarks>
 /// </summary>
 [Flags]
-public enum Argon2Flag
+public enum Argon2Flags
 {
     /// <summary>
     /// No wipe
