@@ -21,9 +21,9 @@ internal static class Argon2DynamicBinding
     private const string Argon2BinaryName = "libargon2";
     private const string Argon2BinariesFolder = "argon2binaries";
 
-    private const MethodAttributes MethodAttribs = MethodAttributes.Public |
-                                                   MethodAttributes.Static |
-                                                   MethodAttributes.PinvokeImpl;
+    private const MethodAttributes PInvokeMethodAttribs = MethodAttributes.Public | 
+                                                          MethodAttributes.Static | 
+                                                          MethodAttributes.PinvokeImpl;
 
     /// <summary>
     /// Gets the name of the method to be used which corresponds 
@@ -36,7 +36,7 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws if the provided type is null or if the provided delegate's method name is null or empty.
     /// </exception>
-    internal static string GetMappingMethodName
+    internal static string GetArgon2MappingMethodName
     (
         Type type
     )
@@ -76,7 +76,7 @@ internal static class Argon2DynamicBinding
         return (TDelegate)Delegate.CreateDelegate
         (
             delegateType,
-            type.GetMethod(GetMappingMethodName(delegateType))!
+            type.GetMethod(GetArgon2MappingMethodName(delegateType))!
         );
     }
 
@@ -107,9 +107,6 @@ internal static class Argon2DynamicBinding
     /// Builds a <see cref="Type"/> from a collection of delegates.
     /// This type contains PInvoke methods built from the provided collection of delegates,
     /// which can be called to invoke native argon2 C library functions.
-    /// References:
-    /// 1. <see href="https://www.codeproject.com/script/Articles/ViewDownloads.aspx?aid=11310" />
-    /// 2. <see href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.modulebuilder.definepinvokemethod?view=netstandard-2.1" />
     /// </summary>
     /// <param name="assemblyName">The name of the assembly</param>
     /// <param name="moduleName">The name of the module</param>
@@ -121,6 +118,7 @@ internal static class Argon2DynamicBinding
     /// <exception cref="Exception">
     /// Throws when the dynamic type is null or other exceptions are thrown through reflection.
     /// </exception>
+    /// <seealso href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.modulebuilder.definepinvokemethod?view=netstandard-2.1" />
     private static Type CreateDynamicType
     (
         string assemblyName,
@@ -139,11 +137,11 @@ internal static class Argon2DynamicBinding
             .DefineDynamicModule(moduleName)
             .DefineType(typeName, TypeAttributes.Class);
 
-        string dllPath = GetDynamicDllPath();
+        string argon2BinaryPath = GetDynamicBinaryPath();
 
         foreach (Type delegateType in delegateTypes)
         {
-            string mappingMethodName = GetMappingMethodName(delegateType);
+            string mappingMethodName = GetArgon2MappingMethodName(delegateType);
 
             MethodInfo delegateMethod = delegateType.GetMethod("Invoke")!;
 
@@ -154,8 +152,8 @@ internal static class Argon2DynamicBinding
             MethodBuilder methodBuilder = typeBuilder.DefinePInvokeMethod
             (
                 mappingMethodName,
-                dllPath,
-                MethodAttribs,
+                argon2BinaryPath,
+                PInvokeMethodAttribs,
                 CallingConventions.Standard,
                 delegateMethod.ReturnType,
                 methodParameterTypes,
@@ -179,14 +177,14 @@ internal static class Argon2DynamicBinding
     }
 
     /// <summary>
-    /// Locates the argon2 binary for the target
+    /// Gets the path to the argon2 binary for the target
     /// platform and CPU architecture.
     /// </summary>
     /// <returns>
     /// The full path to the correct argon2 binary for the target
     /// platform.
     /// </returns>
-    private static string GetDynamicDllPath()
+    private static string GetDynamicBinaryPath()
     {
         var currentDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         var platformInfo = Argon2PlatformUtilities.GetPlatformInfo();
